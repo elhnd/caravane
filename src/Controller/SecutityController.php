@@ -15,12 +15,4 @@ class SecutityController extends AbstractController
         return $this->render('base.html.twig', []);
     }
     
-    
-    // /**
-    //  *@Route("/", name="login")
-    //  */
-    // public function loggin()
-    // {
-    //     return $this->render('login.html.twig', []);
-    // }
 }
