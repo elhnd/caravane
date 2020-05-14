@@ -16,6 +16,7 @@ import 'jquery/dist/jquery.slim.js';
 import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import 'vue-material/dist/vue-material.min.css';
 import Vue from "vue";
 import router from "./router";
 import Axios from 'axios';
@@ -23,7 +24,9 @@ import Login from './pages/Login';
 import Navbar from './components/menu/Navbar';
 import Sidebar from './components/menu/Sidebar';
 import App from './App';
+import VueMaterial from 'vue-material';
 
+Vue.use(VueMaterial);
 Vue.config.productionTip = false;
 Vue.component('myhome', App);
 Vue.component('login', Login);

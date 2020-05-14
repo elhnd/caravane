@@ -11,11 +11,11 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class PasswordEncoderSubscriber implements EventSubscriberInterface
 {
-   private $encoder;
+   private $encode;
    
-   public function __contruction(UserPasswordEncoderInterface $encoder)
+   public function __construct(UserPasswordEncoderInterface $encode)
    {
-        $this->encoder = $encoder;
+        $this->encode = $encode;
    }
     
     public static function getSubscribedEvents()
@@ -31,7 +31,7 @@ class PasswordEncoderSubscriber implements EventSubscriberInterface
         $method = $event->getRequest()->getMethod();
 
         if($user instanceof User && $method === "POST"){
-            $hash = $this->encoder->encodePassword($user, $user->getPassword());
+            $hash = $this->encode->encodePassword($user, $user->getPassword());
             $user->setPassword($hash);
         }
     }
