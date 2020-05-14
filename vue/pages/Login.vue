@@ -1,74 +1,59 @@
 <template>
-  <div>
-    <div class="login-box">
-      <div class="login-logo">
-        <a href="#">
-          <b>Caravane</b>
-        </a>
-      </div>
-      <!-- /.login-logo -->
-      <div class="card">
-        <div class="card-body login-card-body">
-          <p class="login-box-msg">Connectez-vous pour commencer</p>
-          <form  method="post">
-            <div class="input-group mb-3">
-              <input type="email" class="form-control" placeholder="Email" />
-              <div class="input-group-append">
-                <div class="input-group-text">
-                  <span class="fas fa-envelope"></span>
-                </div>
-              </div>
-            </div>
-            <div class="input-group mb-3">
-              <input type="password" class="form-control" placeholder="Password" />
-              <div class="input-group-append">
-                <div class="input-group-text">
-                  <span class="fas fa-lock"></span>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-8">
-                <div class="icheck-primary">
-                  <input type="checkbox" id="remember" />
-                  <label for="remember">Se souvenir de moi</label>
-                </div>
-              </div>
-              <!-- /.col -->
-              <div class="col-4 md-2">
-                <button type="submit" v-on:click="test" class="btn btn-primary btn-block">Login</button>
-              </div>
-              <!-- /.col -->
-            </div>
-          </form>
-          <!-- /.social-auth-links -->
+  <v-app id="inspire">
+    <v-content>
+      <v-container class="fill-height" fluid>
+        <v-row align="center" justify="center">
+          <v-col cols="12" sm="8" md="4">
+            <v-card class="elevation-12">
+              <v-toolbar color="primary" dark flat>
+                <v-toolbar-title>Caravane Connexion</v-toolbar-title>
+                <v-spacer></v-spacer>
+              </v-toolbar>
+              <v-card-text>
+                <v-form >
+                  <v-text-field label="Login" name="login" prepend-icon="person" type="text"></v-text-field>
 
-          <p class="mb-1">
-            <a href="#">Mot de passe oublié</a>
-          </p>
-        </div>
-        <!-- /.login-card-body -->
-      </div>
-    </div>
-  </div>
+                  <v-text-field
+                    id="password"
+                    label="Password"
+                    name="password"
+                    prepend-icon="lock"
+                    type="password"
+                  ></v-text-field>
+                </v-form>
+              </v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="primary" v-on:click.prevent="test">Connexion</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-content>
+  </v-app>
 </template>
+
+<script>
+export default {
+  props: {
+    source: String
+  }
+};
+</script>
 <script>
 export default {
   name: "login",
   data() {
-    return {
-      
-    }
+    return {};
   },
 
   methods: {
-    test(){
-      this.$router.push("/home");
+    test() {
+      this.$router.push("/test");
     }
-  },
-}
+  }
+};
 </script>
 
-<style lang="stylus">
-
-</style>
+<style lang="stylus"></style>
