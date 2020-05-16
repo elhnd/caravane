@@ -18,7 +18,7 @@ import store from './store';
 
 Vue.config.productionTip = false;
 
-Axios.defaults.baseURL = 'https://127.0.0.1:8000';
+//Axios.defaults.baseURL = 'https://127.0.0.1:8000';
 
 new Vue({
     vuetify,

@@ -7,7 +7,7 @@ const actions = {
     login({ commit }, data){
         commit(types.AUTH_ERROR_CHANGE, null)
 
-        const url = `/login`
+        const url = `${process.env.VUE_APP_API_URL}/login`
 
         return axios.post(url, data).catch(e => {
             commit(types.AUTH_ERROR_CHANGE,'Usernaùe or password are incorrect')
