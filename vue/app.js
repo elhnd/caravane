@@ -11,19 +11,18 @@ import 'jquery/dist/jquery.slim.js';
 import Vue from "vue";
 import router from "./router";
 import Axios from 'axios';
-import Login from './pages/Login';
 import App from './App';
 import vuetify from './vuetify';
+import store from './store';
 
 
 Vue.config.productionTip = false;
-Vue.component('myhome', App);
-Vue.component('login', Login);
 
-Axios.defaults.baseURL = 'http://127.0.0.1:8000';
+Axios.defaults.baseURL = 'https://127.0.0.1:8000';
 
-let rt = new Vue({
-    el: '#app',
+new Vue({
     vuetify,
-    router
-});
+    store,
+    router,
+    render: h => h(App)
+}).$mount('#app');
