@@ -7,11 +7,11 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class HomeController extends AbstractController
 {
-    /**
-     * @Route("/", name="home")
+     /**
+      *@Route("/{vueRouting}", requirements={"vueRouting"="^(?!api|_(profiler|wdt)).*"}, name="index")
      */
     public function index()
     {
-        return $this->render('login.html.twig', []);
+        return $this->render('base.html.twig', []);
     }
 }

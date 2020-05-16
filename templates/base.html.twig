@@ -6,14 +6,16 @@
 			{% block title %}Welcome!
 			{% endblock %}
 		</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
 		{% block stylesheets %}
 			{{ encore_entry_link_tags('app') }}
+			<link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+			<link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
+			<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Two+Tone|Material+Icons+Round|Material+Icons+Sharp"/>
 		{% endblock %}
-
 	</head>
-	<body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed ">
-		<div class="wrapper" id="app">
-			<myhome></myhome>
+	<body>
+		<div id="app">
 		</div>
 		{{ encore_entry_script_tags('app') }}
 	</body>

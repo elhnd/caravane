@@ -1,13 +1,14 @@
 <template>
   <div>
-    <navbar></navbar>
-    <sidebar></sidebar>
-    <router-view></router-view>
+    <router-view />
   </div>
 </template>
 
 <script>
+//import Loader from './components/Loader'
+
 export default {
-    name: "app",
+  name: 'App',
+  //components: { Loader }
 }
 </script>
