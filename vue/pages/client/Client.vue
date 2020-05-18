@@ -1,56 +1,106 @@
 <template>
-  <v-data-table :headers="headers" :items="clients" sort-by="nom" class="elevation-1">
-    <template v-slot:top>
-      <v-toolbar flat color="white" class="mt-5">
-        <v-toolbar-title>
-          <h3>List Client</h3>
-        </v-toolbar-title>
-        <v-divider class="mx-4" inset vertical></v-divider>
-        <v-spacer></v-spacer>
-        <v-dialog v-model="dialog" max-width="500px">
-          <template v-slot:activator="{ on }">
-            <v-btn class="mt-2" fab dark color="green">
-              <v-icon dark v-on="on">mdi-plus</v-icon>
-            </v-btn>
-          </template>
-          <v-card>
-            <v-card-title>
-              <span class="headline">{{ formTitle }}</span>
-            </v-card-title>
+  <v-card>
+    <v-card-title>
+      <v-text-field
+        v-model="search"
+        append-icon="search"
+        label="Rechercher"
+        single-line
+        hide-details
+      ></v-text-field>
+    </v-card-title>
+    <v-data-table
+      :headers="headers"
+      :items="clients"
+      sort-by="prenom"
+      :page.sync="page"
+      :items-per-page="itemsPerPage"
+      :search="search"
+      class="elevation-1"
+    >
+      <template v-slot:top>
+        <v-toolbar flat color="white" class="mt-5">
+          <v-toolbar-title>
+            <h3>Liste Client</h3>
+          </v-toolbar-title>
+          <v-divider class="mx-4" inset vertical></v-divider>
 
-            <v-card-text>e
-              <v-container>
-                <v-row>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field v-model="editedItem.nom" label="Nom"></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field v-model="editedItem.prenom" label="Prénom"></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field v-model="editedItem.prix" label="Prix"></v-text-field>
-                  </v-col>
-                </v-row>
-              </v-container>
-            </v-card-text>
+          <v-spacer></v-spacer>
+          <v-dialog v-model="dialog" max-width="500px">
+            <template v-slot:activator="{ on }">
+              <v-btn class="mt-2" fab dark color="green">
+                <v-icon dark v-on="on">mdi-plus</v-icon>
+              </v-btn>
+            </template>
 
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="close">Cancel</v-btn>
-              <v-btn color="blue darken-1" text @click="save">Save</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-      </v-toolbar>
-    </template>
-    <template v-slot:item.actions="{ item }">
-      <v-icon small class="mr-2" @click="editItem(item)">mdi-pencil</v-icon>
-      <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
-    </template>
-    <template v-slot:no-data>
-      <v-btn color="primary" @click="fetchClients">Reset</v-btn>
-    </template>
-  </v-data-table>
+            <v-card>
+              <v-card-title>
+                <span class="headline">{{ formTitle }}</span>
+              </v-card-title>
+
+              <v-card-text>
+                <v-form ref="form" v-model="valid" valid>
+                  <v-container>
+                    <v-row>
+                       <v-col cols="12" sm="6" md="4">
+                        <v-text-field
+                          v-model="editedItem.prenom"
+                          :rules="ItemRules"
+                          required
+                          label="Prénom"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="4">
+                        <v-text-field
+                          v-model="editedItem.nom"
+                          :rules="ItemRules"
+                          required
+                          label="Nom"
+                        ></v-text-field>
+                      </v-col>
+                     
+                      <v-col cols="12" sm="6" md="4">
+                        <v-text-field
+                          v-model="editedItem.prix"
+                          :rules="ItemRules"
+                          required
+                          label="Prix"
+                        ></v-text-field>
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                </v-form>
+              </v-card-text>
+
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="blue darken-1" text @click="close">Cancel</v-btn>
+                <v-btn color="blue darken-1" text @click="save" :disabled="!valid">Save</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </v-toolbar>
+      </template>
+      <template v-slot:item.actions="{ item }">
+        <v-icon md class="mr-2" @click="editItem(item)" color="primary" blue>mdi-pencil</v-icon>
+        <v-icon md2 @click="deleteItem(item)" color="red" dark>mdi-delete</v-icon>
+      </template>
+      <template v-slot:no-data>
+        <v-btn color="primary" @click="fetchClients">Reset</v-btn>
+      </template>
+      <div class="text-center pt-2">
+        <v-pagination v-model="page" :length="pageCount"></v-pagination>
+        <v-text-field
+          :value="itemsPerPage"
+          label="Items per page"
+          type="number"
+          min="-1"
+          max="15"
+          @input="itemsPerPage = parseInt($event, 10)"
+        ></v-text-field>
+      </div>
+    </v-data-table>
+  </v-card>
 </template>
 
 <script>
@@ -60,15 +110,26 @@ export default {
 
   data: () => ({
     dialog: false,
+    valid: true,
+
     search: "",
+    page: 1,
+    pageCount: 0,
+    itemsPerPage: 12,
     headers: [
+      {
+        text: "Ligne",
+        align: "start",
+        sortable: false,
+        value: "ligne"
+      },
+      { text: "Prenom", value: "prenom" },
       {
         text: "Nom",
         align: "start",
         sortable: false,
         value: "nom"
       },
-      { text: "Prenom", value: "prenom" },
       { text: "Prix", value: "prix" },
       { text: "Actions", value: "actions", sortable: false }
     ],
@@ -80,6 +141,7 @@ export default {
       prenom: "",
       prix: 0
     },
+    ItemRules: [v => !!v || "Champ is required"],
     defaultItem: {
       nom: "",
       prenom: "",
@@ -89,12 +151,14 @@ export default {
 
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? "New Item" : "Edit Item";
+      return this.editedIndex === -1 ? "Ajout Client" : "Modifier Client";
     }
   },
 
   watch: {
     dialog(val) {
+      console.log(val);
+
       val || this.close();
     }
   },
@@ -112,7 +176,6 @@ export default {
     },
 
     editItem(item) {
-      console.log(item.id);
       axios.get("/client/" + item.id).then(response => {
         console.log(response);
         //this.clients = response.data;
@@ -140,9 +203,12 @@ export default {
         this.editedItem = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
       });
+      this.$refs.form.reset();
     },
 
     save() {
+      this.$refs.form.validate();
+
       if (this.editedIndex > -1) {
         console.log(this.editedItem.id);
         axios
@@ -171,6 +237,8 @@ export default {
       }
       this.close();
       this.fetchClients();
+      this.$refs.form.reset();
+      this.$refs.form.resetValidation();
     }
   }
 };

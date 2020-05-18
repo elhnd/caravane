@@ -4,6 +4,8 @@ import Login from '../pages/Login';
 import MainSlot from '../components/layout/MainSlot'
 import Test from '../pages/Test';
 import Client from '../pages/client/Client';
+import Fournisseur from '../pages/fournisseur/Fournisseur';
+
 
 import store from '../store'
 import UserList from '../pages/user/List'
@@ -54,6 +56,14 @@ const router = new VueRouter({
                     requiresAuth: true
                 },
                 component: Client
+            },
+            {
+                path: "/fournisseur",
+                name: "fournisseur",
+                meta: {
+                    requiresAuth: true
+                },
+                component: Fournisseur
             },
 
         ],

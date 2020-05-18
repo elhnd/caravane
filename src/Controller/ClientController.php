@@ -19,9 +19,24 @@ class ClientController extends AbstractController
      */
     public function index(ClientRepository $clientRepository)
     {
-        $client = $clientRepository->findAll();
+        $ligne = 0;
+        $dataClients = [];
+        $rem = [];
         
-        return $this->json($client,200);
+        $client = $clientRepository->findBy(array(), array('prenom' => 'ASC'));
+        foreach ($client as  $key) {
+            $ligne++;
+            $rem = array(
+            'id'=>$key->getId(),
+            'nom'=>$key->getNom(),
+            'prenom'=>$key->getPrenom(),
+            'prix'=>$key->getPrix(),
+            'ligne'=>$ligne
+           );
+           array_push($dataClients, $rem);
+        }
+
+        return $this->json($dataClients,200);
         
     }
 
@@ -84,6 +99,11 @@ class ClientController extends AbstractController
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->remove($client);
         $entityManager->flush();
+        $data = [
+            'message' => 'client supprimé',
+            'status' => 201
+        ];
+        return $this->json($data);
         // if ($this->isCsrfTokenValid('delete' . $client->getId(), $request->request->get('_token'))) {
         // // }
         // return $this->redirectToRoute('client_index');
