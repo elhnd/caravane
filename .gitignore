@@ -13,6 +13,7 @@
 .phpunit
 .phpunit.result.cache
 /phpunit.xml
+fileProjet/
 ###< symfony/phpunit-bridge ###
 
 ###> symfony/webpack-encore-bundle ###
