@@ -26,7 +26,7 @@ const router = new VueRouter({
                 path: "/home",
                 name: "Home",
                 meta: {
-                    requiresAuth: false
+                    requiresAuth: true
                 },
                 component: Test
             },
