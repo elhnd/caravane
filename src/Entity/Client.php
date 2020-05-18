@@ -7,7 +7,7 @@ use App\Repository\ClientRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ApiResource()
+ * 
  * @ORM\Entity(repositoryClass=ClientRepository::class)
  */
 class Client

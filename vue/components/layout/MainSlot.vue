@@ -97,6 +97,10 @@ export default {
     color: "brown darken-4",
     items: [
       { icon: "mdi-contacts", text: "Contacts" },
+      { text: 'Clients',
+          icon: 'people',
+          route: 'Client',
+     },
       { icon: "mdi-history", text: "Frequently contacted" },
       { icon: "mdi-content-copy", text: "Duplicates" },
       {
