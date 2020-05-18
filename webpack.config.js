@@ -34,7 +34,6 @@ Encore
     // will require an extra script tag for runtime.js
     // but, you probably want this, unless you're building a single-page app
     .enableSingleRuntimeChunk()
-
     /*
      * FEATURE CONFIG
      *
@@ -55,7 +54,14 @@ Encore
     })
 
     // enables Sass/SCSS support
-    .enableSassLoader()
+    .enableSassLoader((options) => {
+        options.sourceMap = true;
+        options.sassOptions = {
+            outputStyle: options.outputStyle,
+            sourceComments: !Encore.isProduction(),
+        };
+        delete options.outputStyle;
+    }, {})
     .enableVueLoader()
     // uncomment if you use TypeScript
     //.enableTypeScriptLoader()
@@ -70,9 +76,10 @@ Encore
     // uncomment if you use API Platform Admin (composer req api-admin)
     //.enableReactPreset()
     //.addEntry('admin', './assets/js/admin.js')
-;
+    ;
 Encore.configureDefinePlugin(options => {
     options["process.env"].VUE_APP_API_URL = process.env.VUE_APP_API_URL;
+    options["process.env"].API_URL=process.env.API_URL;
 })
 module.exports = Encore.getWebpackConfig();
 

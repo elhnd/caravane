@@ -1,16 +1,18 @@
 <template>
   <v-app id="inspire">
-    <v-navigation-drawer :color="color"
-     v-model="drawer" 
-     :clipped="$vuetify.breakpoint.lgAndUp" 
-     dark
-     hide-overlay
-     app>
+    <v-navigation-drawer
+      :color="color"
+      v-model="drawer"
+      :clipped="$vuetify.breakpoint.lgAndUp"
+      dark
+      hide-overlay
+      app
+    >
       <v-list dense>
         <template v-for="item in items">
           <v-row v-if="item.heading" :key="item.heading" align="center">
             <v-col cols="6">
-              <v-subheader v-if="item.heading">{{ item.heading }}</v-subheader>
+              <v-subheader class="test" v-if="item.heading">{{ item.heading }}</v-subheader>
             </v-col>
             <v-col cols="6" class="text-center">
               <a href="#!" class="body-2 black--text">EDIT</a>
@@ -25,7 +27,7 @@
           >
             <template v-slot:activator>
               <v-list-item-content>
-                <v-list-item-title>{{ item.text }}</v-list-item-title>
+                <v-list-item-title class="test">{{ item.text }}</v-list-item-title>
               </v-list-item-content>
             </template>
             <v-list-item v-for="(child, i) in item.children" :key="i" link>
@@ -33,7 +35,7 @@
                 <v-icon>{{ child.icon }}</v-icon>
               </v-list-item-action>
               <v-list-item-content>
-                <v-list-item-title>{{ child.text }}</v-list-item-title>
+                <v-list-item-title class="test">{{ child.text }}</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
           </v-list-group>
@@ -42,7 +44,7 @@
               <v-icon>{{ item.icon }}</v-icon>
             </v-list-item-action>
             <v-list-item-content>
-              <v-list-item-title>{{ item.text }}</v-list-item-title>
+              <v-list-item-title class="test">{{ item.text }}</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
         </template>
@@ -74,7 +76,7 @@
           <v-img src="https://cdn.vuetifyjs.com/images/logos/logo.svg" alt="Vuetify"></v-img>
         </v-avatar>
       </v-btn>
-      <v-btn icon @click="signOut" >
+      <v-btn icon @click="signOut">
         <v-icon>mdi-power</v-icon>
       </v-btn>
     </v-app-bar>
@@ -127,12 +129,53 @@ export default {
 
   methods: {
     signOut() {
-      this.$store.dispatch('auth/logout')
-    },
+      this.$store.dispatch("auth/logout");
+    }
   }
 };
 </script>
+<style lang="scss" >
+.test{
+  font-size: 15px !important;
+}
+.v-navigation-drawer {
+  .v-list {
+    &-group--active {
+      .v-list-group__items {
+        background: #61432bc9 !important;
+      }
+      .v-list-group__header {
+        background: #61432bc9 !important;
+      }
+      .v-list-item-title {
+        font-size: 40px !important;
+      }
+    }
+    .theme--dark {
+      .v-icon {
+        color: #fff !important;
+      }
+      .v-list-item-content {
+        font-size: 40px !important;
+      }
+    }
+  }
+}
+.active-item {
+  position: relative !important;
+  &::before {
+    content: "" !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    opacity: 0.3 !important;
+    background-color: #61432bc9 !important;
+  }
+}
 
-
-            
-   
+.v-list-item-title {
+  font-size: 40px !important;
+}
+</style>

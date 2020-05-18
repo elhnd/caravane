@@ -4,6 +4,7 @@ import Login from '../pages/Login';
 import MainSlot from '../components/layout/MainSlot'
 import Test from '../pages/Test';
 import store from '../store'
+import UserList from '../pages/user/List'
 Vue.use(VueRouter);
 
 const router = new VueRouter({
@@ -35,6 +36,14 @@ const router = new VueRouter({
                     requiresAuth: true
                 },
                 component: Test
+            },
+            {
+                path: "/user/list",
+                name: "UserList",
+                meta: {
+                    requiresAuth: true
+                },
+                component: UserList
             }
         ],
         redirect: { name: 'Home' },
