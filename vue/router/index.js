@@ -8,6 +8,7 @@ import Fournisseur from '../pages/fournisseur/Fournisseur';
 
 
 import store from '../store'
+import UserList from '../pages/user/List'
 Vue.use(VueRouter);
 
 const router = new VueRouter({
@@ -39,6 +40,14 @@ const router = new VueRouter({
                     requiresAuth: true
                 },
                 component: Test
+            },
+            {
+                path: "/user/list",
+                name: "UserList",
+                meta: {
+                    requiresAuth: true
+                },
+                component: UserList
             },
             {
                 path: "/client",

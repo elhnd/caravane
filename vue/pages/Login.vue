@@ -74,7 +74,7 @@ export default {
       this.$store
         .dispatch("auth/login", this.credentials)
         .then(response => {
-          console.log(response);
+          //console.log(response);
           this.$store.commit(`auth/${types.AUTH_UPDATE_TOKEN}`, response.data);
           this.$router.push({ name: "Home" });
         })

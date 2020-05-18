@@ -1,0 +1,2 @@
+git remote set-url origin  https://github.com/elhnd/caravane.git
+git remote set-url origin https://gitlab.com/elhnd/caravane_app.git

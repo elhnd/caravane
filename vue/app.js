@@ -1,22 +1,14 @@
-window._ = require('lodash');
-
-window.axios = require('axios');
-
-window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-
-import 'popper.js'
-
-import 'jquery';
-import 'jquery/dist/jquery.slim.js';
+require('lodash')
+//import './scss/app.scss';
 import Vue from "vue";
 import router from "./router";
-import Axios from 'axios';
 import App from './App';
 import vuetify from './vuetify';
 import store from './store';
-
-
+import IsMainTemplate from '../vue/components/layout/IsMainTemplate'
+import Axios from 'axios'
 Vue.config.productionTip = false;
+Vue.component('is-main-template', IsMainTemplate);
 
 Axios.defaults.baseURL = 'https://127.0.0.1:8000';
 
