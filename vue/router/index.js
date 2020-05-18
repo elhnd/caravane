@@ -3,6 +3,8 @@ import VueRouter from "vue-router";
 import Login from '../pages/Login';
 import MainSlot from '../components/layout/MainSlot'
 import Test from '../pages/Test';
+import Client from '../pages/client/Client';
+
 import store from '../store'
 Vue.use(VueRouter);
 
@@ -35,7 +37,16 @@ const router = new VueRouter({
                     requiresAuth: true
                 },
                 component: Test
-            }
+            },
+            {
+                path: "/client",
+                name: "client",
+                meta: {
+                    requiresAuth: true
+                },
+                component: Client
+            },
+
         ],
         redirect: { name: 'Home' },
         meta: {

@@ -62,14 +62,18 @@ class ClientController extends AbstractController
      */
     public function edit(Request $request, Client $client)
     {
-        $form = $this->createForm(ClientType::class, $client);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
-        }
-
-        return $client;
+        $data = json_decode($request->getContent());
+        $client
+                ->setNom($data->nom)
+                ->setPrenom($data->prenom)
+                ->setPrix($data->prix)
+                ;
+        $this->getDoctrine()->getManager()->flush();
+        $data = [
+            'message' => 'client modifié',
+            'status' => 201
+        ];
+        return $this->json($data);
     }
 
     /**
@@ -77,12 +81,11 @@ class ClientController extends AbstractController
      */
     public function delete(Request $request, Client $client)
     {
-        if ($this->isCsrfTokenValid('delete' . $client->getId(), $request->request->get('_token'))) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($client);
-            $entityManager->flush();
-        }
-
-        return $this->redirectToRoute('client_index');
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->remove($client);
+        $entityManager->flush();
+        // if ($this->isCsrfTokenValid('delete' . $client->getId(), $request->request->get('_token'))) {
+        // // }
+        // return $this->redirectToRoute('client_index');
     }
 }
