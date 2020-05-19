@@ -12,9 +12,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=ClientRepository::class)
+ * @ORM\HasLifecycleCallbacks()
  */
 class Client
 {
+    use Timestamps;
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()

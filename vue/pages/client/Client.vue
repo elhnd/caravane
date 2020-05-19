@@ -12,7 +12,6 @@
     <v-data-table
       :headers="headers"
       :items="clients"
-      sort-by="prenom"
       :page.sync="page"
       :items-per-page="itemsPerPage"
       :search="search"
@@ -26,7 +25,7 @@
           <v-divider class="mx-4" inset vertical></v-divider>
 
           <v-spacer></v-spacer>
-          <v-dialog v-model="dialog" max-width="500px">
+          <v-dialog v-model="dialog" persistent max-width="500px">
             <template v-slot:activator="{ on }">
               <v-btn class="mt-2" fab dark color="green">
                 <v-icon dark v-on="on">mdi-plus</v-icon>
@@ -74,8 +73,8 @@
 
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" text @click="close">Cancel</v-btn>
-                <v-btn color="blue darken-1" text @click="save" :disabled="!valid">Save</v-btn>
+                <v-btn color="blue darken-1" text @click="close">Annuler</v-btn>
+                <v-btn color="blue darken-1" text @click="save" :disabled="!valid">Enregistrer</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -111,7 +110,6 @@ export default {
   data: () => ({
     dialog: false,
     valid: true,
-
     search: "",
     page: 1,
     pageCount: 0,
@@ -123,14 +121,17 @@ export default {
         sortable: false,
         value: "ligne"
       },
-      { text: "Prenom", value: "prenom" },
+      { text: "Prenom", value: "prenom",sortable: false},
       {
         text: "Nom",
         align: "start",
         sortable: false,
         value: "nom"
       },
-      { text: "Prix", value: "prix" },
+      { text: "Prix", value: "prix",sortable: false },
+      { text: "Crée le", value: "createAt",sortable: false },
+      { text: "Modifié le", value: "updateAt",sortable: false },
+
       { text: "Actions", value: "actions", sortable: false }
     ],
     clients: [],
@@ -141,7 +142,7 @@ export default {
       prenom: "",
       prix: 0
     },
-    ItemRules: [v => !!v || "Champ is required"],
+    ItemRules: [v => !!v || "Champ requise"],
     defaultItem: {
       nom: "",
       prenom: "",
@@ -189,7 +190,7 @@ export default {
       console.log(item);
 
       const index = this.clients.indexOf(item);
-      confirm("Are you sure you want to delete this item?") &&
+      confirm("Voulez-vous vraiment supprimer ?") &&
         this.clients.splice(index, 1);
       axios.delete("/client/" + item.id).then(response => {
         console.log(response);

@@ -1,12 +1,17 @@
 <template>
   <v-card>
     <v-card-title>
-      <v-text-field v-model="search" append-icon="search" label="Rechercher" single-line hide-details></v-text-field>
+      <v-text-field
+        v-model="search"
+        append-icon="search"
+        label="Rechercher"
+        single-line
+        hide-details
+      ></v-text-field>
     </v-card-title>
     <v-data-table
       :headers="headers"
       :items="fournisseurs"
-      sort-by="tel"
       :page.sync="page"
       :items-per-page="itemsPerPage"
       :search="search"
@@ -20,7 +25,7 @@
           <v-divider class="mx-4" inset vertical></v-divider>
 
           <v-spacer></v-spacer>
-          <v-dialog v-model="dialog" max-width="500px">
+          <v-dialog v-model="dialog" persistent max-width="500px">
             <template v-slot:activator="{ on }">
               <v-btn class="mt-2" fab dark color="green">
                 <v-icon dark v-on="on">mdi-plus</v-icon>
@@ -33,39 +38,53 @@
               </v-card-title>
 
               <v-card-text>
-                <v-container>
-                  <v-row>
-                    <v-col cols="12" sm="6" md="4">
-                      <v-text-field v-model="editedItem.structure" label="Structure"></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="6" md="4">
-                      <v-text-field v-model="editedItem.nomGerant" label="Nom Gérant"></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="6" md="4">
-                      <v-text-field v-model="editedItem.tel" label="Tel"></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="6" md="4">
-                      <v-text-field v-model="editedItem.email" label="Email"></v-text-field>
-                    </v-col>
-                    <v-col cols="12" sm="6" md="4">
-                      <v-text-field v-model="editedItem.adresse" label="Adresse"></v-text-field>
-                    </v-col>
-                  </v-row>
-                </v-container>
+                <v-form ref="form" v-model="valid" valid>
+                  <v-container>
+                    <v-row>
+                      <v-col cols="12" sm="6" md="4">
+                        <v-text-field
+                          v-model="editedItem.structure"
+                          :rules="ItemRules"
+                          label="Structure"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="4">
+                        <v-text-field
+                          v-model="editedItem.nomGerant"
+                          :rules="ItemRules"
+                          label="Nom Gérant"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="4">
+                        <v-text-field v-model="editedItem.tel" :rules="ItemRules" label="Tel"></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="4">
+                        <v-text-field v-model="editedItem.email" :rules="emailRules" label="Email"></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="4">
+                        <v-text-field
+                          v-model="editedItem.adresse"
+                          :rules="ItemRules"
+                          label="Adresse"
+                        ></v-text-field>
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                </v-form>
               </v-card-text>
 
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" text @click="close">Cancel</v-btn>
-                <v-btn color="blue darken-1" text @click="save">Save</v-btn>
+                <v-btn color="blue darken-1" text @click="close">Annuler</v-btn>
+                <v-btn color="blue darken-1" text :disabled="!valid" @click="save">Enregistrer</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
         </v-toolbar>
       </template>
       <template v-slot:item.actions="{ item }">
-        <v-icon small class="mr-2" @click="editItem(item)">mdi-pencil</v-icon>
-        <v-icon small @click="deleteItem(item)">mdi-delete</v-icon>
+        <v-icon md class="mr-2" @click="editItem(item)" color="primary" blue>mdi-pencil</v-icon>
+        <v-icon md2 @click="deleteItem(item)" color="red" dark>mdi-delete</v-icon>
       </template>
       <template v-slot:no-data>
         <v-btn color="primary" @click="fetchfournisseurs">Reset</v-btn>
@@ -92,21 +111,31 @@ export default {
 
   data: () => ({
     dialog: false,
+    valid: true,
+
     search: "",
     page: 1,
     pageCount: 0,
     itemsPerPage: 12,
     headers: [
       {
+        text: "Ligne",
+        align: "start",
+        sortable: false,
+        value: "ligne"
+      },
+      {
         text: "Structure",
         align: "start",
         sortable: false,
         value: "structure"
       },
-      { text: "Nom Gérant", value: "nomGerant" },
-      { text: "Téléphone", value: "tel" },
-      { text: "Email", value: "email" },
-      { text: "Adresse", value: "adresse" },
+      { text: "Nom Gérant", value: "nomGerant",sortable: false },
+      { text: "Téléphone", value: "tel",sortable: false },
+      { text: "Email", value: "email",sortable: false },
+      { text: "Adresse", value: "adresse",sortable: false },
+      { text: "Crée le", value: "createAt",sortable: false },
+      { text: "Modifié le", value: "updateAt",sortable: false },
       { text: "Actions", value: "actions", sortable: false }
     ],
     fournisseurs: [],
@@ -119,6 +148,11 @@ export default {
       email: "",
       adresse: ""
     },
+    ItemRules: [v => !!v || "Champ requise"],
+    emailRules: [
+      v => !!v || "E-mail requise",
+      v => /.+@.+\..+/.test(v) || "E-mail doit etre valide"
+    ],
     defaultItem: {
       structure: "",
       nomGerant: "",
@@ -130,7 +164,9 @@ export default {
 
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? "New Fournisseur" : "Edit Fournisseur";
+      return this.editedIndex === -1
+        ? "Ajout Fournisseur"
+        : "Modifié Fournisseur";
     }
   },
 
@@ -167,7 +203,7 @@ export default {
       console.log(item);
 
       const index = this.fournisseurs.indexOf(item);
-      confirm("Are you sure you want to delete this item?") &&
+      confirm("Voulez-vous vraiment supprimer ?") &&
         this.fournisseurs.splice(index, 1);
       axios.delete("/fournisseur/" + item.id).then(response => {
         console.log(response);
@@ -181,9 +217,12 @@ export default {
         this.editedItem = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
       });
+      this.$refs.form.reset();
     },
 
     save() {
+      this.$refs.form.validate();
+
       if (this.editedIndex > -1) {
         console.log(this.editedItem.id);
         axios
@@ -216,6 +255,8 @@ export default {
       }
       this.close();
       this.fetchfournisseurs();
+      this.$refs.form.reset();
+      this.$refs.form.resetValidation();
     }
   }
 };

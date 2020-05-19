@@ -9,9 +9,12 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ApiResource()
  * @ORM\Entity(repositoryClass=FournisseurRepository::class)
+ * @ORM\HasLifecycleCallbacks()
  */
 class Fournisseur
 {
+    use Timestamps;
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
