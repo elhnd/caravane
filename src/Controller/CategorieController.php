@@ -81,7 +81,6 @@ class CategorieController extends AbstractController
         if(!$data){
             $data=$request->request->all();
         }
-        dump($data);
         
         $nomCategory = $data['libelle'];  
  
@@ -108,7 +107,12 @@ class CategorieController extends AbstractController
                 //die();
               }else {
                   # code...
-                dd('ko');
+                $error = [
+              
+                    'status' => 404,
+                    'message' => 'Fichier Non Trouvé'
+                ];
+                 return $this->json($error,404);
 
               }
             $this->em->persist($category);
@@ -118,6 +122,7 @@ class CategorieController extends AbstractController
                 'status' => 201,
                 'message' => 'Catégorie Créée'
             ];
+            
             return new JsonResponse($data, 201);
             # code...
     }
@@ -179,7 +184,7 @@ class CategorieController extends AbstractController
             # code...
             $data = [
                       'status' => 501,
-                      'message' => 'Impossible de supprimer une catégorie liée à un article '
+                      'message' => 'Impossible de supprimer une catégorie liée à un produit '
                   ];
                   return new JsonResponse($data, 501);
         }else { */

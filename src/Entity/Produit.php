@@ -2,61 +2,62 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
-use App\Repository\ProduitRepository;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\ProduitRepository;
+use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 /**
  * @ApiResource()
  * @ORM\Entity(repositoryClass=ProduitRepository::class)
+ * @ORM\HasLifecycleCallbacks()
+ * 
  */
 class Produit
 {
+    use Timestamps;
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"produit_read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"produit_read"})
+     * @Assert\NotBlank()
+     * 
+     * 
      */
     private $designation;
 
     /**
-     * @ORM\Column(type="bigint")
+     * @ORM\Column(type="integer")
+     * @Groups({"produit_read"})
+     * 
      */
     private $prixVente;
 
     /**
-     * @ORM\Column(type="integer")
-     */
-    private $stock;
-
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     */
-    private $qteVendue;
-
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     */
-    private $qteRestante;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $stockInitial;
-
-    /**
      * @ORM\ManyToOne(targetEntity=Fournisseur::class, inversedBy="produits")
+     * @Groups({"produit_read"})
+     * @Assert\NotBlank()
+     * 
+     * 
      */
     private $fournisseur;
 
     /**
      * @ORM\ManyToOne(targetEntity=Categorie::class, inversedBy="produit")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"produit_read"})
+     * 
+     * 
      */
     private $categorie;
 
@@ -113,17 +114,6 @@ class Produit
         return $this;
     }
 
-    public function getQteRestante(): ?int
-    {
-        return $this->qteRestante;
-    }
-
-    public function setQteRestante(?int $qteRestante): self
-    {
-        $this->qteRestante = $qteRestante;
-
-        return $this;
-    }
 
     public function getStockInitial(): ?int
     {
