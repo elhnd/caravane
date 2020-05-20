@@ -1,14 +1,6 @@
 <template>
   <v-card>
-    <v-card-title>
-      <v-text-field
-        v-model="search"
-        append-icon="search"
-        label="Rechercher"
-        single-line
-        hide-details
-      ></v-text-field>
-    </v-card-title>
+    <v-card-title>Liste Client</v-card-title>
     <v-data-table
       :headers="headers"
       :items="clients"
@@ -20,12 +12,18 @@
       <template v-slot:top>
         <v-toolbar flat color="white" class="mt-5">
           <v-toolbar-title>
-            <h3>Liste Client</h3>
+            <v-text-field
+              v-model="search"
+              append-icon="search"
+              label="Rechercher"
+              single-line
+              hide-details
+            ></v-text-field>
           </v-toolbar-title>
           <v-divider class="mx-4" inset vertical></v-divider>
 
           <v-spacer></v-spacer>
-          <v-dialog v-model="dialog" persistent max-width="500px">
+          <v-dialog v-model="dialog" persistent max-width="600px">
             <template v-slot:activator="{ on }">
               <v-btn class="mt-2" fab dark color="green">
                 <v-icon dark v-on="on">mdi-plus</v-icon>
@@ -41,7 +39,7 @@
                 <v-form ref="form" v-model="valid" valid>
                   <v-container>
                     <v-row>
-                       <v-col cols="12" sm="6" md="4">
+                      <v-col cols="12" sm="6" md="4">
                         <v-text-field
                           v-model="editedItem.prenom"
                           :rules="ItemRules"
@@ -57,7 +55,7 @@
                           label="Nom"
                         ></v-text-field>
                       </v-col>
-                     
+
                       <v-col cols="12" sm="6" md="4">
                         <v-text-field
                           v-model="editedItem.prix"
@@ -104,6 +102,8 @@
 
 <script>
 import axios from "axios";
+import vuetifyToast from "vuetify-toast";
+
 export default {
   name: "client",
 
@@ -116,21 +116,21 @@ export default {
     itemsPerPage: 12,
     headers: [
       {
-        text: "Ligne",
+        text: "ID",
         align: "start",
         sortable: false,
         value: "ligne"
       },
-      { text: "Prenom", value: "prenom",sortable: false},
+      { text: "Prenom", value: "prenom", sortable: false },
       {
         text: "Nom",
         align: "start",
         sortable: false,
         value: "nom"
       },
-      { text: "Prix", value: "prix",sortable: false },
-      { text: "Crée le", value: "createAt",sortable: false },
-      { text: "Modifié le", value: "updateAt",sortable: false },
+      { text: "Prix", value: "prix", sortable: false },
+      { text: "Crée le", value: "createAt", sortable: false },
+      { text: "Modifié le", value: "updateAt", sortable: false },
 
       { text: "Actions", value: "actions", sortable: false }
     ],
@@ -158,7 +158,7 @@ export default {
 
   watch: {
     dialog(val) {
-      console.log(val);
+      // console.log(val);
 
       val || this.close();
     }
@@ -171,14 +171,14 @@ export default {
   methods: {
     fetchClients() {
       axios.get("/client/").then(response => {
-        console.log(response.data);
+        // console.log(response.data);
         this.clients = response.data;
       });
     },
 
     editItem(item) {
       axios.get("/client/" + item.id).then(response => {
-        console.log(response);
+        // console.log(response);
         //this.clients = response.data;
       });
       this.editedIndex = this.clients.indexOf(item);
@@ -187,13 +187,13 @@ export default {
     },
 
     deleteItem(item) {
-      console.log(item);
+      // console.log(item);
 
       const index = this.clients.indexOf(item);
       confirm("Voulez-vous vraiment supprimer ?") &&
         this.clients.splice(index, 1);
       axios.delete("/client/" + item.id).then(response => {
-        console.log(response);
+        // console.log(response);
         //this.clients = response.data;
       });
     },
@@ -211,7 +211,7 @@ export default {
       this.$refs.form.validate();
 
       if (this.editedIndex > -1) {
-        console.log(this.editedItem.id);
+        // console.log(this.editedItem.id);
         axios
           .post("/client/" + this.editedItem.id + "/edit", {
             nom: this.editedItem.nom,
@@ -219,7 +219,8 @@ export default {
             prix: this.editedItem.prix
           })
           .then(response => {
-            console.log(response);
+            vuetifyToast.success(response.data.message);
+            // console.log(response);
             //this.clients = response.data;
           });
         Object.assign(this.clients[this.editedIndex], this.editedItem);
@@ -231,8 +232,8 @@ export default {
             prix: this.editedItem.prix
           })
           .then(response => {
-            console.log(response);
-            //this.clients = response.data;
+            //  console.log(response.data.message);
+            vuetifyToast.success(response.data.message);
           });
         this.clients.push(this.editedItem);
       }
