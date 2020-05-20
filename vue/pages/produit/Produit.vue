@@ -1,9 +1,9 @@
 <template>
-   <v-card>
-    <v-card-title>Liste Fournisseur</v-card-title>
+  <v-card>
+    <v-card-title>Liste Produit</v-card-title>
     <v-data-table
       :headers="headers"
-      :items="fournisseurs"
+      :items="produits"
       :page.sync="page"
       :items-per-page="itemsPerPage"
       :search="search"
@@ -23,7 +23,7 @@
           <v-divider class="mx-4" inset vertical></v-divider>
 
           <v-spacer></v-spacer>
-          <v-dialog v-model="dialog" persistent max-width="600px">
+          <v-dialog v-model="dialog" persistent max-width="1000px">
             <template v-slot:activator="{ on }">
               <v-btn class="mt-2" fab dark color="green">
                 <v-icon dark v-on="on">mdi-plus</v-icon>
@@ -41,31 +41,37 @@
                     <v-row>
                       <v-col cols="12" sm="6" md="6">
                         <v-text-field
+                          v-model="editedItem.designation"
+                          :rules="produitRules"
+                          required
+                          label="Désignation"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="6">
+                        <v-text-field
+                          v-model="editedItem.prixVente"
+                          :rules="produitRules"
+                          required
+                          label="Prix Vente"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="12">
+                        <v-select
+                          :items="structure"
                           v-model="editedItem.structure"
-                          :rules="ItemRules"
-                          label="Structure"
-                        ></v-text-field>
+                          :rules="produitRules"
+                          required
+                          label="Fournisseur"
+                        ></v-select>
                       </v-col>
-                      <v-col cols="12" sm="6" md="6">
-                        <v-text-field
-                          v-model="editedItem.nomGerant"
-                          :rules="ItemRules"
-                          label="Nom Gérant"
-                        ></v-text-field>
-                      </v-col>
-                       <v-col cols="12" sm="6" md="12">
-                        <v-text-field v-model="editedItem.email" :rules="emailRules" label="Email"></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="6">
-                        <v-text-field v-model="editedItem.tel" :rules="ItemRules" label="Tel"></v-text-field>
-                      </v-col>
-                     
-                      <v-col cols="12" sm="6" md="6">
-                        <v-text-field
-                          v-model="editedItem.adresse"
-                          :rules="ItemRules"
-                          label="Adresse"
-                        ></v-text-field>
+                      <v-col cols="12" sm="6" md="12">
+                        <v-select
+                          :items="libelle"
+                          v-model="editedItem.libelle"
+                          :rules="produitRules"
+                          required
+                          label="Catégorie"
+                        ></v-select>
                       </v-col>
                     </v-row>
                   </v-container>
@@ -86,8 +92,9 @@
         <v-icon md2 @click="deleteItem(item)" color="red" dark>mdi-delete</v-icon>
       </template>
       <template v-slot:no-data>
-        <v-btn color="primary" @click="fetchfournisseurs">Reset</v-btn>
+        <v-btn color="primary" @click="fetchproduits">Reset</v-btn>
       </template>
+
       <div class="text-center pt-2">
         <v-pagination v-model="page" :length="pageCount"></v-pagination>
         <v-text-field
@@ -105,13 +112,19 @@
 
 <script>
 import axios from "axios";
+import vuetifyToast from "vuetify-toast";
+
 export default {
-  name: "fournisseur",
+  name: "produit",
 
   data: () => ({
+    path: "",
+    structure: [],
+    libelle: [],
+    produits: [],
     dialog: false,
+    details: false,
     valid: true,
-
     search: "",
     page: 1,
     pageCount: 0,
@@ -124,48 +137,63 @@ export default {
         value: "ligne"
       },
       {
-        text: "Structure",
+        text: "Désignation",
+        align: "start",
+        sortable: false,
+        value: "designation"
+      },
+      {
+        text: "Catégorie",
+        align: "start",
+        sortable: false,
+        value: "libelle"
+      },
+      {
+        text: "Fournisseur",
         align: "start",
         sortable: false,
         value: "structure"
       },
-      { text: "Nom Gérant", value: "nomGerant",sortable: false },
-      { text: "Téléphone", value: "tel",sortable: false },
-      { text: "Email", value: "email",sortable: false },
-      { text: "Adresse", value: "adresse",sortable: false },
-      { text: "Crée le", value: "createAt",sortable: false },
-      { text: "Modifié le", value: "updateAt",sortable: false },
+
+      {
+        text: "Prix Vente",
+        align: "start",
+        sortable: false,
+        value: "prixVente"
+      },
+      { text: "Crée le", value: "createAt", sortable: false },
+      { text: "Modifié le", value: "updateAt", sortable: false },
       { text: "Actions", value: "actions", sortable: false }
     ],
-    fournisseurs: [],
     editedIndex: -1,
     editedItem: {
       id: 0,
+      libelle: "",
+      designation: "",
       structure: "",
-      nomGerant: "",
-      tel: "",
-      email: "",
-      adresse: ""
+      prixVente: 0,
+      stockInitial: 0,
+      stock: 0,
+      qteVendue: 0,
+      ligne: 0
     },
-    ItemRules: [v => !!v || "Champ requise"],
-    emailRules: [
-      v => !!v || "E-mail requise",
-      v => /.+@.+\..+/.test(v) || "E-mail doit etre valide"
-    ],
+    produitRules: [v => !!v || "Champ requise"],
     defaultItem: {
+      id: 0,
+      libelle: "",
+      designation: "",
       structure: "",
-      nomGerant: "",
-      tel: "",
-      email: "",
-      adresse: ""
+      prixVente: 0,
+      stockInitial: 0,
+      stock: 0,
+      qteVendue: 0,
+      ligne: 0
     }
   }),
 
   computed: {
     formTitle() {
-      return this.editedIndex === -1
-        ? "Ajout Fournisseur"
-        : "Modifié Fournisseur";
+      return this.editedIndex === -1 ? "Ajout Produit" : "Modifié Produit";
     }
   },
 
@@ -176,24 +204,45 @@ export default {
   },
 
   created() {
+    this.fetchproduits();
     this.fetchfournisseurs();
+    this.fetchCategorie();
   },
 
   methods: {
+    fetchproduits() {
+      axios.get("/api/produit").then(response => {
+        this.produits = response.data;
+      });
+    },
     fetchfournisseurs() {
+      var structu = [];
+
       axios.get("/fournisseur/").then(response => {
-        console.log(response.data);
         this.fournisseurs = response.data;
+        this.fournisseurs.forEach(element => structu.push(element.structure));
+        console.log();
+        this.structure = structu;
+      });
+    },
+
+    fetchCategorie() {
+      var prod = [];
+
+      axios.get("/api/showcategory").then(response => {
+        this.categories = response.data;
+        this.categories.forEach(element => prod.push(element.libelle));
+        this.libelle = prod;
       });
     },
 
     editItem(item) {
       console.log(item.id);
-      axios.get("/fournisseur/" + item.id).then(response => {
+      axios.get("/modifierproduit/" + item.id).then(response => {
         console.log(response);
-        //this.fournisseurs = response.data;
+        //this.ID = response.data;
       });
-      this.editedIndex = this.fournisseurs.indexOf(item);
+      this.editedIndex = this.produits.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.dialog = true;
     },
@@ -201,61 +250,60 @@ export default {
     deleteItem(item) {
       console.log(item);
 
-      const index = this.fournisseurs.indexOf(item);
+      const index = this.produits.indexOf(item);
       confirm("Voulez-vous vraiment supprimer ?") &&
-        this.fournisseurs.splice(index, 1);
-      axios.delete("/fournisseur/" + item.id).then(response => {
+        this.produits.splice(index, 1);
+      axios.delete("/api/supprimmerCategory/" + item.id).then(response => {
         console.log(response);
-        //this.fournisseurs = response.data;
+        //this.produits = response.data;
       });
     },
 
     close() {
+      this.$refs.form.resetValidation();
       this.dialog = false;
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
       });
-      this.$refs.form.reset();
     },
 
     save() {
       this.$refs.form.validate();
-
+      console.log(this.editedItem);
       if (this.editedIndex > -1) {
-        console.log(this.editedItem.id);
         axios
-          .post("/fournisseur/" + this.editedItem.id + "/edit", {
+          .post("/api/modifierproduit/"+this.editedItem.id, {
+            id: this.editedItem.id,
+            designation: this.editedItem.designation,
             structure: this.editedItem.structure,
-            nomGerant: this.editedItem.nomGerant,
-            tel: this.editedItem.tel,
-            email: this.editedItem.email,
-            adresse: this.editedItem.adresse
+            libelle: this.editedItem.libelle,
+            prixVente: this.editedItem.prixVente,
           })
           .then(response => {
             console.log(response);
-            //this.fournisseurs = response.data;
+            //this.produits = response.data;
           });
-        Object.assign(this.fournisseurs[this.editedIndex], this.editedItem);
+        Object.assign(this.produits[this.editedIndex], this.editedItem);
       } else {
         axios
-          .post("/fournisseur/new", {
+          .post("/api/newProduit", {
+            designation: this.editedItem.designation,
             structure: this.editedItem.structure,
-            nomGerant: this.editedItem.nomGerant,
-            tel: this.editedItem.tel,
-            email: this.editedItem.email,
-            adresse: this.editedItem.adresse
+            libelle: this.editedItem.libelle,
+            prixVente: this.editedItem.prixVente,
           })
           .then(response => {
-            console.log(response);
-            //this.fournisseurs = response.data;
+            // this.produits = response.data;
+            vuetifyToast.success(response.data.message);
           });
-        this.fournisseurs.push(this.editedItem);
+        this.produits.push(this.editedItem);
       }
       this.close();
+      this.fetchproduits();
       this.fetchfournisseurs();
+      this.fetchCategorie();
       this.$refs.form.reset();
-      this.$refs.form.resetValidation();
     }
   }
 };

@@ -7,6 +7,8 @@ import Client from '../pages/client/Client';
 import Fournisseur from '../pages/fournisseur/Fournisseur';
 import Depot from '../pages/stock/Depot';
 import Categorie from '../pages/categorie/Categorie';
+import Produit from '../pages/produit/Produit';
+
 
 
 
@@ -85,7 +87,14 @@ const router = new VueRouter({
                 },
                 component: Categorie
             },
-
+            {
+                path: "/produit",
+                name: "produit",
+                meta: {
+                    requiresAuth: true
+                },
+                component: Produit
+            },
 
         ],
         redirect: { name: 'Home' },
