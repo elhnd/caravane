@@ -25,12 +25,15 @@ class ClientController extends AbstractController
         
         $client = $clientRepository->findBy(array(), array('prenom' => 'ASC'));
         foreach ($client as  $key) {
+            
             $ligne++;
             $rem = array(
             'id'=>$key->getId(),
             'nom'=>$key->getNom(),
             'prenom'=>$key->getPrenom(),
             'prix'=>$key->getPrix(),
+            'createAt'=>$key->getCreatedAt(),
+            'updateAt'=>$key->getUpdatedAt(),
             'ligne'=>$ligne
            );
            array_push($dataClients, $rem);

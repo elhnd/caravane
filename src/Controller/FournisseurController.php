@@ -36,9 +36,29 @@ class FournisseurController extends AbstractController
      */
     public function index(FournisseurRepository $fournisseurRepository)
     {
-        $fournisseur = $fournisseurRepository->findAll();
-      
-        return $this->json($fournisseur,200);
+        $ligne = 0;
+        $dataFournisseurs = [];
+        $rem = [];
+        
+        $fournisseur = $fournisseurRepository->findBy(array(), array('structure' => 'ASC'));
+        foreach ($fournisseur as  $key) {
+            
+            $ligne++;
+            $rem = array(
+            'id'=>$key->getId(),
+            'nomGerant'=>$key->getNomGerant(),
+            'structure'=>$key->getStructure(),
+            'tel'=>$key->getTel(),
+            'email'=>$key->getEmail(),
+            'adresse'=>$key->getAdresse(),
+            'createAt'=>$key->getCreatedAt(),
+            'updateAt'=>$key->getUpdatedAt(),
+            'ligne'=>$ligne
+           );
+           array_push($dataFournisseurs, $rem);
+        }
+
+        return $this->json($dataFournisseurs,200);
     }
 
     /**
