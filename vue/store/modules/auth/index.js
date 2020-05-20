@@ -4,25 +4,26 @@ import router from '../../../router'
 import axios from '../../../interceptor'
 
 const actions = {
-    login({ commit }, data){
+    login({ commit }, data) {
         commit(types.AUTH_ERROR_CHANGE, null)
 
         const url = `${process.env.API_URL}/login`
 
-        return axios.post(url, data).catch(e => {
-            commit(types.AUTH_ERROR_CHANGE,'Usernaùe or password are incorrect')
+        return axios.post(url, data)
+            .catch(e => {
+                commit(types.AUTH_ERROR_CHANGE, 'Usernaùe or password are incorrect')
 
-            throw e
-        })
+                throw e
+            })
     },
 
-    logout({commit}){
+    logout({ commit }) {
         commit(types.AUTH_RESET)
-        router.push({name: 'Login'})
+        router.push({ name: 'Login' })
     }
 }
 
-function initialeState(){
+function initialeState() {
     return {
         token: localStorage.getItem('token'),
         roles: [],
@@ -36,12 +37,12 @@ const getters = {
     jwtDecoded: state => {
         const token = state.token || null
 
-        if(token !== null){
+        if (token !== null) {
             return jwtDecode(state.token)
         }
     },
     roles: state => {
-        token =  jwtDecode(state.token)
+        token = jwtDecode(state.token)
         return state.roles = token.roles
     },
     error: state => state.error,
@@ -54,22 +55,22 @@ const mutations = {
         localStorage.setItem('roles', tokenDecode.roles)
         state.token = data.token
         state.roles = tokenDecode.roles
-      },
-      [types.AUTH_ERROR_CHANGE](state, error) {
+    },
+    [types.AUTH_ERROR_CHANGE](state, error) {
         state.error = error
-      },
-      [types.AUTH_RESET](state) {
+    },
+    [types.AUTH_RESET](state) {
         localStorage.removeItem('token')
         //localStorage.removeItem('name')
         localStorage.removeItem('error')
         localStorage.removeItem('roles')
-    
+
         const s = initialeState()
         Object.keys(s).forEach(key => {
-          state[key] = s[key]
+            state[key] = s[key]
         })
         window.location.href = '/login'
-      }
+    }
 
 }
 
