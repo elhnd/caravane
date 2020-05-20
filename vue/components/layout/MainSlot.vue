@@ -40,7 +40,7 @@
             </v-list-item>
           </v-list-group>
           <v-list-item v-else :key="item.text" link router :to="item.route">
-            <v-list-item-action >
+            <v-list-item-action>
               <v-icon>{{ item.icon }}</v-icon>
             </v-list-item-action>
             <v-list-item-content>
@@ -96,11 +96,12 @@ export default {
     drawer: true,
     color: "brown darken-4",
     items: [
-      { icon: "mdi-contacts", text: "Contacts" },
-      { text: 'Clients',
-          icon: 'people',
-          route: '/user/list',
-     },
+      { text: "Clients", icon: "contact_phone", route: "/client" },
+      { icon: "mdi-contacts", text: "Fournisseur", route: "/fournisseur" },
+      { text: "Categorie", icon: "storage", route: "/categorie" },
+      { text: "Produit", icon: "shopping_cart", route: "/produit" },
+
+
       { icon: "mdi-history", text: "Frequently contacted" },
       { icon: "mdi-content-copy", text: "Duplicates" },
       {
@@ -139,7 +140,7 @@ export default {
 };
 </script>
 <style lang="scss" >
-.test{
+.test {
   font-size: 15px !important;
 }
 .v-navigation-drawer {

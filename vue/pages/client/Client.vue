@@ -101,7 +101,9 @@
 </template>
 
 <script>
-import axios from "axios";
+import axios from "../../interceptor";
+import { items } from "../../store/modules/user/getters";
+import { API_HOST } from "../../config/_entrypoint";
 import vuetifyToast from "vuetify-toast";
 
 export default {
@@ -170,14 +172,14 @@ export default {
 
   methods: {
     fetchClients() {
-      axios.get("/client/").then(response => {
+      axios.get("/api/client/").then(response => {
         // console.log(response.data);
         this.clients = response.data;
       });
     },
 
     editItem(item) {
-      axios.get("/client/" + item.id).then(response => {
+      axios.get("/api/client/" + item.id).then(response => {
         // console.log(response);
         //this.clients = response.data;
       });
@@ -192,7 +194,7 @@ export default {
       const index = this.clients.indexOf(item);
       confirm("Voulez-vous vraiment supprimer ?") &&
         this.clients.splice(index, 1);
-      axios.delete("/client/" + item.id).then(response => {
+      axios.delete("/api/client/" + item.id).then(response => {
         // console.log(response);
         //this.clients = response.data;
       });
@@ -213,7 +215,7 @@ export default {
       if (this.editedIndex > -1) {
         // console.log(this.editedItem.id);
         axios
-          .post("/client/" + this.editedItem.id + "/edit", {
+          .post("/api/client/" + this.editedItem.id + "/edit", {
             nom: this.editedItem.nom,
             prenom: this.editedItem.prenom,
             prix: this.editedItem.prix
@@ -226,7 +228,7 @@ export default {
         Object.assign(this.clients[this.editedIndex], this.editedItem);
       } else {
         axios
-          .post("/client/new", {
+          .post(`${API_HOST}/client/new`, {
             nom: this.editedItem.nom,
             prenom: this.editedItem.prenom,
             prix: this.editedItem.prix
