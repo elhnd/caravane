@@ -8,11 +8,12 @@
 /var/
 /vendor/
 ###< symfony/framework-bundle ###
-
+public/documents/
 ###> symfony/phpunit-bridge ###
 .phpunit
 .phpunit.result.cache
 /phpunit.xml
+fileProjet/
 ###< symfony/phpunit-bridge ###
 
 ###> symfony/webpack-encore-bundle ###

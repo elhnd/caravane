@@ -36,9 +36,29 @@ class FournisseurController extends AbstractController
      */
     public function index(FournisseurRepository $fournisseurRepository)
     {
-        $fournisseur = $fournisseurRepository->findAll();
-      
-        return $this->json($fournisseur,200);
+        $ligne = 0;
+        $dataFournisseurs = [];
+        $rem = [];
+        
+        $fournisseur = $fournisseurRepository->findBy(array(), array('structure' => 'ASC'));
+        foreach ($fournisseur as  $key) {
+            
+            $ligne++;
+            $rem = array(
+            'id'=>$key->getId(),
+            'nomGerant'=>$key->getNomGerant(),
+            'structure'=>$key->getStructure(),
+            'tel'=>$key->getTel(),
+            'email'=>$key->getEmail(),
+            'adresse'=>$key->getAdresse(),
+            'createAt'=>$key->getCreatedAt(),
+            'updateAt'=>$key->getUpdatedAt(),
+            'ligne'=>$ligne
+           );
+           array_push($dataFournisseurs, $rem);
+        }
+
+        return $this->json($dataFournisseurs,200);
     }
 
     /**
@@ -94,14 +114,20 @@ class FournisseurController extends AbstractController
      */
     public function edit(Request $request, Fournisseur $fournisseur)
     {
-        $form = $this->createForm(FournisseurType::class, $fournisseur);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
-        }
-
-        return $fournisseur;
+        $data = json_decode($request->getContent());
+        $fournisseur
+                ->setStructure($data->structure)
+                ->setNomGerant($data->nomGerant)
+                ->setTel($data->tel)
+                ->setEmail($data->email)
+                ->setAdresse($data->adresse)
+                ;
+        $this->getDoctrine()->getManager()->flush();
+        $data = [
+            'message' => 'fournisseur modifié',
+            'status' => 201
+        ];
+        return $this->json($data);
     }
 
     /**
@@ -109,12 +135,13 @@ class FournisseurController extends AbstractController
      */
     public function delete(Request $request, Fournisseur $fournisseur): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $fournisseur->getId(), $request->request->get('_token'))) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($fournisseur);
-            $entityManager->flush();
-        }
-
-        return $this->redirectToRoute('fournisseur_index');
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->remove($fournisseur);
+        $entityManager->flush();
+        $data = [
+            'message' => 'fournisseur supprimé',
+            'status' => 201
+        ];
+        return $this->json($data);
     }
 }

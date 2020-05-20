@@ -33,13 +33,11 @@
 
               <template v-slot:item.actions="{item}">
                 <v-row>
-                  <userForm
-                    :handle-submit="userStatus(item.id, item)"
-                    :item="item"
-                    icon="mdi-pencil"
-                    color="primary"
-                    small="small"
-                  />
+                  <div class="my-2">
+                    <v-btn color="primary" fab small dark>
+                      <v-icon>mdi-pencil</v-icon>
+                    </v-btn>
+                  </div>
                   <div class="my-2">
                     <v-btn color="error" fab small dark>
                       <v-icon>mdi-delete</v-icon>

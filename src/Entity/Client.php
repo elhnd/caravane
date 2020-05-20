@@ -5,32 +5,53 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\ClientRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Serializer\Annotation\Groups;
+
 
 /**
- * 
  * @ORM\Entity(repositoryClass=ClientRepository::class)
+ * @ORM\HasLifecycleCallbacks()
  */
 class Client
 {
+    use Timestamps;
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({
+     *     "client_read"
+     * })
      */
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=20, nullable=true)
+     * @ORM\Column(type="string", length=20, nullable=false)
+     * @Assert\NotBlank()
+     * @Groups({
+     *     "client_read"
+     * })
      */
     private $nom;
 
     /**
-     * @ORM\Column(type="string", length=50, nullable=true)
+     * @ORM\Column(type="string", length=50, nullable=false)
+     * @Assert\NotBlank()
+     * @Groups({
+     *     "client_read"
+     * })
      */
     private $prenom;
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\NotBlank()
+     * @Groups({
+     *     "client_read"
+     * })
      */
     private $prix;
 

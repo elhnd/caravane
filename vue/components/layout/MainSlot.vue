@@ -27,7 +27,7 @@
           >
             <template v-slot:activator>
               <v-list-item-content>
-                <v-list-item-title class="test">{{ item.text }}</v-list-item-title>
+                <v-list-item-title router :to="item.route" class="test">{{ item.text }}</v-list-item-title>
               </v-list-item-content>
             </template>
             <v-list-item v-for="(child, i) in item.children" :key="i" link>
@@ -39,8 +39,8 @@
               </v-list-item-content>
             </v-list-item>
           </v-list-group>
-          <v-list-item v-else :key="item.text" link>
-            <v-list-item-action>
+          <v-list-item v-else :key="item.text" link router :to="item.route">
+            <v-list-item-action >
               <v-icon>{{ item.icon }}</v-icon>
             </v-list-item-action>
             <v-list-item-content>
@@ -99,7 +99,7 @@ export default {
       { icon: "mdi-contacts", text: "Contacts" },
       { text: 'Clients',
           icon: 'people',
-          route: 'Client',
+          route: '/user/list',
      },
       { icon: "mdi-history", text: "Frequently contacted" },
       { icon: "mdi-content-copy", text: "Duplicates" },

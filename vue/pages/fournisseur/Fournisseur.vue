@@ -1,9 +1,9 @@
 <template>
-  <v-card>
-    <v-card-title>Liste Client</v-card-title>
+   <v-card>
+    <v-card-title>Liste Fournisseur</v-card-title>
     <v-data-table
       :headers="headers"
-      :items="clients"
+      :items="fournisseurs"
       :page.sync="page"
       :items-per-page="itemsPerPage"
       :search="search"
@@ -39,29 +39,32 @@
                 <v-form ref="form" v-model="valid" valid>
                   <v-container>
                     <v-row>
-                      <v-col cols="12" sm="6" md="4">
+                      <v-col cols="12" sm="6" md="6">
                         <v-text-field
-                          v-model="editedItem.prenom"
+                          v-model="editedItem.structure"
                           :rules="ItemRules"
-                          required
-                          label="Prénom"
+                          label="Structure"
                         ></v-text-field>
                       </v-col>
-                      <v-col cols="12" sm="6" md="4">
+                      <v-col cols="12" sm="6" md="6">
                         <v-text-field
-                          v-model="editedItem.nom"
+                          v-model="editedItem.nomGerant"
                           :rules="ItemRules"
-                          required
-                          label="Nom"
+                          label="Nom Gérant"
                         ></v-text-field>
                       </v-col>
-
-                      <v-col cols="12" sm="6" md="4">
+                       <v-col cols="12" sm="6" md="12">
+                        <v-text-field v-model="editedItem.email" :rules="emailRules" label="Email"></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="6">
+                        <v-text-field v-model="editedItem.tel" :rules="ItemRules" label="Tel"></v-text-field>
+                      </v-col>
+                     
+                      <v-col cols="12" sm="6" md="6">
                         <v-text-field
-                          v-model="editedItem.prix"
+                          v-model="editedItem.adresse"
                           :rules="ItemRules"
-                          required
-                          label="Prix"
+                          label="Adresse"
                         ></v-text-field>
                       </v-col>
                     </v-row>
@@ -72,7 +75,7 @@
               <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn color="blue darken-1" text @click="close">Annuler</v-btn>
-                <v-btn color="blue darken-1" text @click="save" :disabled="!valid">Enregistrer</v-btn>
+                <v-btn color="blue darken-1" text :disabled="!valid" @click="save">Enregistrer</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -83,7 +86,7 @@
         <v-icon md2 @click="deleteItem(item)" color="red" dark>mdi-delete</v-icon>
       </template>
       <template v-slot:no-data>
-        <v-btn color="primary" @click="fetchClients">Reset</v-btn>
+        <v-btn color="primary" @click="fetchfournisseurs">Reset</v-btn>
       </template>
       <div class="text-center pt-2">
         <v-pagination v-model="page" :length="pageCount"></v-pagination>
@@ -102,14 +105,13 @@
 
 <script>
 import axios from "axios";
-import vuetifyToast from "vuetify-toast";
-
 export default {
-  name: "client",
+  name: "fournisseur",
 
   data: () => ({
     dialog: false,
     valid: true,
+
     search: "",
     page: 1,
     pageCount: 0,
@@ -121,80 +123,90 @@ export default {
         sortable: false,
         value: "ligne"
       },
-      { text: "Prenom", value: "prenom", sortable: false },
       {
-        text: "Nom",
+        text: "Structure",
         align: "start",
         sortable: false,
-        value: "nom"
+        value: "structure"
       },
-      { text: "Prix", value: "prix", sortable: false },
-      { text: "Crée le", value: "createAt", sortable: false },
-      { text: "Modifié le", value: "updateAt", sortable: false },
-
+      { text: "Nom Gérant", value: "nomGerant",sortable: false },
+      { text: "Téléphone", value: "tel",sortable: false },
+      { text: "Email", value: "email",sortable: false },
+      { text: "Adresse", value: "adresse",sortable: false },
+      { text: "Crée le", value: "createAt",sortable: false },
+      { text: "Modifié le", value: "updateAt",sortable: false },
       { text: "Actions", value: "actions", sortable: false }
     ],
-    clients: [],
+    fournisseurs: [],
     editedIndex: -1,
     editedItem: {
       id: 0,
-      nom: "",
-      prenom: "",
-      prix: 0
+      structure: "",
+      nomGerant: "",
+      tel: "",
+      email: "",
+      adresse: ""
     },
     ItemRules: [v => !!v || "Champ requise"],
+    emailRules: [
+      v => !!v || "E-mail requise",
+      v => /.+@.+\..+/.test(v) || "E-mail doit etre valide"
+    ],
     defaultItem: {
-      nom: "",
-      prenom: "",
-      prix: 0
+      structure: "",
+      nomGerant: "",
+      tel: "",
+      email: "",
+      adresse: ""
     }
   }),
 
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? "Ajout Client" : "Modifier Client";
+      return this.editedIndex === -1
+        ? "Ajout Fournisseur"
+        : "Modifié Fournisseur";
     }
   },
 
   watch: {
     dialog(val) {
-      // console.log(val);
-
       val || this.close();
     }
   },
 
   created() {
-    this.fetchClients();
+    this.fetchfournisseurs();
   },
 
   methods: {
-    fetchClients() {
-      axios.get("/client/").then(response => {
-        // console.log(response.data);
-        this.clients = response.data;
+    fetchfournisseurs() {
+      axios.get("/fournisseur/").then(response => {
+        console.log(response.data);
+        this.fournisseurs = response.data;
       });
     },
 
     editItem(item) {
-      axios.get("/client/" + item.id).then(response => {
-        // console.log(response);
-        //this.clients = response.data;
+      console.log(item.id);
+      axios.get("/fournisseur/" + item.id).then(response => {
+        console.log(response);
+        //this.fournisseurs = response.data;
       });
-      this.editedIndex = this.clients.indexOf(item);
+      this.editedIndex = this.fournisseurs.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.dialog = true;
     },
 
     deleteItem(item) {
-      // console.log(item);
+      console.log(item);
 
-      const index = this.clients.indexOf(item);
+      const index = this.fournisseurs.indexOf(item);
       confirm("Voulez-vous vraiment supprimer ?") &&
-        this.clients.splice(index, 1);
-      axios.delete("/client/" + item.id).then(response => {
-        // console.log(response);
-        //this.clients = response.data;
+        this.fournisseurs.splice(index, 1);
+      axios.delete("/fournisseur/" + item.id).then(response => {
+        console.log(response);
+        //this.fournisseurs = response.data;
       });
     },
 
@@ -211,34 +223,37 @@ export default {
       this.$refs.form.validate();
 
       if (this.editedIndex > -1) {
-        // console.log(this.editedItem.id);
+        console.log(this.editedItem.id);
         axios
-          .post("/client/" + this.editedItem.id + "/edit", {
-            nom: this.editedItem.nom,
-            prenom: this.editedItem.prenom,
-            prix: this.editedItem.prix
+          .post("/fournisseur/" + this.editedItem.id + "/edit", {
+            structure: this.editedItem.structure,
+            nomGerant: this.editedItem.nomGerant,
+            tel: this.editedItem.tel,
+            email: this.editedItem.email,
+            adresse: this.editedItem.adresse
           })
           .then(response => {
-            vuetifyToast.success(response.data.message);
-            // console.log(response);
-            //this.clients = response.data;
+            console.log(response);
+            //this.fournisseurs = response.data;
           });
-        Object.assign(this.clients[this.editedIndex], this.editedItem);
+        Object.assign(this.fournisseurs[this.editedIndex], this.editedItem);
       } else {
         axios
-          .post("/client/new", {
-            nom: this.editedItem.nom,
-            prenom: this.editedItem.prenom,
-            prix: this.editedItem.prix
+          .post("/fournisseur/new", {
+            structure: this.editedItem.structure,
+            nomGerant: this.editedItem.nomGerant,
+            tel: this.editedItem.tel,
+            email: this.editedItem.email,
+            adresse: this.editedItem.adresse
           })
           .then(response => {
-            //  console.log(response.data.message);
-            vuetifyToast.success(response.data.message);
+            console.log(response);
+            //this.fournisseurs = response.data;
           });
-        this.clients.push(this.editedItem);
+        this.fournisseurs.push(this.editedItem);
       }
       this.close();
-      this.fetchClients();
+      this.fetchfournisseurs();
       this.$refs.form.reset();
       this.$refs.form.resetValidation();
     }

@@ -4,6 +4,14 @@ import Login from '../pages/Login';
 import MainSlot from '../components/layout/MainSlot'
 import Test from '../pages/Test';
 import Client from '../pages/client/Client';
+import Fournisseur from '../pages/fournisseur/Fournisseur';
+import Depot from '../pages/stock/Depot';
+import Categorie from '../pages/categorie/Categorie';
+import Produit from '../pages/produit/Produit';
+
+
+
+
 
 import store from '../store'
 import UserList from '../pages/user/List'
@@ -54,6 +62,38 @@ const router = new VueRouter({
                     requiresAuth: true
                 },
                 component: Client
+            },
+            {
+                path: "/fournisseur",
+                name: "fournisseur",
+                meta: {
+                    requiresAuth: true
+                },
+                component: Fournisseur
+            },
+            {
+                path: "/depot",
+                name: "depot",
+                meta: {
+                    requiresAuth: true
+                },
+                component: Depot
+            },
+            {
+                path: "/categorie",
+                name: "categorie",
+                meta: {
+                    requiresAuth: true
+                },
+                component: Categorie
+            },
+            {
+                path: "/produit",
+                name: "produit",
+                meta: {
+                    requiresAuth: true
+                },
+                component: Produit
             },
 
         ],
