@@ -104,7 +104,8 @@
 </template>
 
 <script>
-import axios from "axios";
+import axios from "../../interceptor";
+import { API_HOST } from "../../config/_entrypoint";
 export default {
   name: "fournisseur",
 
@@ -181,7 +182,7 @@ export default {
 
   methods: {
     fetchfournisseurs() {
-      axios.get("/fournisseur/").then(response => {
+      axios.get("/api/fournisseur/").then(response => {
         console.log(response.data);
         this.fournisseurs = response.data;
       });
@@ -189,7 +190,7 @@ export default {
 
     editItem(item) {
       console.log(item.id);
-      axios.get("/fournisseur/" + item.id).then(response => {
+      axios.get("/api/fournisseur/" + item.id).then(response => {
         console.log(response);
         //this.fournisseurs = response.data;
       });
@@ -204,7 +205,7 @@ export default {
       const index = this.fournisseurs.indexOf(item);
       confirm("Voulez-vous vraiment supprimer ?") &&
         this.fournisseurs.splice(index, 1);
-      axios.delete("/fournisseur/" + item.id).then(response => {
+      axios.delete("/api/fournisseur/" + item.id).then(response => {
         console.log(response);
         //this.fournisseurs = response.data;
       });
@@ -225,7 +226,7 @@ export default {
       if (this.editedIndex > -1) {
         console.log(this.editedItem.id);
         axios
-          .post("/fournisseur/" + this.editedItem.id + "/edit", {
+          .post("/api/fournisseur/" + this.editedItem.id + "/edit", {
             structure: this.editedItem.structure,
             nomGerant: this.editedItem.nomGerant,
             tel: this.editedItem.tel,
@@ -239,7 +240,7 @@ export default {
         Object.assign(this.fournisseurs[this.editedIndex], this.editedItem);
       } else {
         axios
-          .post("/fournisseur/new", {
+          .post(`${API_HOST}/fournisseur/new`, {
             structure: this.editedItem.structure,
             nomGerant: this.editedItem.nomGerant,
             tel: this.editedItem.tel,
