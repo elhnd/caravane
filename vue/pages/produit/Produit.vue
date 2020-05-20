@@ -218,7 +218,7 @@ export default {
     fetchfournisseurs() {
       var structu = [];
 
-      axios.get("/fournisseur/").then(response => {
+      axios.get("/api/fournisseur/").then(response => {
         this.fournisseurs = response.data;
         this.fournisseurs.forEach(element => structu.push(element.structure));
         console.log();
