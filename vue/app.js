@@ -1,4 +1,4 @@
-require('lodash')
+require('lodash');
 //import './scss/app.scss';
 import Vue from "vue";
 import router from "./router";
@@ -11,7 +11,7 @@ Vue.config.productionTip = false;
 Vue.component('is-main-template', IsMainTemplate);
 
 Axios.defaults.baseURL = 'https://127.0.0.1:8000';
-
+Vue.config.productionTip = false
 new Vue({
     vuetify,
     store,

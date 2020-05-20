@@ -4,7 +4,6 @@
       <v-col v-if="title" class="col-auto">
         <h1 class="display-1 ml-lg-5 py-2 py-lg-4">{{ title }}</h1>
       </v-col>
-
       <v-col v-if="routeAdd" class="col-auto">
         <v-btn color="success mr-lg-5" dark fab :to="{ name: routeAdd }">
           <v-icon>{{ icon }}</v-icon>
@@ -26,13 +25,17 @@
 </template>
 
 <script>
-import ItemErrors from './errors/ItemErrors'
+import ItemErrors from "./errors/ItemErrors";
 
 export default {
-  name: 'IsMainTemplate',
+  name: "IsMainTemplate",
   components: { ItemErrors },
   props: {
     title: {
+      type: String,
+      default: null
+    },
+    one: {
       type: String,
       default: null
     },
@@ -50,8 +53,8 @@ export default {
     },
     icon: {
       type: String,
-      default: 'add'
+      default: "add"
     }
   }
-}
+};
 </script>
