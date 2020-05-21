@@ -14,6 +14,7 @@ Vue.config.productionTip = false;
 Vue.component('is-main-template', IsMainTemplate);
 
 Axios.defaults.baseURL = 'https://127.0.0.1:8000';
+//Axios.defaults.baseURL =  'https://www.caravanebyerc.com';
 Vue.config.productionTip = false
 new Vue({
     vuetify,

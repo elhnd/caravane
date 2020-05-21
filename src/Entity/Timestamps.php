@@ -1,16 +1,19 @@
 <?php
 
 namespace App\Entity;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 trait Timestamps
 {
     /**
      * @ORM\Column(type="datetime")
+     * @Groups({"users_read"})
      */
     private $createdAt;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups({"users_read"})
      */
     private $updatedAt;
 

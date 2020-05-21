@@ -1,14 +1,15 @@
 <template>
-  <v-app> 
+  <div> 
     <router-view />
-  </v-app>
+    <loader />
+  </div>
 </template>
 
 <script>
-//import Loader from './components/Loader'
+import Loader from './components/Loader'
 
 export default {
   name: 'App',
-  //components: { Loader }
+  components: { Loader }
 }
 </script>

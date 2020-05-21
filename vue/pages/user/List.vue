@@ -3,6 +3,9 @@
     <v-row justify="space-between">
       <v-col class="col-auto">
         <h1 class="display-1 ml-lg-5 py-2 py-lg-4">Liste des users</h1>
+        <template>
+          <h1 color="primary">{{errors}}</h1>
+        </template>
       </v-col>
       <v-col class="col-auto">
         <v-row justify="center">
@@ -12,10 +15,10 @@
                 <v-icon dark>mdi-plus</v-icon>
               </v-btn>
             </template>
-            <slot></slot>
             <v-card>
               <v-card-title>
                 <span class="headline">User Profile</span>
+                <item-errors v-if="entity" :entity="entity" />
               </v-card-title>
               <v-card-text>
                 <v-container>
@@ -102,9 +105,9 @@
                     <v-btn color="primary" @click="editUser(item)" fab small dark>
                       <v-icon>mdi-pencil</v-icon>
                     </v-btn>
-                  </div>
+                  </div>&nbsp; &nbsp;
                   <div class="my-2">
-                    <v-btn color="error" fab small dark>
+                    <v-btn color="error" @click="deleteUser(item.id)" fab small dark>
                       <v-icon>mdi-delete</v-icon>
                     </v-btn>
                   </div>
@@ -123,14 +126,18 @@
 </template>
 
 <script>
+import ItemErrors from '../.././components/layout/errors/ItemErrors'
 import { mapActions, mapGetters, mapState } from "vuex";
 import axios from "../../interceptor";
 import { items } from "../../store/modules/user/getters";
 import { API_HOST } from "../../config/_entrypoint";
 import state from "../../store/modules/user/state";
+import * as crud from "../../utils/crud";
 export default {
+  components: { ItemErrors },
   data() {
     return {
+      entity:"user" ,
       editedIndex: -1,
       pencil: "mdi-plus",
       color: "red",
@@ -139,7 +146,7 @@ export default {
       show: false,
       dialog: false,
       valid: true,
-      updatUser:false,
+      updatUser: false,
       headers: [
         { text: "Prenom et Nom", value: "name" },
         { text: "email", value: "email" },
@@ -170,7 +177,9 @@ export default {
   computed: {
     ...mapGetters({
       items: "user/items",
-      item: "user/item"
+      item: "user/item",
+      errors: "user/errors",
+      error: "user/error"
     })
   },
   created() {
@@ -182,25 +191,26 @@ export default {
   methods: {
     ...mapActions({
       getItems: "user/getItems",
+      getItem: "user/getItem",
       create: "user/create",
       resets: "user/reset",
-      update: "user/update"
+      update: "user/update",
+      remove: "user/remove"
     }),
     onSendForm(item) {
-      if (this.updatUser==true) {
-          axios
-            .put(`${API_HOST}/users/${item.id}`, item)
-            .then(data => {
-              
-              this.reset();
-            })
-            .catch({});
-      }else{
+      if (this.updatUser == true) {
+        axios
+          .put(`${API_HOST}/users/${item.id}`, item)
+          .then(data => {
+            this.reset();
+          })
+          .catch({});
+      } else {
         this.create()
-        .then(item => {
-         this.reset()
-        })
-        .catch();
+          .then(item => {
+            this.reset();
+          })
+          .catch();
       }
     },
     validate() {
@@ -236,6 +246,14 @@ export default {
       this.updatUser = true;
       this.$store.commit("user/USER_UPDATE_ITEM", item);
       this.dialog = true;
+    },
+    deleteUser(id) {
+      if (window.confirm("Voulez-vous vraiment supprimer cet utilisateur")) {
+        this.remove(id).then(rep => {
+          this.getItems();
+          console.log(rep);
+        });
+      }
     }
   }
 };
@@ -245,6 +263,9 @@ export default {
 td {
   font-size: 16px !important;
   vertical-align: middle !important;
+}
+.v-progress-circular {
+  margin: 1rem !important;
 }
 
 th {

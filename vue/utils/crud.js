@@ -100,9 +100,9 @@ export const update = ({ commit, state }, namespace,id) => {
         })
 }
 
-export const remove = ({ commit }, namespace, item) =>
+export const remove = ({ commit }, namespace, id) =>
     axios
-        .delete(`${API_HOST}/${pluralize(namespace.toLowerCase())}/${item.id}`)
+        .delete(`${API_HOST}/${pluralize(namespace.toLowerCase())}/${id}`)
         .catch(e => {
             const message =
                 e.response.status === 409

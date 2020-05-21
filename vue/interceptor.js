@@ -36,10 +36,12 @@ axios.interceptors.response.use(
         if (
             error.response.data &&
             error.response.data.code &&
-            error.response.data.code === 401 &&
-            error.response.data.message == 'Invalid credentials.'
+            error.response.data.code === 401 
         ) {
-           window.location.href = '/'
+            //window.location.href = '/login',
+            localStorage.removeItem('token'),
+            localStorage.removeItem('roles')
+            window.location.href = '/'
         }
 
         return Promise.reject(error)
