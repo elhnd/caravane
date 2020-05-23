@@ -1,11 +1,27 @@
 <template>
   <v-container fluid>
+    <v-container>
+      <v-row justify="space-between">
+        <v-col v-for="info in infos" :key="info.id" cols="auto">
+          <v-card :elevation="3" height="150" width="250" class="mx-auto" color="#D7CCC8">
+            <v-sheet
+              class="v-sheet--offset mx-auto text-left"
+              color="#EFEBE9"
+              elevation="12"
+              max-width="calc(100% - 32px)"
+            >
+              <v-icon :color="info.color" size="80">{{info.icon}}</v-icon>
+              <span class="headline font-weight-bold">{{info.text}}</span>
+            </v-sheet>
+            <v-card-text justify="end" right class="headline font-weight-bold text-end">{{info.total}}</v-card-text>
+          </v-card>
+        </v-col>
+      </v-row>
+    </v-container>
+
     <v-row justify="space-between">
       <v-col class="col-auto">
         <h1 class="display-1 ml-lg-5 py-2 py-lg-4">Liste des users</h1>
-        <template>
-          <h1 color="primary">{{errors}}</h1>
-        </template>
       </v-col>
       <v-col class="col-auto">
         <v-row justify="center">
@@ -64,8 +80,20 @@
                     </v-row>
                     <v-card-actions>
                       <v-spacer></v-spacer>
-                      <v-btn color="blue darken-1" text @click="reset">Close</v-btn>
-                      <v-btn :disabled="!valid" type="submit" color="success" class="mr-4">Validate</v-btn>
+                      <v-btn color="blue darken-1" text @click="reset">Fermer</v-btn>
+                      <div class="my-2">
+                        <v-btn
+                          type="submit"
+                          :loading="isLoading "
+                          :disabled="isLoading || !valid"
+                          color="success"
+                        >
+                          Valider
+                          <template v-slot:loader>
+                            <span>En cours...</span>
+                          </template>
+                        </v-btn>
+                      </div>
                     </v-card-actions>
                   </v-form>
                 </v-container>
@@ -126,7 +154,7 @@
 </template>
 
 <script>
-import ItemErrors from '../.././components/layout/errors/ItemErrors'
+import ItemErrors from "../.././components/layout/errors/ItemErrors";
 import { mapActions, mapGetters, mapState } from "vuex";
 import axios from "../../interceptor";
 import { items } from "../../store/modules/user/getters";
@@ -137,7 +165,7 @@ export default {
   components: { ItemErrors },
   data() {
     return {
-      entity:"user" ,
+      entity: "user",
       editedIndex: -1,
       pencil: "mdi-plus",
       color: "red",
@@ -147,6 +175,26 @@ export default {
       dialog: false,
       valid: true,
       updatUser: false,
+      infos: [
+        {
+          text: "Total",
+          icon: "mdi-account-supervisor",
+          total: "45",
+          color: "blue"
+        },
+        {
+          text: "Actif",
+          icon: "mdi-account-check",
+          total: "30",
+          color: "green"
+        },
+        {
+          text: "Inactif",
+          icon: "mdi-account-lock",
+          total: "15",
+          color: "red"
+        }
+      ],
       headers: [
         { text: "Prenom et Nom", value: "name" },
         { text: "email", value: "email" },
@@ -175,6 +223,13 @@ export default {
     };
   },
   computed: {
+    isLoading() {
+      if (this.$store.state.general.isLoading > 0) {
+        return true;
+      } else {
+        return false;
+      }
+    },
     ...mapGetters({
       items: "user/items",
       item: "user/item",
@@ -271,5 +326,10 @@ td {
 th {
   font-size: 16px !important;
   vertical-align: middle !important;
+}
+
+.v-sheet--offset {
+  top: -20px;
+  position: relative;
 }
 </style>
