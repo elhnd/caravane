@@ -37,16 +37,27 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     }
 
 
-    public function getAllUser($role){
-
+    public function getAll()
+    {
+        $role = "ROLE_SUPER_ADMIN";
         return $this->createQueryBuilder('u')
-                    ->select('u')
-                    ->from('User','u')
-                    ->where('u.roles != :role')
-                    ->setParameter('role',$role)
-                    ->getQuery()
-                    ->getResult();
+            ->where("u.roles NOT LIKE :role")
+            ->setParameter("role", '%' . $role . '%')
+            ->getQuery()
+            ->getResult();
+    }
 
+    
+    public function getAllUser($isActivated)
+    {
+        $role = "ROLE_SUPER_ADMIN";
+        return $this->createQueryBuilder('u')
+            ->where("u.roles NOT LIKE :role")
+            ->andWhere("u.isActivated = :isActivated")
+            ->setParameter("role", '%' . $role . '%')
+            ->setParameter("isActivated", $isActivated)
+            ->getQuery()
+            ->getResult();
     }
 
     // /**

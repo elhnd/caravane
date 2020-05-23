@@ -1,36 +1,35 @@
 <template>
   <v-container fluid>
     <v-container>
+      <v-col class="col-auto">
+        <h1 class="display-1 ml-lg-5 py-2 py-lg-4">Liste des utilisateurs</h1>
+      </v-col>
       <v-row justify="space-between">
-        <v-col v-for="info in infos" :key="info.id" cols="auto">
-          <v-card :elevation="3" height="150" width="250" class="mx-auto" color="#D7CCC8">
-            <v-sheet
-              class="v-sheet--offset mx-auto text-left"
-              color="#EFEBE9"
-              elevation="12"
-              max-width="calc(100% - 32px)"
-            >
-              <v-icon :color="info.color" size="80">{{info.icon}}</v-icon>
-              <span class="headline font-weight-bold">{{info.text}}</span>
-            </v-sheet>
-            <v-card-text justify="end" right class="headline font-weight-bold text-end">{{info.total}}</v-card-text>
-          </v-card>
-        </v-col>
+        <CardsInfos
+          icon="mdi-account-supervisor"
+          libelle="Total"
+          :number="countUserData.totalUser"
+          color="blue"
+        />
+        <CardsInfos
+          icon="mdi-account-check"
+          libelle="Actifs"
+          :number="countUserData.totalUserActifs"
+          color="green"
+        />
+        <CardsInfos
+          icon="mdi-account-lock"
+          libelle="Inactifs"
+          :number="countUserData.totalUserInactifs"
+          color="red"
+        />
       </v-row>
     </v-container>
 
     <v-row justify="space-between">
       <v-col class="col-auto">
-        <h1 class="display-1 ml-lg-5 py-2 py-lg-4">Liste des users</h1>
-      </v-col>
-      <v-col class="col-auto">
         <v-row justify="center">
           <v-dialog v-model="dialog" persistent max-width="600px">
-            <template v-slot:activator="{ on }">
-              <v-btn color="success" fab dark v-on="on">
-                <v-icon dark>mdi-plus</v-icon>
-              </v-btn>
-            </template>
             <v-card>
               <v-card-title>
                 <span class="headline">User Profile</span>
@@ -107,46 +106,64 @@
     <v-row>
       <v-col cols="12">
         <v-card class="mx-auto">
-          <v-card-text>
+          <v-col cols="12">
             <v-card-title>
-              <v-text-field
-                v-model="search"
-                append-icon="search"
-                label="Search"
-                single-line
-                hide-details
-              ></v-text-field>
+              <v-row justify="space-between">
+                <v-col cols="12" sm="6" md="3">
+                  <v-text-field
+                    v-model="search"
+                    append-icon="search"
+                    label="Search"
+                    single-line
+                    hide-details
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" sm="6" md="3">
+                  <v-btn
+                    class="ma-4"
+                    @click="dialog = true,updatUser = false"
+                    large
+                    tile
+                    color="#D7CCC8"
+                    dark
+                  >
+                    <v-icon color="#555" left>mdi-account-plus</v-icon>
+                    <span style="color:#555;">Ajouter un utilisateur</span>
+                  </v-btn>
+                </v-col>
+              </v-row>
             </v-card-title>
-            <v-data-table :headers="headers" :items="items" :search="search">
-              <template v-slot:item.isActivated="{item}">
-                <v-btn
-                  type="button"
-                  :color="getColor(item.isActivated)"
-                  v-model="item.isActivated"
-                  @click="userStatus(item.id, item)"
-                >{{ item.isActivated ? 'Actif' : 'Inactif' }}</v-btn>
-              </template>
+          </v-col>
+          <v-data-table :headers="headers" :items="items" :search="search">
+            <template v-slot:item.isActivated="{item}">
+              <v-btn
+                type="button"
+                tile
+                :color="getColor(item.isActivated)"
+                v-model="item.isActivated"
+                @click="userStatus(item.id, item)"
+              >{{ item.isActivated ? 'Actif' : 'Inactif' }}</v-btn>
+            </template>
 
-              <template v-slot:item.actions="{item}">
-                <v-row>
-                  <div class="my-2">
-                    <v-btn color="primary" @click="editUser(item)" fab small dark>
-                      <v-icon>mdi-pencil</v-icon>
-                    </v-btn>
-                  </div>&nbsp; &nbsp;
-                  <div class="my-2">
-                    <v-btn color="error" @click="deleteUser(item.id)" fab small dark>
-                      <v-icon>mdi-delete</v-icon>
-                    </v-btn>
-                  </div>
-                </v-row>
-              </template>
+            <template v-slot:item.actions="{item}">
+              <v-row>
+                <div class="my-2">
+                  <v-btn color="primary" tile @click="editUser(item)" fab small dark>
+                    <v-icon>mdi-pencil</v-icon>
+                  </v-btn>
+                </div>&nbsp; &nbsp;
+                <div class="my-2">
+                  <v-btn color="error" tile @click="deleteUser(item.id)" fab small dark>
+                    <v-icon>mdi-delete</v-icon>
+                  </v-btn>
+                </div>
+              </v-row>
+            </template>
 
-              <template v-slot:no-data>
-                <v-btn color="primary">Reset</v-btn>
-              </template>
-            </v-data-table>
-          </v-card-text>
+            <template v-slot:no-data>
+              <v-btn color="primary">Reset</v-btn>
+            </template>
+          </v-data-table>
         </v-card>
       </v-col>
     </v-row>
@@ -154,6 +171,7 @@
 </template>
 
 <script>
+import CardsInfos from "../../components/layout/CardsInfos";
 import ItemErrors from "../.././components/layout/errors/ItemErrors";
 import { mapActions, mapGetters, mapState } from "vuex";
 import axios from "../../interceptor";
@@ -162,7 +180,7 @@ import { API_HOST } from "../../config/_entrypoint";
 import state from "../../store/modules/user/state";
 import * as crud from "../../utils/crud";
 export default {
-  components: { ItemErrors },
+  components: { ItemErrors, CardsInfos },
   data() {
     return {
       entity: "user",
@@ -174,27 +192,8 @@ export default {
       show: false,
       dialog: false,
       valid: true,
+      countUserData: {},
       updatUser: false,
-      infos: [
-        {
-          text: "Total",
-          icon: "mdi-account-supervisor",
-          total: "45",
-          color: "blue"
-        },
-        {
-          text: "Actif",
-          icon: "mdi-account-check",
-          total: "30",
-          color: "green"
-        },
-        {
-          text: "Inactif",
-          icon: "mdi-account-lock",
-          total: "15",
-          color: "red"
-        }
-      ],
       headers: [
         { text: "Prenom et Nom", value: "name" },
         { text: "email", value: "email" },
@@ -223,6 +222,10 @@ export default {
     };
   },
   computed: {
+    test() {
+      console.log(this.countUserData);
+      return this.countUserData;
+    },
     isLoading() {
       if (this.$store.state.general.isLoading > 0) {
         return true;
@@ -238,7 +241,7 @@ export default {
     })
   },
   created() {
-    this.getItems();
+    this.countUser(), this.getItems();
   },
   beforeDestroy() {
     this.reset();
@@ -263,6 +266,7 @@ export default {
       } else {
         this.create()
           .then(item => {
+            this.countUser();
             this.reset();
           })
           .catch();
@@ -293,7 +297,9 @@ export default {
         (item.isActivated = !item.isActivated),
           axios
             .put(`${API_HOST}/users/${id}`, item)
-            .then(data => {})
+            .then(data => {
+              this.countUser();
+            })
             .catch({});
       }
     },
@@ -306,9 +312,15 @@ export default {
       if (window.confirm("Voulez-vous vraiment supprimer cet utilisateur")) {
         this.remove(id).then(rep => {
           this.getItems();
+          this.countUser();
           console.log(rep);
         });
       }
+    },
+    countUser() {
+      axios.get(`${API_HOST}/totaluser`).then(resp => {
+        return (this.countUserData = resp.data);
+      });
     }
   }
 };
@@ -317,7 +329,7 @@ export default {
 <style lang="scss" >
 td {
   font-size: 16px !important;
-  vertical-align: middle !important;
+  vertical-align: middle;
 }
 .v-progress-circular {
   margin: 1rem !important;
@@ -328,8 +340,35 @@ th {
   vertical-align: middle !important;
 }
 
-.v-sheet--offset {
-  top: -20px;
-  position: relative;
+table {
+  font-family: "Arial";
+
+  border-collapse: collapse;
+  border: 1px solid #eee;
+  tr {
+    &:hover {
+      background: #f4f4f4;
+
+      td {
+        color: #555;
+      }
+    }
+  }
+  th,
+  td {
+    color: rgb(66, 65, 65);
+    border: 1px solid #eee;
+    padding: 12px 35px;
+    border-collapse: collapse;
+  }
+  th {
+    background: #d7ccc8;
+    color: #fff;
+    text-transform: uppercase;
+    font-size: 12px;
+    &.last {
+      border-right: none;
+    }
+  }
 }
 </style>

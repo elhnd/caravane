@@ -30,7 +30,12 @@ class ListUser implements QueryCollectionExtensionInterface, QueryItemExtensionI
 
     public function applyToItem(QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, array $identifiers, ?string $operationName = null, array $context = [])
     {
-        
+        $role = "ROLE_SUPER_ADMIN";
+        if($resourceClass === User::class){
+            $rootAlias = $queryBuilder->getRootAliases()[0];
+            $queryBuilder->andWhere("$rootAlias.roles NOT LIKE :role")
+                         ->setParameter("role",'%'.$role.'%');
+        }
     }
     
 }

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Entity;
+
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
@@ -22,6 +23,21 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * },
  *  denormalizationContext={
  *      "groups"={"user_write"}
+ * },
+ * collectionOperations={
+ *      "GET",
+ *      "POST",
+ *    
+ *      
+ *      "total_user"={
+ *          "method"="get",
+ *          "path"="/totaluser",
+ *          "controller"="App\Controller\CountUserController",
+ *          "swagger_context"={
+ *              "summary"="Total user",
+ *              "description"="Renvoie le nombre total de users actifs et inactifs"
+ *          }
+ *      }
  * }
  * )
  */
@@ -188,6 +204,4 @@ class User implements UserInterface
 
         return $this;
     }
-
-  
 }
