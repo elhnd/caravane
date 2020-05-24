@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-col cols="auto">
-      <v-card :elevation="3" height="130" width="250" class="mx-auto" color="#D7CCC8">
+      <v-card :elevation="3" height="130" width="250" class="mx-auto brunfonce" >
         <v-sheet
           class="v-sheet--offset mx-auto text-left"
           color="#EFEBE9"

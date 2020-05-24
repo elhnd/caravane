@@ -96,7 +96,7 @@ export default {
     drawer: true,
     color: "brown darken-4",
     items: [
-      { text: "Utilisateurs", icon: "contact_phone", route: "/user/list" },
+      { text: "Utilisateurs", icon: "account_circle", route: "/user/list" },
       { text: "Clients", icon: "contact_phone", route: "/client" },
       { icon: "mdi-contacts", text: "Fournisseur", route: "/fournisseur" },
       { text: "Categorie", icon: "storage", route: "/categorie" },

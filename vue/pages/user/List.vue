@@ -1,37 +1,32 @@
 <template>
   <v-container fluid>
-    <v-container>
-      <v-col class="col-auto">
-        <h1 class="display-1 ml-lg-5 py-2 py-lg-4">Liste des utilisateurs</h1>
-      </v-col>
-      <v-row justify="space-between">
-        <CardsInfos
-          icon="mdi-account-supervisor"
-          libelle="Total"
-          :number="countUserData.totalUser"
-          color="blue"
-        />
-        <CardsInfos
-          icon="mdi-account-check"
-          libelle="Actifs"
-          :number="countUserData.totalUserActifs"
-          color="green"
-        />
-        <CardsInfos
-          icon="mdi-account-lock"
-          libelle="Inactifs"
-          :number="countUserData.totalUserInactifs"
-          color="red"
-        />
-      </v-row>
-    </v-container>
-
+    <h1 class="my-5 display-1 subheading grey--text">Utilisateurs</h1>
+    <v-row justify="space-between">
+      <CardsInfos
+        icon="mdi-account-supervisor"
+        libelle="Total"
+        :number="countUserData.totalUser"
+        color="blue"
+      />
+      <CardsInfos
+        icon="mdi-account-check"
+        libelle="Actifs"
+        :number="countUserData.totalUserActifs"
+        color="green"
+      />
+      <CardsInfos
+        icon="mdi-account-lock"
+        libelle="Inactifs"
+        :number="countUserData.totalUserInactifs"
+        color="red"
+      />
+    </v-row>
     <v-row justify="space-between">
       <v-col class="col-auto">
         <v-row justify="center">
           <v-dialog v-model="dialog" persistent max-width="600px">
             <v-card>
-              <v-card-title>
+              <v-card-title >
                 <span class="headline">User Profile</span>
                 <item-errors v-if="entity" :entity="entity" />
               </v-card-title>
@@ -96,7 +91,7 @@
                     </v-card-actions>
                   </v-form>
                 </v-container>
-                <small>*indicates required field</small>
+                <small style="color:red">* Champs requis</small>
               </v-card-text>
             </v-card>
           </v-dialog>
@@ -106,8 +101,8 @@
     <v-row>
       <v-col cols="12">
         <v-card class="mx-auto">
-          <v-col cols="12">
-            <v-card-title>
+          <v-col cols="12" >
+            <v-card-title class="p-n12 mt-n8 mb-n8">
               <v-row justify="space-between">
                 <v-col cols="12" sm="6" md="3">
                   <v-text-field
@@ -120,11 +115,10 @@
                 </v-col>
                 <v-col cols="12" sm="6" md="3">
                   <v-btn
-                    class="ma-4"
-                    @click="dialog = true,updatUser = false"
+                    class="ma-4 brunfonce"
+                    @click="updatUser = false,dialog = true"
                     large
                     tile
-                    color="#D7CCC8"
                     dark
                   >
                     <v-icon color="#555" left>mdi-account-plus</v-icon>
@@ -204,7 +198,8 @@ export default {
       itemsRoles: [
         { name: "user", role: "ROLE_USER" },
         { name: "admin", role: "ROLE_ADMIN" },
-        { name: "guest", role: "ROLE_GUEST" }
+        { name: "guest", role: "ROLE_GUEST" },
+        { name: "Gérant(e)", role: "ROLE_GERANT" }
       ],
       rules: {
         emailRules: [
@@ -243,16 +238,12 @@ export default {
   created() {
     this.countUser(), this.getItems();
   },
-  beforeDestroy() {
-    this.reset();
-  },
   methods: {
     ...mapActions({
       getItems: "user/getItems",
       getItem: "user/getItem",
       create: "user/create",
       resets: "user/reset",
-      update: "user/update",
       remove: "user/remove"
     }),
     onSendForm(item) {
@@ -263,13 +254,15 @@ export default {
             this.reset();
           })
           .catch({});
-      } else {
+      } else if (this.updatUser == false) {
         this.create()
           .then(item => {
-            this.countUser();
             this.reset();
+            this.countUser();
           })
-          .catch();
+          .catch(e => {
+            console.log(e);
+          });
       }
     },
     validate() {
@@ -280,6 +273,7 @@ export default {
       this.$refs.form.resetValidation();
       this.dialog = false;
       this.updatUser = false;
+      this.$store.commit("user/USER_RESET");
       this.getItems();
     },
     getColor(value) {
@@ -326,7 +320,10 @@ export default {
 };
 </script>
 
-<style lang="scss" >
+<style lang="scss">
+.brunfonce {
+  background: #d7ccc8 !important ;
+}
 td {
   font-size: 16px !important;
   vertical-align: middle;

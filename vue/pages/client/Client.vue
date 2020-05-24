@@ -1,34 +1,55 @@
 <template>
-  <v-card>
-    <v-card-title>Liste Client</v-card-title>
-    <v-data-table
-      :headers="headers"
-      :items="clients"
-      :page.sync="page"
-      :items-per-page="itemsPerPage"
-      :search="search"
-      class="elevation-1"
-    >
-      <template v-slot:top>
-        <v-toolbar flat color="white" class="mt-5">
-          <v-toolbar-title>
-            <v-text-field
-              v-model="search"
-              append-icon="search"
-              label="Rechercher"
-              single-line
-              hide-details
-            ></v-text-field>
-          </v-toolbar-title>
-          <v-divider class="mx-4" inset vertical></v-divider>
-
+  <v-container fluid>
+    <h1 class="my-5 display-1 subheading grey--text">Clients</h1>
+    <v-card>
+      <v-data-table
+        :headers="headers"
+        :items="clients"
+        :page.sync="page"
+        :items-per-page="itemsPerPage"
+        :search="search"
+        class="elevation-1"
+      >
+        <template v-slot:top>
+          <!-- <v-toolbar flat color="white" class="mt-5">
+            <v-toolbar-title>
+              <v-text-field
+                v-model="search"
+                append-icon="search"
+                label="Rechercher"
+                single-line
+                hide-details
+              ></v-text-field>
+            </v-toolbar-title>
+          <v-divider class="mx-4" inset vertical></v-divider>-->
+          <v-col cols="12">
+            <v-card-title class="p-n12 mt-n8 mb-n8">
+              <v-row justify="space-between">
+                <v-col cols="12" sm="6" md="3">
+                  <v-text-field
+                    v-model="search"
+                    append-icon="search"
+                    label="Recherche"
+                    single-line
+                    hide-details
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" sm="6" md="3">
+                  <v-btn class="ma-4 brunfonce" @click="dialog = true" large tile dark>
+                    <v-icon color="#555" left>mdi-book-account</v-icon>
+                    <span style="color:#555;">Ajouter un client</span>
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </v-card-title>
+          </v-col>
           <v-spacer></v-spacer>
           <v-dialog v-model="dialog" persistent max-width="600px">
-            <template v-slot:activator="{ on }">
-              <v-btn class="mt-2" fab dark color="green">
-                <v-icon dark v-on="on">mdi-plus</v-icon>
-              </v-btn>
-            </template>
+            <!-- <template v-slot:activator="{ on }">
+                <v-btn class="mt-2" fab dark color="green">
+                  <v-icon dark v-on="on">mdi-plus</v-icon>
+                </v-btn>
+            </template>-->
 
             <v-card>
               <v-card-title>
@@ -76,28 +97,42 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
-        </v-toolbar>
-      </template>
-      <template v-slot:item.actions="{ item }">
-        <v-icon md class="mr-2" @click="editItem(item)" color="primary" blue>mdi-pencil</v-icon>
-        <v-icon md2 @click="deleteItem(item)" color="red" dark>mdi-delete</v-icon>
-      </template>
-      <template v-slot:no-data>
-        <v-btn color="primary" @click="fetchClients">Reset</v-btn>
-      </template>
-      <div class="text-center pt-2">
-        <v-pagination v-model="page" :length="pageCount"></v-pagination>
-        <v-text-field
-          :value="itemsPerPage"
-          label="Items per page"
-          type="number"
-          min="-1"
-          max="15"
-          @input="itemsPerPage = parseInt($event, 10)"
-        ></v-text-field>
-      </div>
-    </v-data-table>
-  </v-card>
+          <!-- </v-toolbar> -->
+        </template>
+        <template v-slot:item.actions="{ item }">
+          <!-- <v-icon md class="mr-2" @click="editItem(item)" color="primary" blue>mdi-pencil</v-icon>
+          <v-icon md2 @click="deleteItem(item)" color="red" dark>mdi-delete</v-icon> -->
+
+          <v-row>
+            <div class="my-2">
+              <v-btn color="primary" tile @click="editItem(item)" fab small dark>
+                <v-icon>mdi-pencil</v-icon>
+              </v-btn>
+            </div>&nbsp; &nbsp;
+            <div class="my-2">
+              <v-btn color="error" tile @click="deleteItem(item)" fab small dark>
+                <v-icon>mdi-delete</v-icon>
+              </v-btn>
+            </div>
+          </v-row>
+        </template>
+        <template v-slot:no-data>
+          <v-btn color="primary" @click="fetchClients">Reset</v-btn>
+        </template>
+        <div class="text-center pt-2">
+          <v-pagination v-model="page" :length="pageCount"></v-pagination>
+          <v-text-field
+            :value="itemsPerPage"
+            label="Items per page"
+            type="number"
+            min="-1"
+            max="15"
+            @input="itemsPerPage = parseInt($event, 10)"
+          ></v-text-field>
+        </div>
+      </v-data-table>
+    </v-card>
+  </v-container>
 </template>
 
 <script>

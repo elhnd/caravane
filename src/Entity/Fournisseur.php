@@ -9,8 +9,10 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 
+
 /**
  * @ORM\Entity(repositoryClass=FournisseurRepository::class)
+ * @ApiResource()
  * @ORM\HasLifecycleCallbacks()
  */
 class Fournisseur
@@ -55,6 +57,16 @@ class Fournisseur
      * @ORM\OneToMany(targetEntity=Produit::class, mappedBy="fournisseur")
      */
     private $produits;
+
+    /**
+     * @ORM\Column(type="float", nullable=true)
+     */
+    private $commission;
+
+    /**
+     * @ORM\Column(type="bigint", nullable=true)
+     */
+    private $fraisExposition;
 
     public function __construct()
     {
@@ -153,6 +165,30 @@ class Fournisseur
                 $produit->setFournisseur(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCommission(): ?float
+    {
+        return $this->commission;
+    }
+
+    public function setCommission(?float $commission): self
+    {
+        $this->commission = $commission;
+
+        return $this;
+    }
+
+    public function getFraisExposition(): ?string
+    {
+        return $this->fraisExposition;
+    }
+
+    public function setFraisExposition(?string $fraisExposition): self
+    {
+        $this->fraisExposition = $fraisExposition;
 
         return $this;
     }
