@@ -91,6 +91,12 @@ class User implements UserInterface
      */
     private $isActivated;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Client::class, inversedBy="users")
+     * @Groups({"users_read","user_write"})
+     */
+    private $client;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -201,6 +207,18 @@ class User implements UserInterface
     public function setIsActivated(bool $isActivated): self
     {
         $this->isActivated = $isActivated;
+
+        return $this;
+    }
+
+    public function getClient(): ?Client
+    {
+        return $this->client;
+    }
+
+    public function setClient(?Client $client): self
+    {
+        $this->client = $client;
 
         return $this;
     }

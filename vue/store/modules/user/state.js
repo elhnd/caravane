@@ -6,6 +6,7 @@ export default function() {
         name:'',
         phone:'',
         email:'',
+        client:'',
         roles:[]
       },
       items: [],

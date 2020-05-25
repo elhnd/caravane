@@ -26,7 +26,7 @@
         <v-row justify="center">
           <v-dialog v-model="dialog" persistent max-width="600px">
             <v-card>
-              <v-card-title >
+              <v-card-title>
                 <span class="headline">User Profile</span>
                 <item-errors v-if="entity" :entity="entity" />
               </v-card-title>
@@ -59,6 +59,14 @@
                           v-model="item.password"
                           type="password"
                         ></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6">
+                        <v-autocomplete 
+                          :items="clients"
+                          item-value="id"
+                          item-text="nom"
+                          v-model="item.client"
+                        ></v-autocomplete>
                       </v-col>
                       <v-col cols="12" sm="6">
                         <v-autocomplete
@@ -101,7 +109,7 @@
     <v-row>
       <v-col cols="12">
         <v-card class="mx-auto">
-          <v-col cols="12" >
+          <v-col cols="12">
             <v-card-title class="p-n12 mt-n8 mb-n8">
               <v-row justify="space-between">
                 <v-col cols="12" sm="6" md="3">
@@ -181,6 +189,7 @@ export default {
       editedIndex: -1,
       pencil: "mdi-plus",
       color: "red",
+      clients: [],
       search: "",
       small: "small",
       show: false,
@@ -236,7 +245,7 @@ export default {
     })
   },
   created() {
-    this.countUser(), this.getItems();
+    this.fetchClients(), this.countUser(), this.getItems();
   },
   methods: {
     ...mapActions({
@@ -255,14 +264,23 @@ export default {
           })
           .catch({});
       } else if (this.updatUser == false) {
-        this.create()
-          .then(item => {
-            this.reset();
-            this.countUser();
+        // this.create()
+        //   .then(item => {
+        //     this.reset();
+        //     this.countUser();
+        //   })
+        //   .catch(e => {
+        //     console.log(e);
+        //   });
+        axios
+          .post(`${API_HOST}/users`, {
+            ...item,
+            client: `/api/clients/${item.client}`
           })
-          .catch(e => {
-            console.log(e);
-          });
+          .then(data => {
+            this.reset();
+          })
+          .catch({});
       }
     },
     validate() {
@@ -314,6 +332,12 @@ export default {
     countUser() {
       axios.get(`${API_HOST}/totaluser`).then(resp => {
         return (this.countUserData = resp.data);
+      });
+    },
+    fetchClients() {
+      axios.get("/api/client/").then(response => {
+        console.log(response);
+        this.clients = response.data;
       });
     }
   }

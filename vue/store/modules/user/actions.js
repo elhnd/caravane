@@ -7,7 +7,7 @@ export const getItem = ({ dispatch, commit }, id) =>
 export const getItems = ({ dispatch, commit }, query) =>
   crud.getItems({ dispatch, commit }, namespace, query)
 
-export const create = ({ dispatch, commit, state }) =>
+export const create = ({ dispatch, commit,state }) =>
   crud.create({ dispatch, commit, state }, namespace)
 
 export const update = ({ dispatch, commit, state },id) =>

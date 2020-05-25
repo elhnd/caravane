@@ -99,6 +99,12 @@
           </v-dialog>
           <!-- </v-toolbar> -->
         </template>
+
+        <template v-slot:item.updateAt="{item}">
+          <div>
+            <span>{{crmDateFormat(item.updateAt)}}</span>
+          </div>
+        </template>
         <template v-slot:item.actions="{ item }">
           <!-- <v-icon md class="mr-2" @click="editItem(item)" color="primary" blue>mdi-pencil</v-icon>
           <v-icon md2 @click="deleteItem(item)" color="red" dark>mdi-delete</v-icon> -->
@@ -167,7 +173,7 @@ export default {
       },
       { text: "Prix", value: "prix", sortable: false },
       { text: "Crée le", value: "createAt", sortable: false },
-      { text: "Modifié le", value: "updateAt", sortable: false },
+      { text: "Modifié le", value:"updateAt", sortable: false },
 
       { text: "Actions", value: "actions", sortable: false }
     ],
