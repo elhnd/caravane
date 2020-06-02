@@ -51,6 +51,8 @@ class FournisseurController extends AbstractController
             'tel'=>$key->getTel(),
             'email'=>$key->getEmail(),
             'adresse'=>$key->getAdresse(),
+            'commission'=>$key->getCommission(),
+            'fraisExposition'=>$key->getFraisExposition(),
             'createAt'=>$key->getCreatedAt(),
             'updateAt'=>$key->getUpdatedAt(),
             'ligne'=>$ligne
@@ -68,7 +70,7 @@ class FournisseurController extends AbstractController
     {
 
         $values = json_decode($request->getContent());
-
+        //dd($values);
         $fournisseur = new Fournisseur();
         
         $repo = $repository->findByStructure($values->structure);
@@ -78,6 +80,8 @@ class FournisseurController extends AbstractController
         $fournisseur->setTel($values->tel);
         $fournisseur->setEmail($values->email);
         $fournisseur->setAdresse($values->adresse);
+        $fournisseur->setFraisExposition($values->fraisExposition);
+        $fournisseur->setCommission($values->commission);
 
         if (!$repo) {
             $entityManager = $this->getDoctrine()->getManager();

@@ -108,6 +108,17 @@
           </v-dialog>
           <!-- </v-toolbar> -->
         </template>
+
+        <template v-slot:item.createAt="{item}">
+          <div>
+            <span>{{crmDateFormat(item.createAt)}}</span>
+          </div>
+        </template>
+        <template v-slot:item.updateAt="{item}">
+          <div>
+            <span>{{crmDateFormat(item.updateAt)}}</span>
+          </div>
+        </template>
         <template v-slot:item.actions="{ item }">
           <v-row>
             <div class="my-2">

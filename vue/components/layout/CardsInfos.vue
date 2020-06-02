@@ -41,9 +41,12 @@ export default {
 };
 </script>
 
-<style lang="scss" >
+<style lang="scss" scoped>
 .v-sheet--offset {
   top: -20px;
   position: relative;
+}
+.brunfonce {
+  background: #d7ccc8 !important ;
 }
 </style>

@@ -5,11 +5,11 @@ import MainSlot from '../components/layout/MainSlot'
 import Test from '../pages/Test';
 import Client from '../pages/client/Client';
 import Fournisseur from '../pages/fournisseur/Fournisseur';
-import Depot from '../pages/stock/Depot';
+//import Depot from '../pages/stock/Depot';
 import Categorie from '../pages/categorie/Categorie';
 import Produit from '../pages/produit/Produit';
-
-
+import Depot from '../pages/depot/Depot';
+import DetailVente from '../pages/vente/DetailVente';
 
 
 
@@ -94,6 +94,14 @@ const router = new VueRouter({
                     requiresAuth: true
                 },
                 component: Produit
+            },
+            {
+                path: "/vente",
+                name: "vente",
+                meta: {
+                    requiresAuth: true
+                },
+                component: DetailVente
             },
 
         ],

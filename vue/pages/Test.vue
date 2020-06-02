@@ -8,6 +8,7 @@
           </v-card>
         </v-col>
       </v-row>
+      <h1></h1>
     </v-container>
     <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
 
@@ -21,6 +22,35 @@
   </div>
 </template>
 
+<script>
+import { mapActions, mapGetters, mapState } from "vuex";
+export default {
+
+  data() {
+    return {
+      
+    }
+  },
+  computed: {
+    ...mapGetters({
+     // depots: "depot/depots"
+    })
+  },
+  methods: {
+    ...mapActions({
+      //getDepots: "depot/getDepots"
+    })
+  },
+  created() {
+    //console.log(this.getDepots())
+  },
+
+  mounted() {
+    //console.log("test")
+  },
+  
+}
+</script>
 <style scoped>
 .v-progress-circular {
   margin: 1rem;

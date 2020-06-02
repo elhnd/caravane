@@ -47,7 +47,7 @@ class FournisseurRepository extends ServiceEntityRepository
         ;
     }
     */
-    public function findByStructure($value): ?Fournisseur
+    public function findByStructure($value)
     {
         return $this->createQueryBuilder('s')
             ->andWhere('s.structure = :val')

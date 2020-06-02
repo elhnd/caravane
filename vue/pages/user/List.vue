@@ -60,14 +60,14 @@
                           type="password"
                         ></v-text-field>
                       </v-col>
-                      <v-col cols="12" sm="6">
+                      <!-- <v-col cols="12" sm="6">
                         <v-autocomplete 
                           :items="clients"
                           item-value="id"
                           item-text="nom"
                           v-model="item.client"
                         ></v-autocomplete>
-                      </v-col>
+                      </v-col>-->
                       <v-col cols="12" sm="6">
                         <v-autocomplete
                           :items="itemsRoles"
@@ -195,7 +195,7 @@ export default {
       show: false,
       dialog: false,
       valid: true,
-      countUserData: {},
+      // countUserData: {},
       updatUser: false,
       headers: [
         { text: "Prenom et Nom", value: "name" },
@@ -226,10 +226,6 @@ export default {
     };
   },
   computed: {
-    test() {
-      console.log(this.countUserData);
-      return this.countUserData;
-    },
     isLoading() {
       if (this.$store.state.general.isLoading > 0) {
         return true;
@@ -241,11 +237,13 @@ export default {
       items: "user/items",
       item: "user/item",
       errors: "user/errors",
-      error: "user/error"
+      error: "user/error",
+      countUserData: "user/countUserData"
     })
   },
   created() {
-    this.fetchClients(), this.countUser(), this.getItems();
+    this.getCountUserData(), this.getItems();
+    // this.countUser()
   },
   methods: {
     ...mapActions({
@@ -253,7 +251,8 @@ export default {
       getItem: "user/getItem",
       create: "user/create",
       resets: "user/reset",
-      remove: "user/remove"
+      remove: "user/remove",
+      getCountUserData: "user/getCountUserData"
     }),
     onSendForm(item) {
       if (this.updatUser == true) {
@@ -264,23 +263,23 @@ export default {
           })
           .catch({});
       } else if (this.updatUser == false) {
-        // this.create()
-        //   .then(item => {
-        //     this.reset();
-        //     this.countUser();
-        //   })
-        //   .catch(e => {
-        //     console.log(e);
-        //   });
-        axios
-          .post(`${API_HOST}/users`, {
-            ...item,
-            client: `/api/clients/${item.client}`
-          })
-          .then(data => {
+        this.create()
+          .then(item => {
             this.reset();
+            // this.countUser();
           })
-          .catch({});
+          .catch(e => {
+            console.log(e);
+          });
+        // axios
+        //   .post(`${API_HOST}/users`, {
+        //     ...item,
+        //     client: `/api/clients/${item.client}`
+        //   })
+        //   .then(data => {
+        //     this.reset();
+        //   })
+        //   .catch({});
       }
     },
     validate() {
@@ -310,7 +309,8 @@ export default {
           axios
             .put(`${API_HOST}/users/${id}`, item)
             .then(data => {
-              this.countUser();
+              //this.countUser();
+              this.getCountUserData();
             })
             .catch({});
       }
@@ -324,33 +324,37 @@ export default {
       if (window.confirm("Voulez-vous vraiment supprimer cet utilisateur")) {
         this.remove(id).then(rep => {
           this.getItems();
-          this.countUser();
+          this.getCountUserData();
           console.log(rep);
         });
       }
-    },
-    countUser() {
-      axios.get(`${API_HOST}/totaluser`).then(resp => {
-        return (this.countUserData = resp.data);
-      });
-    },
-    fetchClients() {
-      axios.get("/api/client/").then(response => {
-        console.log(response);
-        this.clients = response.data;
-      });
     }
+    // countUser() {
+    //   axios.get(`${API_HOST}/totaluser`).then(resp => {
+    //     return (this.countUserData = resp.data);
+    //   });
+    // }
+    // getCountUserData() {
+    //   this.$store.dispatch("user/getCountUserData")
+    // }
+    // fetchClients() {
+    //   axios.get("/api/client/").then(response => {
+    //     console.log(response);
+    //     this.clients = response.data;
+    //   });
+    // }
   }
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" >
 .brunfonce {
   background: #d7ccc8 !important ;
 }
+
 td {
   font-size: 16px !important;
-  vertical-align: middle;
+  vertical-align: middle !important ;
 }
 .v-progress-circular {
   margin: 1rem !important;

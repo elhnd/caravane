@@ -12,7 +12,11 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=FournisseurRepository::class)
- * @ApiResource()
+ * @ApiResource(
+ *  normalizationContext={
+ *      "groups"={"fournisseur_produits_vendus_read"}
+ *  }
+ * )
  * @ORM\HasLifecycleCallbacks()
  */
 class Fournisseur
@@ -23,12 +27,13 @@ class Fournisseur
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"fournisseur_produits_vendus_read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=30)
-     * @Groups({"produit_read"})
+     * @Groups({"produit_read","depots_read","ventes_read","fournisseur_produits_vendus_read"})
      * 
      */
     private $structure;
@@ -191,5 +196,26 @@ class Fournisseur
         $this->fraisExposition = $fraisExposition;
 
         return $this;
+    }
+
+    /**
+     * @Groups({"fournisseur_produits_vendus_read"})
+     */
+    public function getFournisseurProduitsVendus()
+    {
+
+        $produits = $this->getProduits();
+        $produitVendus = [];
+        foreach ($produits as $produit) {
+            $ventes = $produit->getVentes();
+
+            for($i=0; $i<count($ventes);$i++){
+
+                array_push($produitVendus, $ventes[$i]);
+            }
+            
+        }
+
+        return $produitVendus;
     }
 }

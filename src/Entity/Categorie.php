@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\CategorieRepository;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\HttpFoundation\File\File;
@@ -12,6 +13,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 /**
  * @ORM\HasLifecycleCallbacks()
  * @ORM\Entity(repositoryClass=CategorieRepository::class)
+ * @ApiResource()
  */
 class Categorie
 {

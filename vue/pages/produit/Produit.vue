@@ -102,9 +102,19 @@
           </v-dialog>
           <!-- </v-toolbar> -->
         </template>
+        <template v-slot:item.createAt="{item}">
+          <div>
+            <span>{{crmDateFormat(item.createAt)}}</span>
+          </div>
+        </template>
+        <template v-slot:item.updateAt="{item}">
+          <div>
+            <span>{{crmDateFormat(item.updateAt)}}</span>
+          </div>
+        </template>
         <template v-slot:item.actions="{ item }">
           <!-- <v-icon md class="mr-2" @click="editItem(item)" color="primary" blue>mdi-pencil</v-icon>
-          <v-icon md2 @click="deleteItem(item)" color="red" dark>mdi-delete</v-icon> -->
+          <v-icon md2 @click="deleteItem(item)" color="red" dark>mdi-delete</v-icon>-->
           <v-row>
             <div class="my-2">
               <v-btn color="primary" tile @click="editItem(item)" fab small dark>

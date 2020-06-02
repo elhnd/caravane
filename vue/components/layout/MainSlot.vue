@@ -101,8 +101,9 @@ export default {
       { icon: "mdi-contacts", text: "Fournisseur", route: "/fournisseur" },
       { text: "Categorie", icon: "storage", route: "/categorie" },
       { text: "Produit", icon: "shopping_cart", route: "/produit" },
-
-
+      { text: "Depot", icon: "assignment", route: "/depot" },
+      { text: "Vente", icon: "storefront", route: "/vente" },
+      //mdiClipboardList
       { icon: "mdi-history", text: "Frequently contacted" },
       { icon: "mdi-content-copy", text: "Duplicates" },
       {

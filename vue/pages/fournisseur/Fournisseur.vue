@@ -64,12 +64,25 @@
                       <v-col cols="12" sm="6" md="6">
                         <v-text-field v-model="editedItem.tel" :rules="ItemRules" label="Tel"></v-text-field>
                       </v-col>
-
                       <v-col cols="12" sm="6" md="6">
                         <v-text-field
                           v-model="editedItem.adresse"
                           :rules="ItemRules"
                           label="Adresse"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="6">
+                        <v-text-field
+                          v-model="editedItem.commission"
+                          label="Commission"
+                          type="number"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="6">
+                        <v-text-field
+                          type="number"
+                          v-model="editedItem.fraisExposition"
+                          label="Frais d'exposition"
                         ></v-text-field>
                       </v-col>
                     </v-row>
@@ -84,6 +97,16 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
+        </template>
+        <template v-slot:item.createAt="{item}">
+          <div>
+            <span>{{crmDateFormat(item.createAt)}}</span>
+          </div>
+        </template>
+        <template v-slot:item.updateAt="{item}">
+          <div>
+            <span>{{crmDateFormat(item.updateAt)}}</span>
+          </div>
         </template>
         <template v-slot:item.actions="{ item }">
           <!-- <v-icon md class="mr-2" @click="editItem(item)" color="primary" blue>mdi-pencil</v-icon>
@@ -152,6 +175,8 @@ export default {
       { text: "Téléphone", value: "tel", sortable: false },
       { text: "Email", value: "email", sortable: false },
       { text: "Adresse", value: "adresse", sortable: false },
+      { text: "Commission", value: "commission", sortable: false },
+      { text: "Frais d'exposition", value: "fraisExposition", sortable: false },
       { text: "Crée le", value: "createAt", sortable: false },
       { text: "Modifié le", value: "updateAt", sortable: false },
       { text: "Actions", value: "actions", sortable: false }
@@ -164,7 +189,9 @@ export default {
       nomGerant: "",
       tel: "",
       email: "",
-      adresse: ""
+      adresse: "",
+      commission: "",
+      fraisExposition: ""
     },
     ItemRules: [v => !!v || "Champ requise"],
     emailRules: [
@@ -176,7 +203,9 @@ export default {
       nomGerant: "",
       tel: "",
       email: "",
-      adresse: ""
+      adresse: "",
+      commission: "",
+      fraisExposition: ""
     }
   }),
 
@@ -249,7 +278,9 @@ export default {
             nomGerant: this.editedItem.nomGerant,
             tel: this.editedItem.tel,
             email: this.editedItem.email,
-            adresse: this.editedItem.adresse
+            adresse: this.editedItem.adresse,
+            commission: this.editItem.commission,
+            fraisExposition: this.editItem.fraisExposition
           })
           .then(response => {
             console.log(response);
@@ -263,7 +294,9 @@ export default {
             nomGerant: this.editedItem.nomGerant,
             tel: this.editedItem.tel,
             email: this.editedItem.email,
-            adresse: this.editedItem.adresse
+            adresse: this.editedItem.adresse,
+            commission: this.editedItem.commission,
+            fraisExposition: this.editedItem.fraisExposition
           })
           .then(response => {
             console.log(response);
