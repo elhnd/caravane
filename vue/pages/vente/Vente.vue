@@ -23,10 +23,11 @@
                           :items="produits"
                           item-value="id"
                           item-text="designation"
-                          v-model="vente.produit.id"
+                          multiple
+                          v-model="vente.produit"
                         ></v-autocomplete>
                       </v-col>
-                       <v-col cols="12" sm="6">
+                      <v-col cols="12" sm="6">
                         <v-autocomplete
                           label="Client"
                           :items="clients"
@@ -43,22 +44,25 @@
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6">
-                        <v-text-field
-                          v-model="vente.prixVenteTotal"
-                          label="Prix de vente total"
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="6">
-                        <v-text-field label="Prix net à payer" v-model="vente.prixNetPayer" required></v-text-field>
+                        <v-text-field v-model="vente.prixVenteTotal" label="Prix de vente total"></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6">
                         <v-text-field
-                          label="Date de vente"
-                          v-model="vente.dateVente"
+                          label="Prix net à payer"
+                          v-model="vente.prixNetPayer"
+                          required
                         ></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6">
+                        <v-text-field label="Date de vente" v-model="vente.dateVente" type="date"></v-text-field>
                       </v-col>
                     </v-row>
                     <v-card-actions>
+                      <v-btn
+                        color="blue darken-1"
+                        text
+                        @click="dialogClient = !dialogClient"
+                      >Ajouter client</v-btn>
                       <v-spacer></v-spacer>
                       <v-btn color="blue darken-1" text @click="reset()">Fermer</v-btn>
                       <div class="my-2">
@@ -81,6 +85,11 @@
               </v-card-text>
             </v-card>
           </v-dialog>
+          <template>
+            <div>
+              <Client v-if="dialogClient==true" />
+            </div>
+          </template>
         </v-row>
       </v-col>
     </v-row>
@@ -102,7 +111,7 @@
                 <v-col cols="12" sm="6" md="3">
                   <v-btn
                     class="ma-4 brunfonce"
-                    @click="update = false,dialog = true"
+                    @click="update = false,goto('addVente')"
                     large
                     tile
                     dark
@@ -117,11 +126,16 @@
           <v-data-table :headers="headers" :items="ventes" :search="search">
             <template v-slot:item.dateVente="{item}">
               <div>
-                <span>{{crmDateFormat(item.dateVente)}}</span>
+                <span>{{item.dateVente}}</span>
               </div>
             </template>
             <template v-slot:item.actions="{item}">
               <v-row>
+                <div class="my-2">
+                  <v-btn @click="venteRemove(item)" tile fab small dark>
+                    <v-icon>mdi-eye</v-icon>
+                  </v-btn>
+                </div>&nbsp; &nbsp;
                 <div class="my-2">
                   <v-btn color="primary" @click="editVente(item)" tile fab small dark>
                     <v-icon>mdi-pencil</v-icon>
@@ -147,16 +161,17 @@
 
 <script>
 import ItemErrors from "../.././components/layout/errors/ItemErrors";
+import Client from "./Client";
 import { mapActions, mapGetters, mapState } from "vuex";
 import axios from "../../interceptor";
 export default {
-  name:'vente',
-  components: { ItemErrors },
+  name: "vente",
+  components: { ItemErrors, Client },
   data() {
     return {
+      dialogClient: false,
       update: false,
       items: [],
-      clients:[],
       entity: "vente",
       produits: [],
       editedIndex: -1,
@@ -167,15 +182,9 @@ export default {
       show: false,
       dialog: false,
       valid: true,
-      update: false,
       headers: [
-        { text: "Désignation", value: "produit.designation" },
-        { text: "Fournisseur", value: "produit.fournisseur.structure" },
-        { text: "Client", value: "client.nom" },
-        { text: "Prix de vente", value: "produit.prixVente" },
-        { text: "Quantité vendue", value: "quantiteVendue" },
-        { text: "Prix de vente total", value: "prixVenteTotal" },
-        { text: "Prix net à payer", value: "prixNetPayer" },
+        { text: "Client", value: "client.nomComplet" },
+        { text: "Montant de la vente", value: "totalVente" },
         { text: "Date de la vente", value: "dateVente" },
         { text: "Actions", value: "actions" }
       ],
@@ -198,32 +207,35 @@ export default {
     isLoading() {
       if (this.$store.state.general.isLoading > 0) {
         return true;
-      } else {
-        return false;
       }
     },
     ...mapGetters({
       ventes: "vente/ventes",
-      vente: "vente/vente"
+      vente: "vente/vente",
+      clients: "client/clients"
     })
   },
   created() {
     this.getVentes();
     console.log(this.getVentes());
     this.fetchproduits();
-    this.fetchClients();
+    this.getClients();
   },
   methods: {
     ...mapActions({
       getVentes: "vente/getVentes",
       createVente: "vente/createVente",
       updateVente: "vente/updateVente",
-      removeVente: "vente/removeVente"
+      removeVente: "vente/removeVente",
+      getClients: "client/getClients"
     }),
     fetchproduits() {
-      axios.get("/api/produit").then(response => {
-        //console.log(response.data);
-        this.produits = response.data;
+      axios.get("/api/depots").then(response => {
+        const produits = [];
+        response.data["hydra:member"].forEach(produit => {
+          produits.push(produit.produit);
+        });
+        this.produits = produits;
       });
     },
 
@@ -260,12 +272,9 @@ export default {
         });
       }
     },
-    fetchClients() {
-      axios
-        .get(`/api/clients`)
-        .then(response => {
-          this.clients = response.data["hydra:member"];
-        });
+    goto(route) {
+      //this.$router.push({ name: "addVente", params: { id: item.id } });
+      this.$router.push({ name: route});
     }
   }
 };

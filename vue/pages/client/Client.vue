@@ -106,27 +106,10 @@
                     <v-row>
                       <v-col cols="12" sm="6" md="4">
                         <v-text-field
-                          v-model="editedItem.prenom"
+                          v-model="editedItem.nomComplet"
                           :rules="ItemRules"
                           required
-                          label="Prénom"
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          v-model="editedItem.nom"
-                          :rules="ItemRules"
-                          required
-                          label="Nom"
-                        ></v-text-field>
-                      </v-col>
-
-                      <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          v-model="editedItem.prix"
-                          :rules="ItemRules"
-                          required
-                          label="Prix"
+                          label="Nom complet"
                         ></v-text-field>
                       </v-col>
                     </v-row>
@@ -227,14 +210,7 @@ export default {
         sortable: false,
         value: "ligne"
       },
-      { text: "Prenom", value: "prenom", sortable: false },
-      {
-        text: "Nom",
-        align: "start",
-        sortable: false,
-        value: "nom"
-      },
-      { text: "Prix", value: "prix", sortable: false },
+      { text: "Nom Complet", value: "nomComplet", sortable: false },
       { text: "Crée le", value: "createdAt", sortable: false },
       { text: "Modifié le", value: "updatedAt", sortable: false },
 
@@ -244,15 +220,11 @@ export default {
     editedIndex: -1,
     editedItem: {
       id: 0,
-      nom: "",
-      prenom: "",
-      prix: 0
+      nomComplet: ""
     },
     ItemRules: [v => !!v || "Champ requise"],
     defaultItem: {
-      nom: "",
-      prenom: "",
-      prix: 0
+      nomComplet: ""
     }
   }),
 
@@ -322,9 +294,7 @@ export default {
         // console.log(this.editedItem.id);
         axios
           .post("/api/client/" + this.editedItem.id + "/edit", {
-            nom: this.editedItem.nom,
-            prenom: this.editedItem.prenom,
-            prix: this.editedItem.prix
+            nomComplet: this.editedItem.nomComplet,
           })
           .then(response => {
             vuetifyToast.success(response.data.message);
@@ -335,9 +305,7 @@ export default {
       } else {
         axios
           .post(`${API_HOST}/client/new`, {
-            nom: this.editedItem.nom,
-            prenom: this.editedItem.prenom,
-            prix: this.editedItem.prix
+            nomComplet: this.editedItem.nomComplet
           })
           .then(response => {
             //  console.log(response.data.message);

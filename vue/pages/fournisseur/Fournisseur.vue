@@ -284,6 +284,7 @@ export default {
           })
           .then(response => {
             console.log(response);
+            this.fetchfournisseurs();
             //this.fournisseurs = response.data;
           });
         Object.assign(this.fournisseurs[this.editedIndex], this.editedItem);

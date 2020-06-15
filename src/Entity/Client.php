@@ -54,25 +54,7 @@ class Client
      *     "client_read","ventes_read"
      * })
      */
-    private $nom;
-
-    /**
-     * @ORM\Column(type="string", length=50, nullable=false)
-     * @Assert\NotBlank()
-     * @Groups({
-     *     "client_read","ventes_read"
-     * })
-     */
-    private $prenom;
-
-    /**
-     * @ORM\Column(type="integer")
-     * @Assert\NotBlank()
-     * @Groups({
-     *     "client_read"
-     * })
-     */
-    private $prix;
+    private $nomComplet;
 
     /**
      * @ORM\OneToMany(targetEntity=Vente::class, mappedBy="client")
@@ -91,38 +73,14 @@ class Client
         return $this->id;
     }
 
-    public function getNom(): ?string
+    public function getNomComplet(): ?string
     {
-        return $this->nom;
+        return $this->nomComplet;
     }
 
-    public function setNom(?string $nom): self
+    public function setNomComplet(?string $nomComplet): self
     {
-        $this->nom = $nom;
-
-        return $this;
-    }
-
-    public function getPrenom(): ?string
-    {
-        return $this->prenom;
-    }
-
-    public function setPrenom(?string $prenom): self
-    {
-        $this->prenom = $prenom;
-
-        return $this;
-    }
-
-    public function getPrix(): ?int
-    {
-        return $this->prix;
-    }
-
-    public function setPrix(int $prix): self
-    {
-        $this->prix = $prix;
+        $this->nomComplet = $nomComplet;
 
         return $this;
     }

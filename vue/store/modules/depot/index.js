@@ -74,9 +74,9 @@ function initialeState() {
             id: null,
             stockInitial: 0,
             quantiteDeposee: 0,
-            EnStock: 0,
+            totalStockApresDepot: 0,
             quantiteVendue: 0,
-            quantiteRestantee: 0,
+            stockFinal: 0,
             produit: {
                 id: null
             }
@@ -89,9 +89,9 @@ const state = {
         id: null,
         stockInitial: 0,
         quantiteDeposee: 0,
-        EnStock: 0,
+        totalStockApresDepot: 0,
         quantiteVendue: 0,
-        quantiteRestantee: 0,
+        stockFinal: 0,
         produit: {
             id: null
         }
@@ -133,6 +133,9 @@ const mutations = {
     },
     [types.UPDATE_ONE_ITEM](state) {
         state.depot = Object.assign(state, null)
+    },
+    setProduit(state,item){
+        state.item.produit = item
     }
 }
 

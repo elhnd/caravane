@@ -23,15 +23,13 @@ class ClientController extends AbstractController
         $dataClients = [];
         $rem = [];
         
-        $client = $clientRepository->findBy(array(), array('prenom' => 'ASC'));
+        $client = $clientRepository->findBy(array(), array('nomComplet' => 'ASC'));
         foreach ($client as  $key) {
             
             $ligne++;
             $rem = array(
             'id'=>$key->getId(),
-            'nom'=>$key->getNom(),
-            'prenom'=>$key->getPrenom(),
-            'prix'=>$key->getPrix(),
+            'nomComplet'=>$key->getNomComplet(),
             'createAt'=>$key->getCreatedAt(),
             'updateAt'=>$key->getUpdatedAt(),
             'ligne'=>$ligne
@@ -52,10 +50,7 @@ class ClientController extends AbstractController
 
         $client = new Client();
 
-        $client->setNom($values->nom);
-        $client->setPrenom($values->prenom);
-        $client->setPrix($values->prix);
-
+        $client->setNomComplet($values->nomComplet);
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->persist($client);
         $entityManager->flush();
@@ -82,9 +77,7 @@ class ClientController extends AbstractController
     {
         $data = json_decode($request->getContent());
         $client
-                ->setNom($data->nom)
-                ->setPrenom($data->prenom)
-                ->setPrix($data->prix)
+                ->setNomComplet($data->nomComplet)
                 ;
         $this->getDoctrine()->getManager()->flush();
         $data = [

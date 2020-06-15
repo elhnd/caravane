@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\VenteRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -13,6 +15,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ApiResource(
  *  normalizationContext={
  *      "groups"={"ventes_read"}
+ *  },
+ * denormalizationContext={
+ *      "groups"={"ventes_write"}
  *  }
  * )
  */
@@ -28,78 +33,47 @@ class Vente
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Produit::class, inversedBy="ventes")
-     *  @Groups({"ventes_read","fournisseur_produits_vendus_read"})
-     */
-    private $produit;
-
-    /**
-     * @ORM\Column(type="integer")
-     *  @Groups({"ventes_read","fournisseur_produits_vendus_read"})
-     */
-    private $quantiteVendue;
-
-    /**
      * @ORM\Column(type="bigint")
-     *  @Groups({"ventes_read","fournisseur_produits_vendus_read"})
+     *  @Groups({"ventes_read","fournisseur_produits_vendus_read","ventes_write"})
      */
-    private $prixVenteTotal;
+    private $totalVente;
 
     /**
-     * @ORM\Column(type="bigint")
-     *  @Groups({"ventes_read","fournisseur_produits_vendus_read"})
-     */
-    private $prixNetPayer;
-
-    /**
-     * @ORM\Column(type="date")
-     * @Groups({"ventes_read","fournisseur_produits_vendus_read"})
+     * @ORM\Column(type="string")
+     * @Groups({"ventes_read","fournisseur_produits_vendus_read","ventes_write"})
      */
     private $dateVente;
 
     /**
      * @ORM\ManyToOne(targetEntity=Client::class, inversedBy="ventes")
-     * @Groups({"ventes_read"})
+     * @Groups({"ventes_read","ventes_write"})
      */
     private $client;
+
+    /**
+     * @ORM\OneToMany(targetEntity=VenteProduit::class, mappedBy="vente")
+     * @Groups({"ventes_read","ventes_write"})
+     */
+    private $venteProduits;
+
+    public function __construct()
+    {
+        $this->venteProduits = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getProduit(): ?Produit
+    public function getTotalVente(): ?string
     {
-        return $this->produit;
+        return $this->totalVente;
     }
 
-    public function setProduit(?Produit $produit): self
+    public function setTotalVente(string $totalVente): self
     {
-        $this->produit = $produit;
-
-        return $this;
-    }
-
-    public function getQuantiteVendue(): ?int
-    {
-        return $this->quantiteVendue;
-    }
-
-    public function setQuantiteVendue(int $quantiteVendue): self
-    {
-        $this->quantiteVendue = $quantiteVendue;
-
-        return $this;
-    }
-
-    public function getPrixVenteTotal(): ?string
-    {
-        return $this->prixVenteTotal;
-    }
-
-    public function setPrixVenteTotal(string $prixVenteTotal): self
-    {
-        $this->prixVenteTotal = $prixVenteTotal;
+        $this->totalVente = $totalVente;
 
         return $this;
     }
@@ -116,12 +90,12 @@ class Vente
         return $this;
     }
 
-    public function getDateVente(): ?\DateTimeInterface
+    public function getDateVente(): ?string
     {
         return $this->dateVente;
     }
 
-    public function setDateVente(\DateTimeInterface $dateVente): self
+    public function setDateVente(string $dateVente): self
     {
         $this->dateVente = $dateVente;
 
@@ -136,6 +110,37 @@ class Vente
     public function setClient(?Client $client): self
     {
         $this->client = $client;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|VenteProduit[]
+     */
+    public function getVenteProduits(): Collection
+    {
+        return $this->venteProduits;
+    }
+
+    public function addVenteProduit(VenteProduit $venteProduit): self
+    {
+        if (!$this->venteProduits->contains($venteProduit)) {
+            $this->venteProduits[] = $venteProduit;
+            $venteProduit->setVente($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVenteProduit(VenteProduit $venteProduit): self
+    {
+        if ($this->venteProduits->contains($venteProduit)) {
+            $this->venteProduits->removeElement($venteProduit);
+            // set the owning side to null (unless already changed)
+            if ($venteProduit->getVente() === $this) {
+                $venteProduit->setVente(null);
+            }
+        }
 
         return $this;
     }

@@ -6,18 +6,14 @@ import axios from '../../../interceptor'
 import { API_HOST } from '../../../config/_entrypoint'
 
 const actions = {
-    getVentes: ({ dispatch, commit }, query) =>
+    getProduits: ({ dispatch, commit }, query) =>
         crud.getItems({ dispatch, commit }, namespace, query),
 
-    createVente: ({ commit, state, namespace = 'VENTE' }) => {
+    createProduit: ({ commit, state, namespace = 'DEPOT' }) => {
         commit(`${namespace}_SET_ERROR`, null)
 
         return axios
-            .post(`${API_HOST}/${pluralize(namespace.toLowerCase())}`, {
-                ...state.item,
-                //produit: [`${state.item.produit}`],
-                client: `/api/clients/${state.item.client.id}`
-            })
+            .post(`${API_HOST}/${pluralize(namespace.toLowerCase())}`, { ...state.item, categorie: `/api/categories/${state.item.categorie}`, fournisseur: `/api/fournisseurs/${state.item.fournisseur}` })
             .then(response => response.data)
             .catch(e => {
                 const { data } = e.response
@@ -40,12 +36,12 @@ const actions = {
                 throw data
             })
     },
-    updateVente: ({ commit, state }, namespace = 'VENTE') => {
+    updateProduit: ({ commit, state }, namespace = 'DEPOT') => {
         commit(`${namespace}_SET_ERROR`, null)
 
         return axios
             .put(
-                `${API_HOST}/${pluralize(namespace.toLowerCase())}/${state.item.id}`, { ...state.item, produit: [`/api/produits/${state.item.produit}`], client: `/api/clients/${state.item.client.id}` })
+                `${API_HOST}/${pluralize(namespace.toLowerCase())}/${state.item.id}`, { ...state.item, categorie: `/api/categories/${state.item.categorie}`, fournisseur: `/api/fournisseurs/${state.item.fournisseur}` })
             .then(response => response.data)
             .catch(e => {
                 const { data } = e.response
@@ -69,31 +65,21 @@ const actions = {
             })
     }
     ,
-    removeVente: ({ dispatch, commit }, id) => crud.remove({ dispatch, commit }, namespace, id),
-    getProduits: ({ commit }) => {
-        axios.get("/api/depots").then(response => {
-            // const produits = [];
-            // console.log(response.data["hydra:member"])
-            // response.data["hydra:member"].forEach(produit => {
-            //     produits.push(produit.produit);
-            // });
-            commit('VENTE_SET_PROD_ITEM', response.data["hydra:member"]);
-        });
-    },
+    removeDepot: ({ dispatch, commit }, id) => crud.remove({ dispatch, commit }, namespace, id)
 }
 
 function initialeState() {
     return {
         item: {
             id: null,
-            produit: [],
-            quantiteVendue: 0,
-            prixVenteTotal: 0,
-            prixNetPayer: 0,
-            dateVente: "",
-            client: {
-                id: null
-            }
+            designation: '',
+            taille: '',
+            age: '',
+            pointure: '',
+            couleur: '',
+            prixVente: 0,
+            fournisseur: '',
+            categorie: '',
         },
     }
 }
@@ -101,28 +87,25 @@ function initialeState() {
 const state = {
     item: {
         id: null,
-        produit: [],
-        quantiteVendue: 0,
-        prixVenteTotal: 0,
-        prixNetPayer: 0,
-        dateVente: "",
-        client: {
-            id: null
-        }
+        designation: '',
+        taille: '',
+        age: '',
+        pointure: '',
+        couleur: '',
+        prixVente: 0,
+        fournisseur: '',
+        categorie: '',
     },
     items: [],
     error: null,
-    errors: {},
-    produits: [],
-    counter:10
+    errors: {}
 }
 
 const getters = {
-    vente: state => state.item,
-    ventes: state => state.items,
+    produit: state => state.item,
+    produits: state => state.items,
     error: state => state.error,
     errors: state => state.errors,
-    produits: state => state.produits,
 
 }
 const mutations = {
@@ -147,19 +130,7 @@ const mutations = {
     },
     [types.RESET](state) {
         Object.assign(state, defaultState())
-    },
-    [types.UPDATE_ONE_ITEM](state) {
-        state.vente = Object.assign(state, null)
-    },
-    setProduit(state, item) {
-        state.item.produit.push(item.id);
-    },
-    [types.SET_PROD_ITEM](state, produits) {
-        Object.assign(state, { produits })
-    },
-    addProduit(state) {
-        state.items.push({ id: state.counter++ });
-      }
+    }
 }
 
 export default {

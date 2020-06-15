@@ -33,7 +33,7 @@ class Fournisseur
 
     /**
      * @ORM\Column(type="string", length=30)
-     * @Groups({"produit_read","depots_read","ventes_read","fournisseur_produits_vendus_read"})
+     * @Groups({"produit_read","depots_read","ventes_read","fournisseur_produits_vendus_read","produit_read"})
      * 
      */
     private $structure;

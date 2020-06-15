@@ -6,6 +6,8 @@ import user from './modules/user'
 import depot from './modules/depot'
 import vente from './modules/vente'
 import fournisseur from './modules/fournisseur'
+import client from './modules/client'
+import produit from './modules/produit'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -16,6 +18,8 @@ export default new Vuex.Store({
         user,
         depot,
         vente,
-        fournisseur
+        fournisseur,
+        client,
+        produit
     }
 })

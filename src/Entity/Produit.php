@@ -12,7 +12,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 
 /**
- * @ApiResource()
+ * @ApiResource(
+ *  normalizationContext={
+ *      "groups"={"produit_read"}
+ * },
+ * )
  * @ORM\Entity(repositoryClass=ProduitRepository::class)
  * @ORM\HasLifecycleCallbacks()
  * 
@@ -25,17 +29,42 @@ class Produit
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"produit_read","depots_read","ventes_read"})
+     * @Groups({"produit_read","depots_read","ventes_read","produit_read"})
      */
     private $id;
+
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"produit_read","depots_read","ventes_read","fournisseur_produits_vendus_read"})
+     * @Groups({"produit_read","depots_read","ventes_read","fournisseur_produits_vendus_read","produit_read"})
      * @Assert\NotBlank()
      * 
      * 
      */
     private $designation;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"produit_read"})
+     */
+    private $taille;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"produit_read"})
+     */
+    private $age;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"produit_read"})
+     */
+    private $pointure;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"produit_read"})
+     */
+    private $couleur;
 
     /**
      * @ORM\Column(type="integer")
@@ -64,15 +93,14 @@ class Produit
     private $depots;
 
     /**
-     * @ORM\OneToMany(targetEntity=Vente::class, mappedBy="produit")
-     * 
+     * @ORM\OneToMany(targetEntity=VenteProduit::class, mappedBy="produit")
      */
-    private $ventes;
+    private $venteProduits;
 
     public function __construct()
     {
         $this->depots = new ArrayCollection();
-        $this->ventes = new ArrayCollection();
+        $this->venteProduits = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -88,6 +116,54 @@ class Produit
     public function setDesignation(string $designation): self
     {
         $this->designation = $designation;
+
+        return $this;
+    }
+
+    public function getTaille(): ?string
+    {
+        return $this->taille;
+    }
+
+    public function setTaille(?string $taille): self
+    {
+        $this->taille = $taille;
+
+        return $this;
+    }
+
+    public function getAge(): ?string
+    {
+        return $this->age;
+    }
+
+    public function setAge(?string $age): self
+    {
+        $this->age = $age;
+
+        return $this;
+    }
+
+    public function getPointure(): ?string
+    {
+        return $this->pointure;
+    }
+
+    public function setPointure(?string $pointure): self
+    {
+        $this->pointure = $pointure;
+
+        return $this;
+    }
+
+    public function getCouleur(): ?string
+    {
+        return $this->couleur;
+    }
+
+    public function setCouleur(?string $couleur): self
+    {
+        $this->couleur = $couleur;
 
         return $this;
     }
@@ -161,33 +237,34 @@ class Produit
     }
 
     /**
-     * @return Collection|Vente[]
+     * @return Collection|VenteProduit[]
      */
-    public function getVentes(): Collection
+    public function getVenteProduits(): Collection
     {
-        return $this->ventes;
+        return $this->venteProduits;
     }
 
-    public function addVente(Vente $vente): self
+    public function addVenteProduit(VenteProduit $venteProduit): self
     {
-        if (!$this->ventes->contains($vente)) {
-            $this->ventes[] = $vente;
-            $vente->setProduit($this);
+        if (!$this->venteProduits->contains($venteProduit)) {
+            $this->venteProduits[] = $venteProduit;
+            $venteProduit->setProduit($this);
         }
 
         return $this;
     }
 
-    public function removeVente(Vente $vente): self
+    public function removeVenteProduit(VenteProduit $venteProduit): self
     {
-        if ($this->ventes->contains($vente)) {
-            $this->ventes->removeElement($vente);
+        if ($this->venteProduits->contains($venteProduit)) {
+            $this->venteProduits->removeElement($venteProduit);
             // set the owning side to null (unless already changed)
-            if ($vente->getProduit() === $this) {
-                $vente->setProduit(null);
+            if ($venteProduit->getProduit() === $this) {
+                $venteProduit->setProduit(null);
             }
         }
 
         return $this;
     }
+    
 }

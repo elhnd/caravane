@@ -1,30 +1,12 @@
 <template>
-  <div class="text-center">
-    <v-container>
-      <v-row justify="space-between">
-        <v-col v-for="n in 4" :key="n" cols="auto">
-          <v-card :elevation="3" height="100" width="250">
-            <v-row class="fill-height" align="center" justify="center" v-text="n - 1"></v-row>
-          </v-card>
-        </v-col>
-      </v-row>
-      <h1></h1>
-    </v-container>
-    <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
-
-    <v-progress-circular :width="3" color="red" indeterminate></v-progress-circular>
-
-    <v-progress-circular :size="70" :width="7" color="purple" indeterminate></v-progress-circular>
-
-    <v-progress-circular :width="3" color="green" indeterminate></v-progress-circular>
-
-    <v-progress-circular :size="50" color="amber" indeterminate></v-progress-circular>
+  <v-container fluid>
+    <h1 class="my-5 display-1 subheading grey--text">Enregistrer une vente</h1>
     <v-form ref="form" @submit.prevent="createVente()">
       <v-container fluid>
         <v-row>
           <v-col cols="6" sm="2" center>
             <v-autocomplete
-              label="Cleints"
+              label="Cleint"
               :items="clients"
               item-value="id"
               item-text="nomComplet"
@@ -33,6 +15,12 @@
           </v-col>
           <v-col cols="6" sm="2">
             <v-text-field label="Date de vente" type="date" v-model="vente.dateVente" required></v-text-field>
+          </v-col>
+          <v-col cols="12" sm="6" md="3">
+            <v-btn class="ma-4 brunfonce" @click="dialogClient = !dialogClient" large tile dark>
+              <v-icon color="#555" left>mdi-account-plus</v-icon>
+              <span style="color:#555;">Ajouter un client</span>
+            </v-btn>
           </v-col>
         </v-row>
         <v-row>
@@ -96,7 +84,11 @@
         </div>
       </v-card-actions>
     </v-form>
-
+    <template>
+      <div>
+        <Client v-if="dialogClient==true" />
+      </div>
+    </template>
     <v-row justify="center">
       <v-dialog v-model="dialogProd" fullscreen hide-overlay transition="dialog-bottom-transition">
         <v-card>
@@ -124,9 +116,9 @@
                     height="120px"
                     src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
                   >
-                    <v-card-title>{{produit.designation}}</v-card-title>
+                    <v-card-title>{{produit.produit.designation}}</v-card-title>
                     <v-card-subtitle>
-                      <span style="color: white">Fournisseur: {{produit.fournisseur.structure}}</span>
+                      <span style="color: white">Fournisseur: {{produit.produit.fournisseur.structure}}</span>
                     </v-card-subtitle>
                   </v-img>
                   <v-card-text class="text--primary">
@@ -134,27 +126,27 @@
                       <div>
                         Prix
                         <br />
-                        {{produit.prixVente}}
+                        {{produit.produit.prixVente}}
                       </div>
                       <div>
                         Taille
                         <br />
-                        {{produit.taille}}
+                        {{produit.produit.taille}}
                       </div>
                       <div>
                         Age
                         <br />
-                        {{produit.age}}
+                        {{produit.produit.age}}
                       </div>
                       <div>
                         Pointure
                         <br />
-                        {{produit.pointure}}
+                        {{produit.produit.pointure}}
                       </div>
                     </v-row>
                   </v-card-text>
                   <v-card-actions>
-                    <v-btn color="orange" @click="ajoutProduit(produit)" text>Ajouter</v-btn>
+                    <v-btn color="orange" @click="ajoutProduit(produit.produit,produit)" text>Ajouter</v-btn>
                   </v-card-actions>
                 </v-card>
               </v-col>
@@ -163,18 +155,21 @@
         </v-card>
       </v-dialog>
     </v-row>
-  </div>
+  </v-container>
 </template>
 
 <script>
 import { mapActions, mapGetters, mapState } from "vuex";
-import InputDynamic from "../components/InputDynamic";
-import axios from "../interceptor";
+import InputDynamic from "../../components/InputDynamic";
+import Client from "./Client";
+import axios from "../../interceptor";
 export default {
   components: {
-    InputDynamic
+    InputDynamic,
+    Client
   },
   data: () => ({
+    dialogClient: false,
     multiLine: true,
     snackbar: false,
     text: "",
@@ -227,14 +222,16 @@ export default {
         prixNetPayer: ""
       });
     },
-    ajoutProduit(value) {
+    ajoutProduit(value,depot) {
+      console.log(depot)
+      console.log(value);
       var nbr = this.items.length;
       for (let i = 0; i < nbr; i++) {
         if (this.items[i].produit == value) {
           this.snackbar = true;
           this.text = "produit déjà ajouter";
           setTimeout(() => {
-            console.log("time");
+            
             this.snackbar = false;
           }, 3000);
           console.log("true");

@@ -10,7 +10,7 @@ import Categorie from '../pages/categorie/Categorie';
 import Produit from '../pages/produit/Produit';
 import Depot from '../pages/depot/Depot';
 import DetailVente from '../pages/vente/DetailVente';
-
+import AddVente from '../pages/vente/AddVente';
 
 
 import store from '../store'
@@ -102,6 +102,14 @@ const router = new VueRouter({
                     requiresAuth: true
                 },
                 component: DetailVente
+            },
+            {
+                path: "/vente/add",
+                name: "addVente",
+                meta: {
+                    requiresAuth: true
+                },
+                component: AddVente
             },
 
         ],

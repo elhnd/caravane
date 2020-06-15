@@ -20,6 +20,13 @@
                     <v-row>
                       <v-col cols="12" sm="6">
                         <v-text-field
+                          label="Produit"
+                          @click="dialogProd = true"
+                          v-model="depot.produit.designation"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6">
+                        <v-text-field
                           label="Stock initial *"
                           v-model.number="depot.stockInitial"
                           required
@@ -32,7 +39,11 @@
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6">
-                        <v-text-field label="En stock" v-model.number="depot.EnStock" required></v-text-field>
+                        <v-text-field
+                          label="Stock total après dépot"
+                          v-model.number="depot.totalStockApresDepot"
+                          required
+                        ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6">
                         <v-text-field
@@ -43,19 +54,10 @@
                       </v-col>
                       <v-col cols="12" sm="6">
                         <v-text-field
-                          label="Quantité vendue *"
-                          v-model.number="depot.quantiteRestantee"
+                          label="Stock Final *"
+                          v-model.number="depot.stockFinal"
                           type="Quantité restante"
                         ></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="6">
-                        <v-autocomplete
-                          label="Produit"
-                          :items="produits"
-                          item-value="id"
-                          item-text="designation"
-                          v-model="depot.produit.id"
-                        ></v-autocomplete>
                       </v-col>
                     </v-row>
                     <v-card-actions>
@@ -143,6 +145,68 @@
         </v-card>
       </v-col>
     </v-row>
+
+    <v-row justify="center">
+      <v-dialog v-model="dialogProd" fullscreen hide-overlay transition="dialog-bottom-transition">
+        <v-card>
+          <v-toolbar dark color="#4E342E">
+            <v-btn icon dark @click="dialogProd = false">
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+            <v-toolbar-title>Produits</v-toolbar-title>
+            <v-spacer></v-spacer>
+            <v-toolbar-items>
+              <v-btn dark text @click="dialogProd = false">Save</v-btn>
+            </v-toolbar-items>
+          </v-toolbar>
+          <v-container fluid>
+            <v-row dense>
+              <v-col cols="3" v-for="produit in produits" v-bind:key="produit.id">
+                <v-card class="mx-auto" height="240">
+                  <v-img
+                    class="white--text align-end"
+                    height="120px"
+                    src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
+                  >
+                    <v-card-title>{{produit.designation}}</v-card-title>
+                    <v-card-subtitle>
+                      <span style="color: white">Fournisseur: {{produit.fournisseur.structure}}</span>
+                    </v-card-subtitle>
+                  </v-img>
+                  <v-card-text class="text--primary">
+                    <v-row justify="space-between">
+                      <div>
+                        Prix
+                        <br />
+                        {{produit.prixVente}}
+                      </div>
+                      <div>
+                        Taille
+                        <br />
+                        {{produit.taille}}
+                      </div>
+                      <div>
+                        Age
+                        <br />
+                        {{produit.age}}
+                      </div>
+                      <div>
+                        Pointure
+                        <br />
+                        {{produit.pointure}}
+                      </div>
+                    </v-row>
+                  </v-card-text>
+                  <v-card-actions>
+                    <v-btn color="orange" @click="ajoutProduit(produit)" text>Ajouter</v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-card>
+      </v-dialog>
+    </v-row>
   </v-container>
 </template>
 
@@ -154,10 +218,11 @@ export default {
   components: { ItemErrors },
   data() {
     return {
+      dialogProd: false,
       update: false,
       items: [],
       entity: "depot",
-      produits: [],
+      //produits: [],
       editedIndex: -1,
       pencil: "mdi-plus",
       color: "red",
@@ -166,7 +231,6 @@ export default {
       show: false,
       dialog: false,
       valid: true,
-      update: false,
       headers: [
         { text: "Date de dépôt", value: "createdAt" },
         { text: "Désignation", value: "produit.designation" },
@@ -174,9 +238,9 @@ export default {
         { text: "Prix de Vente", value: "produit.prixVente" },
         { text: "Stock Initial", value: "stockInitial" },
         { text: "Qunatité Déposée", value: "quantiteDeposee" },
-        { text: "En Stock", value: "EnStock" },
+        { text: "Ttl Stk après Dépot", value: "totalStockApresDepot" },
         { text: "Quantité Venduee", value: "quantiteVendue" },
-        { text: "Quantité Restante", value: "quantiteRestantee" },
+        { text: "Stock Final", value: "stockFinal" },
         { text: "Actions", value: "actions" }
       ],
       rules: {
@@ -198,33 +262,30 @@ export default {
     isLoading() {
       if (this.$store.state.general.isLoading > 0) {
         return true;
-      } else {
-        return false;
       }
     },
     ...mapGetters({
       depots: "depot/depots",
-      depot: "depot/depot"
+      depot: "depot/depot",
+      produits: "produit/produits"
     })
   },
   created() {
     this.getDepots();
-    this.fetchproduits();
+    this.getProduits();
   },
   methods: {
     ...mapActions({
       getDepots: "depot/getDepots",
       createDepot: "depot/createDepot",
       updateDepot: "depot/updateDepot",
-      removeDepot: "depot/removeDepot"
+      removeDepot: "depot/removeDepot",
+      getProduits: "produit/getProduits"
     }),
-    fetchproduits() {
-      axios.get("/api/produit").then(response => {
-        console.log(response.data);
-        this.produits = response.data;
-      });
+    ajoutProduit(item) {
+      this.$store.commit("depot/setProduit", item);
+      this.dialogProd = false;
     },
-
     validate() {
       this.$refs.form.validate();
     },
@@ -235,6 +296,7 @@ export default {
       this.update = false;
       this.$store.commit("depot/DEPOT_RESET_ITEM");
       this.getDepots();
+      this.getProduits();
     },
     editDepot(depot) {
       this.update = true;
@@ -242,14 +304,20 @@ export default {
       this.dialog = true;
     },
     depotCreate() {
-      this.createDepot().then(res=>{this.reset()});
+      this.createDepot().then(res => {
+        this.reset();
+      });
     },
     depotUpdate() {
-      this.updateDepot().then(res=>{this.reset()});
+      this.updateDepot().then(res => {
+        this.reset();
+      });
     },
     depotRemove(depot) {
       if (window.confirm("Voulez-vous vraiment supprimer ce dépot")) {
-        this.removeDepot(depot.id).then(res=>{this.reset()});
+        this.removeDepot(depot.id).then(res => {
+          this.reset();
+        });
       }
     }
   }

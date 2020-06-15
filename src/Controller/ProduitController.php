@@ -31,9 +31,9 @@ class ProduitController extends AbstractController
     private $validator;
     private $produitRepository;
     private $fournisseurRepository;
-    
-    public function __construct(ValidatorInterface $validator,SerializerInterface $serializer,CategorieRepository $categorieRepository,ProduitRepository $produitRepository,FournisseurRepository $fournisseurRepository, EntityManagerInterface $em)
-    
+
+    public function __construct(ValidatorInterface $validator, SerializerInterface $serializer, CategorieRepository $categorieRepository, ProduitRepository $produitRepository, FournisseurRepository $fournisseurRepository, EntityManagerInterface $em)
+
     {
         $this->categorieRepository = $categorieRepository;
         $this->produitRepository = $produitRepository;
@@ -42,67 +42,71 @@ class ProduitController extends AbstractController
         $this->serializer = $serializer;
         $this->em = $em;
         $this->validator = $validator;
-
-      
-     
     }
 
-    
+
     /**
      * @Route("/produit", name="produit", methods={"GET"})
      */
     public function index()
     {
-       $ligne = 0;
-       $dataProduits = [];
-       $rem = [];
-       
-       $produit = $this->produitRepository->findBy([],['designation'=>'ASC']);
-       foreach ($produit as  $key) {
-           
-           $ligne++;
-           $rem = array(
-           'id'=>$key->getId(),
-           'designation'=>$key->getDesignation(),
-           'structure'=>$key->getFournisseur()->getStructure(),
-           'libelle'=>$key->getCategorie()->getLibelle(),
-           'prixVente'=>$key->getPrixVente(),
-           'createAt'=>$key->getCreatedAt(),
-           'updateAt'=>$key->getUpdatedAt(),
-           'ligne'=>$ligne
-          );
-          array_push($dataProduits, $rem);
-       }
+        $ligne = 0;
+        $dataProduits = [];
+        $rem = [];
 
-       return $this->json($dataProduits,200);
+        $produit = $this->produitRepository->findBy([], ['designation' => 'ASC']);
+        foreach ($produit as  $key) {
+
+            $ligne++;
+            $rem = array(
+                'id' => $key->getId(),
+                'designation' => $key->getDesignation(),
+                'taille' => $key->getTaille(),
+                'age' => $key->getAge(),
+                'pointure' => $key->getPointure(),
+                'couleur' => $key->getCouleur(),
+                'structure' => $key->getFournisseur()->getStructure(),
+                'libelle' => $key->getCategorie()->getLibelle(),
+                'prixVente' => $key->getPrixVente(),
+                'createAt' => $key->getCreatedAt(),
+                'updateAt' => $key->getUpdatedAt(),
+                'ligne' => $ligne
+            );
+            array_push($dataProduits, $rem);
+        }
+
+        return $this->json($dataProduits, 200);
     }
 
-        /**
+    /**
      * @Route("/newProduit", name="produity_new", methods={"POST"})
      */
     public function newProduits(Request $request)
     {
 
         $produit = new Produit;
-        $data=json_decode($request->getContent());
-        if(!$data){
-            $data=$request->request->all();
+        $data = json_decode($request->getContent());
+        if (!$data) {
+            $data = $request->request->all();
         }
-        $category = $this->categorieRepository->findOneBy(['libelle'=>$data->libelle]);
-        $fournisseur = $this->fournisseurRepository->findOneBy(['structure'=>$data->structure]);
+        $category = $this->categorieRepository->findOneBy(['libelle' => $data->libelle]);
+        $fournisseur = $this->fournisseurRepository->findOneBy(['structure' => $data->structure]);
         if ($category && $fournisseur) {
             # code...
             $produit
-                    ->setCategorie($category)
-                    ->setFournisseur($fournisseur)
-                    ->setDesignation($data->designation)
-                    ->setPrixVente($data->prixVente)
-                    ;
+                ->setCategorie($category)
+                ->setFournisseur($fournisseur)
+                ->setDesignation($data->designation)
+                ->setPrixVente($data->prixVente)
+                ->setTaille($data->taille)
+                ->setAge($data->age)
+                ->setPointure($data->pointure)
+                ->setCouleur($data->couleur);
             $this->em->persist($produit);
-        }else {
+        } else {
             # code...
             $data = [
-              
+
                 'status' => 404,
                 'message' => 'Fournisseur ou Catégorie non trouvé'
             ];
@@ -114,38 +118,41 @@ class ProduitController extends AbstractController
             return new Response($errors, 500, [
                 'Content-Type' => 'application/json'
             ]);
-        }else {
+        } else {
             # code...
             $this->em->flush();
             $data = [
-              
+
                 'status' => 201,
                 'message' => 'Produit Créée'
             ];
             return new JsonResponse($data, 201);
         }
     }
-     /**
+    /**
      * @Route("/modifierproduit/{id}", name="produit_edit", methods={"GET","POST"})
      */
     public function modifierproduit(Request $request, Produit $produit)
     {
         $data = json_decode($request->getContent());
 
-        $category = $this->categorieRepository->findOneBy(['libelle'=>$data->libelle]);
-        $fournisseur = $this->fournisseurRepository->findOneBy(['structure'=>$data->structure]);
+        $category = $this->categorieRepository->findOneBy(['libelle' => $data->libelle]);
+        $fournisseur = $this->fournisseurRepository->findOneBy(['structure' => $data->structure]);
         if ($category && $fournisseur) {
             # code...
             $produit
-                    ->setCategorie($category)
-                    ->setFournisseur($fournisseur)
-                    ->setDesignation($data->designation)
-                    ->setPrixVente($data->prixVente)
-                    ;
-        }else {
+                ->setCategorie($category)
+                ->setFournisseur($fournisseur)
+                ->setDesignation($data->designation)
+                ->setPrixVente($data->prixVente)
+                ->setTaille($data->taille)
+                ->setAge($data->age)
+                ->setPointure($data->pointure)
+                ->setCouleur($data->couleur);
+        } else {
             # code...
             $data = [
-              
+
                 'status' => 404,
                 'message' => 'Fournisseur ou Catégorie non trouvé'
             ];
@@ -157,11 +164,11 @@ class ProduitController extends AbstractController
             return new Response($errors, 500, [
                 'Content-Type' => 'application/json'
             ]);
-        }else {
+        } else {
             # code...
             $this->em->flush();
             $data = [
-              
+
                 'status' => 201,
                 'message' => 'Produit Modifié'
             ];
@@ -169,7 +176,7 @@ class ProduitController extends AbstractController
         }
     }
 
-     /**
+    /**
      * @Route("/supprimmerCategory/{id}", name="cat_delete", methods={"DELETE"})
      */
     public function delete(Produit $produit)

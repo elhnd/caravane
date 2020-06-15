@@ -275,6 +275,7 @@ export default {
       if (this.editedIndex > -1) {
         axios.post("/api/modifierCategorie", fd).then(response => {
           console.log(response);
+          this.fetchCategories()
           //this.categories = response.data;
         });
         Object.assign(this.categories[this.editedIndex], this.editedItem);

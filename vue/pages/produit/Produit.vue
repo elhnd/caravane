@@ -63,6 +63,18 @@
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6" md="6">
+                        <v-text-field v-model="editedItem.taille" required label="Taille"></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="6">
+                        <v-text-field v-model="editedItem.age" required label="Age"></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="6">
+                        <v-text-field v-model="editedItem.pointure" required label="Pointure"></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="6">
+                        <v-text-field v-model="editedItem.couleur" required label="Couleur"></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="6">
                         <v-text-field
                           v-model="editedItem.prixVente"
                           :rules="produitRules"
@@ -187,6 +199,30 @@ export default {
         value: "libelle"
       },
       {
+        text: "Taille",
+        align: "start",
+        sortable: false,
+        value: "taille"
+      },
+      {
+        text: "Age",
+        align: "start",
+        sortable: false,
+        value: "age"
+      },
+      {
+        text: "Pointure",
+        align: "start",
+        sortable: false,
+        value: "pointure"
+      },
+      {
+        text: "couleur",
+        align: "start",
+        sortable: false,
+        value: "couleur"
+      },
+      {
         text: "Fournisseur",
         align: "start",
         sortable: false,
@@ -208,6 +244,10 @@ export default {
       id: 0,
       libelle: "",
       designation: "",
+      taille: "",
+      age: "",
+      pointure: "",
+      couleur: "",
       structure: "",
       prixVente: 0,
       stockInitial: 0,
@@ -220,6 +260,10 @@ export default {
       id: 0,
       libelle: "",
       designation: "",
+      taille: "",
+      age: "",
+      pointure: "",
+      couleur: "",
       structure: "",
       prixVente: 0,
       stockInitial: 0,
@@ -316,10 +360,15 @@ export default {
             designation: this.editedItem.designation,
             structure: this.editedItem.structure,
             libelle: this.editedItem.libelle,
-            prixVente: this.editedItem.prixVente
+            prixVente: this.editedItem.prixVente,
+            taille: this.editedItem.taille,
+            age: this.editedItem.age,
+            pointure: this.editedItem.pointure,
+            couleur: this.editedItem.couleur
           })
           .then(response => {
             console.log(response);
+            this.fetchproduits();
             //this.produits = response.data;
           });
         Object.assign(this.produits[this.editedIndex], this.editedItem);
@@ -329,7 +378,11 @@ export default {
             designation: this.editedItem.designation,
             structure: this.editedItem.structure,
             libelle: this.editedItem.libelle,
-            prixVente: this.editedItem.prixVente
+            prixVente: this.editedItem.prixVente,
+            taille: this.editedItem.taille,
+            age: this.editedItem.age,
+            pointure: this.editedItem.pointure,
+            couleur: this.editedItem.couleur
           })
           .then(response => {
             // this.produits = response.data;

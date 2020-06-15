@@ -46,7 +46,7 @@ class Depot
      * @ORM\Column(type="integer")
      * @Groups({"depots_read"})
      */
-    private $EnStock;
+    private $totalStockApresDepot;
 
     /**
      * @ORM\Column(type="integer")
@@ -58,7 +58,7 @@ class Depot
      * @ORM\Column(type="integer")
      * @Groups({"depots_read"})
      */
-    private $quantiteRestantee;
+    private $stockFinal;
 
     /**
      * @ORM\ManyToOne(targetEntity=Produit::class, inversedBy="depots")
@@ -95,14 +95,14 @@ class Depot
         return $this;
     }
 
-    public function getEnStock(): ?int
+    public function getTotalStockApresDepot(): ?int
     {
-        return $this->EnStock;
+        return $this->totalStockApresDepot;
     }
 
-    public function setEnStock(int $EnStock): self
+    public function setTotalStockApresDepot(int $totalStockApresDepot): self
     {
-        $this->EnStock = $EnStock;
+        $this->totalStockApresDepot = $totalStockApresDepot;
 
         return $this;
     }
@@ -119,14 +119,14 @@ class Depot
         return $this;
     }
 
-    public function getQuantiteRestantee(): ?int
+    public function getStockFinal(): ?int
     {
-        return $this->quantiteRestantee;
+        return $this->stockFinal;
     }
 
-    public function setQuantiteRestantee(int $quantiteRestantee): self
+    public function setStockFinal(int $stockFinal): self
     {
-        $this->quantiteRestantee = $quantiteRestantee;
+        $this->stockFinal = $stockFinal;
 
         return $this;
     }

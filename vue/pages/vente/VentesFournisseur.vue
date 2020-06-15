@@ -176,7 +176,6 @@ export default {
       show: false,
       dialog: false,
       valid: true,
-      update: false,
       headers: [
         { text: "Désignation", value: "produit.designation" },
         { text: "Prix de vente", value: "produit.prixVente" },
