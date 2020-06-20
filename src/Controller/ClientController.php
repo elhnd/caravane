@@ -22,23 +22,24 @@ class ClientController extends AbstractController
         $ligne = 0;
         $dataClients = [];
         $rem = [];
-        
+
         $client = $clientRepository->findBy(array(), array('nomComplet' => 'ASC'));
         foreach ($client as  $key) {
-            
+
             $ligne++;
             $rem = array(
-            'id'=>$key->getId(),
-            'nomComplet'=>$key->getNomComplet(),
-            'createAt'=>$key->getCreatedAt(),
-            'updateAt'=>$key->getUpdatedAt(),
-            'ligne'=>$ligne
-           );
-           array_push($dataClients, $rem);
+                'id' => $key->getId(),
+                'nomComplet' => $key->getNomComplet(),
+                'telephone' => $key->getTelephone(),
+                'adresse' => $key->getAdresse(),
+                'createAt' => $key->getCreatedAt(),
+                'updateAt' => $key->getUpdatedAt(),
+                'ligne' => $ligne
+            );
+            array_push($dataClients, $rem);
         }
 
-        return $this->json($dataClients,200);
-        
+        return $this->json($dataClients, 200);
     }
 
     /**
@@ -51,6 +52,8 @@ class ClientController extends AbstractController
         $client = new Client();
 
         $client->setNomComplet($values->nomComplet);
+        $client->setTelephone($values->telephone);
+        $client->setAdresse($values->adresse);
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->persist($client);
         $entityManager->flush();
@@ -67,7 +70,7 @@ class ClientController extends AbstractController
      */
     public function show(Client $client)
     {
-        return $this->json($client,200);
+        return $this->json($client, 200);
     }
 
     /**
@@ -77,8 +80,9 @@ class ClientController extends AbstractController
     {
         $data = json_decode($request->getContent());
         $client
-                ->setNomComplet($data->nomComplet)
-                ;
+            ->setNomComplet($data->nomComplet)
+            ->setTelephone($data->telephone)
+            ->setAdresse($data->adresse);
         $this->getDoctrine()->getManager()->flush();
         $data = [
             'message' => 'client modifié',

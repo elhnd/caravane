@@ -19,54 +19,90 @@
     <v-progress-circular :width="3" color="green" indeterminate></v-progress-circular>
 
     <v-progress-circular :size="50" color="amber" indeterminate></v-progress-circular>
-    <v-form ref="form" @submit.prevent="createVente()">
+    <v-dialog v-model="dialog" persistent max-width="600px">
+      <!-- <template v-slot:activator="{ on }">
+              <v-btn class="mt-2" fab dark color="green">
+                <v-icon dark v-on="on">mdi-plus</v-icon>
+              </v-btn>
+      </template>-->
+
+      <v-card>
+        <v-card-title>
+          <span class="headline">Nouvelle catégorie</span>
+        </v-card-title>
+
+        <v-card-text>
+          <v-form ref="form" @submit.prevent>
+            <v-container>
+              <v-row>
+                <v-col cols="12" sm="6" md="6">
+                  <v-text-field v-model="categorie.libelle" label="Libelle"></v-text-field>
+                </v-col>
+                <v-col cols="12" sm="6" md="6">
+                  <v-file-input
+                    class="input-group-prepend"
+                    accept="image/*"
+                    label="File input"
+                    type="file"
+                    v-model="categorie.files"
+                    id="file"
+                    ref="file"
+                  ></v-file-input>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-form>
+        </v-card-text>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" text @click="close()">Annuler</v-btn>
+          <v-btn color="blue darken-1" text @click="createCategorie()">Enregistrer</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-col cols="12" sm="6" md="3">
+      <v-btn class="ma-4 brunfonce" @click="dialog = true" large tile dark>
+        <v-icon color="#555" left>mdi-account-plus</v-icon>
+        <span style="color:#555;">Ajouter une catégorie</span>
+      </v-btn>
+    </v-col>
+    <v-form ref="form" @submit.prevent="createProduit()">
       <v-container fluid>
-        <v-row>
-          <v-col cols="6" sm="2" center>
-            <v-autocomplete
-              label="Cleints"
-              :items="clients"
-              item-value="id"
-              item-text="nomComplet"
-              v-model="vente.client"
-            ></v-autocomplete>
-          </v-col>
-          <v-col cols="6" sm="2">
-            <v-text-field label="Date de vente" type="date" v-model="vente.dateVente" required></v-text-field>
-          </v-col>
-        </v-row>
         <v-row>
           <v-col cols="12">
             <InputDynamic v-model="items" #default="{ item }">
               <v-row>
                 <v-col cols="6" sm="2">
-                  <v-text-field
-                    label="Produit"
-                    @click="dialogProd = true"
-                    v-model="item.produit.designation"
-                  ></v-text-field>
+                  <v-text-field label="Désignation" v-model="item.designation"></v-text-field>
                 </v-col>
-                <v-col cols="6" sm="2">
-                  <v-text-field label="Prix vente " v-model="item.produit.prixVente" hide-details />
+                <v-col cols="3" sm="1">
+                  <v-text-field label="Taille " v-model="item.taille" hide-details />
                 </v-col>
-                <v-col cols="6" sm="2">
-                  <v-text-field
-                    label="Quantité vendue"
-                    v-model="item.quantiteVendue"
-                    v-on:keyup="prixVttl(item)"
-                    hide-details
-                  />
+                <v-col cols="3" sm="1">
+                  <v-text-field label="Age" v-model="item.age" hide-details />
                 </v-col>
-                <v-col cols="6" sm="2">
-                  <v-text-field
-                    label="Prix vente total"
-                    v-model="item.prixVenteTotal"
-                    hide-details
-                  />
+                <v-col cols="3" sm="1">
+                  <v-text-field label="Pointure" v-model="item.pointure" hide-details />
                 </v-col>
 
+                <v-col cols="3" sm="1">
+                  <v-text-field label="Couleur " v-model="item.couleur" hide-details />
+                </v-col>
                 <v-col cols="6" sm="2">
-                  <v-text-field label="Prix net à payer " v-model="item.prixNetPayer" hide-details />
+                  <v-text-field label="Prix de vente " v-model="item.prixVente" hide-details />
+                </v-col>
+                <v-col cols="3" sm="1">
+                  <v-text-field label="Quantité " v-model="item.quantite" hide-details />
+                </v-col>
+                <v-col cols="6" sm="2">
+                  <v-select
+                    label="Catégorie"
+                    :items="categories"
+                    item-value="id"
+                    item-text="libelle"
+                    v-model="item.categorie"
+                  ></v-select>
                 </v-col>
               </v-row>
             </InputDynamic>
@@ -77,9 +113,6 @@
             <v-btn @click="add" text>
               <v-icon>mdi-plus</v-icon>Ajouter Produit
             </v-btn>
-          </v-col>
-          <v-col cols="6" sm="4">
-            <v-text-field label="Total vente" v-model="vente.totalVente" hide-details />
           </v-col>
         </v-row>
       </v-container>
@@ -115,51 +148,6 @@
               <strong>{{ text }}</strong>
             </v-alert>
           </div>
-          <v-container fluid>
-            <v-row dense>
-              <v-col cols="3" v-for="produit in produits" v-bind:key="produit.id">
-                <v-card class="mx-auto" height="240">
-                  <v-img
-                    class="white--text align-end"
-                    height="120px"
-                    src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
-                  >
-                    <v-card-title>{{produit.designation}}</v-card-title>
-                    <v-card-subtitle>
-                      <span style="color: white">Fournisseur: {{produit.fournisseur.structure}}</span>
-                    </v-card-subtitle>
-                  </v-img>
-                  <v-card-text class="text--primary">
-                    <v-row justify="space-between">
-                      <div>
-                        Prix
-                        <br />
-                        {{produit.prixVente}}
-                      </div>
-                      <div>
-                        Taille
-                        <br />
-                        {{produit.taille}}
-                      </div>
-                      <div>
-                        Age
-                        <br />
-                        {{produit.age}}
-                      </div>
-                      <div>
-                        Pointure
-                        <br />
-                        {{produit.pointure}}
-                      </div>
-                    </v-row>
-                  </v-card-text>
-                  <v-card-actions>
-                    <v-btn color="orange" @click="ajoutProduit(produit)" text>Ajouter</v-btn>
-                  </v-card-actions>
-                </v-card>
-              </v-col>
-            </v-row>
-          </v-container>
         </v-card>
       </v-dialog>
     </v-row>
@@ -174,43 +162,73 @@ export default {
   components: {
     InputDynamic
   },
-  data: () => ({
-    multiLine: true,
-    snackbar: false,
-    text: "",
-    vente: {
-      totalVente: "0",
-      dateVente: "",
-      client: ""
-    },
-    items: [
-      {
+  data() {
+    return {
+      token_access: this.$route.params.token_access,
+      multiLine: true,
+      snackbar: false,
+      dialog: false,
+      text: "",
+      files: null,
+      valid: false,
+      categories: [],
+      fournisseur: {},
+      produit: {
+        designation: "",
+        taille: "",
+        age: "",
+        pointure: "",
+        couleur: "",
+        prixVente: "",
+        categorie: "",
+        quantite: ""
+      },
+      categorie: {
         id: 0,
-        produit: {
+        libelle: "",
+        files: null
+      },
+      items: [
+        {
+          id: 0,
           designation: "",
-          prixVente: ""
-        },
-        quantiteVendue: 0,
-        prixVenteTotal: "",
-        prixNetPayer: ""
-      }
-    ],
-    counter: 10,
-    dialogProd: false,
-    notifications: false,
-    sound: true,
-    widgets: false
-  }),
+          taille: "",
+          age: "",
+          pointure: "",
+          couleur: "",
+          prixVente: "",
+          categorie: "",
+          quantite: ""
+        }
+      ],
+      counter: 10,
+      dialogProd: false,
+      notifications: false,
+      sound: true,
+      widgets: false
+    };
+  },
+  mounted() {
+    if (this.token_access) {
+      localStorage.setItem("token_access", this.token_access);
+    }
+    //console.log("test")
+  },
   computed: {
-    ...mapGetters({
-      produits: "vente/produits",
-      clients: "client/clients"
-    })
+    ...mapGetters({})
   },
   methods: {
-    createVente() {
+    goto(route) {
+      //this.$router.push({ name: "addVente", params: { id: item.id } });
+      this.$router.push({ name: route });
+    },
+    createProduit() {
+      var token_access = localStorage.getItem("token_access");
       axios
-        .post("api/ventes", { produits: this.items, vente: this.vente })
+        .post("api/produits", {
+          produits: this.items,
+          token_access: token_access
+        })
         .then(resp => {
           return;
         })
@@ -218,58 +236,65 @@ export default {
           console.log(err);
         });
     },
+    // getFournisseurs(id) {
+    //   axios.get(`/api/access/fournisseurs/${id}`).then(resp => {
+    //     console.log(resp);
+    //   });
+    // },
+
+    close() {
+      this.dialog = false;
+      this.$nextTick(() => {
+        this.categorie = Object.assign({}, this.categorie);
+      });
+      this.$refs.form.reset();
+    },
+    createCategorie() {
+      const fd = new FormData();
+      fd.append("image", this.categorie.files);
+      fd.append("libelle", this.categorie.libelle);
+      fd.append("id", this.categorie.id);
+      axios
+        .post("api/newCategorie", fd)
+        .then(response => {
+          this.close();
+          this.$refs.form.reset();
+          this.$refs.form.resetValidation();
+          this.fetchCategories();
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    fetchCategories() {
+      axios.get("/api/showcategory").then(response => {
+        this.categories = response.data;
+      });
+    },
     add() {
       this.items.push({
         id: this.counter++,
-        produit: "",
-        quantiteVendue: 0,
-        prixVenteTotal: "",
-        prixNetPayer: ""
+        designation: "",
+        taille: "",
+        age: "",
+        pointure: "",
+        couleur: "",
+        prixVente: "",
+        categorie: "",
+        quantite: ""
       });
     },
     ajoutProduit(value) {
       var nbr = this.items.length;
-      for (let i = 0; i < nbr; i++) {
-        if (this.items[i].produit == value) {
-          this.snackbar = true;
-          this.text = "produit déjà ajouter";
-          setTimeout(() => {
-            console.log("time");
-            this.snackbar = false;
-          }, 3000);
-          console.log("true");
-          return;
-        }
-      }
       this.items[nbr - 1].produit = value;
       this.items[nbr - 1].produit.prixVente = value.prixVente;
       this.dialogProd = false;
     },
-    prixVttl(value) {
-      var nbr = this.items.length;
-      this.items[nbr - 1].prixVenteTotal =
-        value.produit.prixVente * value.quantiteVendue;
-      this.items[nbr - 1].prixNetPayer =
-        value.produit.prixVente * value.quantiteVendue;
-      let somme = 0;
-      for (let i = 0; i < nbr; i++) {
-        somme = somme + parseInt(this.items[i].prixNetPayer);
-        this.vente.totalVente = somme;
-      }
-    },
-    ...mapActions({
-      getProduits: "vente/getProduits",
-      getClients: "client/getClients"
-    })
+    ...mapActions({})
   },
   created() {
-    //console.log(this.createVente());
-    this.getProduits();
-    this.getClients();
-  },
-
-  mounted() {
-    //console.log("test")
+    this.fetchCategories();
+   // this.getFournisseurs(1);
   }
 };
 </script>

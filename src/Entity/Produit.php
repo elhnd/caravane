@@ -97,6 +97,12 @@ class Produit
      */
     private $venteProduits;
 
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     * @Groups({"produit_read","depots_read"})
+     */
+    private $quantite;
+
     public function __construct()
     {
         $this->depots = new ArrayCollection();
@@ -263,6 +269,18 @@ class Produit
                 $venteProduit->setProduit(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getQuantite(): ?int
+    {
+        return $this->quantite;
+    }
+
+    public function setQuantite(?int $quantite): self
+    {
+        $this->quantite = $quantite;
 
         return $this;
     }

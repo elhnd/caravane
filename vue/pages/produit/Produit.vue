@@ -40,6 +40,12 @@
                     <span style="color:#555;">Ajouter un produit</span>
                   </v-btn>
                 </v-col>
+                <v-col cols="12" sm="6" md="3">
+                  <v-btn class="ma-4 brunfonce" @click="dialogFournisseur = true" large tile dark>
+                    <v-icon color="#555" left>mdi-account-plus</v-icon>
+                    <span style="color:#555;">Dépot par un fournisseur</span>
+                  </v-btn>
+                </v-col>
               </v-row>
             </v-card-title>
           </v-col>
@@ -94,7 +100,7 @@
                       <v-col cols="12" sm="6" md="12">
                         <v-select
                           :items="libelle"
-                          v-model="editedItem.libelle"
+                          v-model="editedItem.structure"
                           :rules="produitRules"
                           required
                           label="Catégorie"
@@ -112,6 +118,46 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
+
+          <v-dialog v-model="dialogFournisseur" persistent max-width="1000px">
+            <v-card>
+              <v-card-title>
+                <span class="headline">Sélectionner un fournisseur</span>
+              </v-card-title>
+
+              <v-card-text>
+                <v-form ref="form" v-model="valid" valid>
+                  <v-container>
+                    <v-row>
+                      <v-col cols="12" sm="6" md="12">
+                        <v-autocomplete
+                          :items="allFournisseurs"
+                          v-model="idFournisseur"
+                          item-text="structure"
+                          item-value="id"
+                          :rules="produitRules"
+                          required
+                          label="Fournisseur"
+                        ></v-autocomplete>
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                </v-form>
+              </v-card-text>
+
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="blue darken-1" text @click="close">Annuler</v-btn>
+                <v-btn
+                  color="blue darken-1"
+                  text
+                  :disabled="!valid"
+                  @click="depotFournisseur"
+                >Envoyer</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+
           <!-- </v-toolbar> -->
         </template>
         <template v-slot:item.createAt="{item}">
@@ -156,7 +202,21 @@
           ></v-text-field>
         </div>
       </v-data-table>
+      <v-snackbar
+        v-model="snackbar"
+        :color="colorSnackbar"
+        multi-line
+        right
+        :timeout="timeout"
+        top
+        vertical
+      >{{ textSnackbar }}</v-snackbar>
     </v-card>
+    <!-- <template>
+      <div>
+        <v-alert type="success" top>I'm a success alert.</v-alert>
+      </div>
+    </template>-->
   </v-container>
 </template>
 
@@ -168,6 +228,13 @@ export default {
   name: "produit",
 
   data: () => ({
+    snackbar: false,
+    textSnackbar: "",
+    timeout: 5000,
+    colorSnackbar:'',
+    dialogFournisseur: false,
+    idFournisseur: null,
+    allFournisseurs: [],
     path: "",
     structure: [],
     libelle: [],
@@ -289,6 +356,7 @@ export default {
     this.fetchproduits();
     this.fetchfournisseurs();
     this.fetchCategorie();
+    this.getFournisseurs();
   },
 
   methods: {
@@ -297,13 +365,30 @@ export default {
         this.produits = response.data;
       });
     },
+    depotFournisseur() {
+      axios.get(`/api/access/fournisseurs/${this.idFournisseur}`).then(resp => {
+        this.colorSnackbar= 'green'
+        this.snackbar = true;
+        this.textSnackbar = "Demande de dépot envoyée";
+        this.close();
+      }).catch(err=>{
+        this.colorSnackbar= 'red'
+        this.snackbar = true;
+        this.textSnackbar = "Echec envoie";
+        this.close();
+      });
+    },
+    getFournisseurs() {
+      axios.get("/api/fournisseurs").then(response => {
+        this.allFournisseurs = response.data["hydra:member"];
+      });
+    },
     fetchfournisseurs() {
       var structu = [];
 
       axios.get("/api/fournisseur/").then(response => {
         this.fournisseurs = response.data;
         this.fournisseurs.forEach(element => structu.push(element.structure));
-        console.log();
         this.structure = structu;
       });
     },
@@ -344,6 +429,7 @@ export default {
     close() {
       this.$refs.form.resetValidation();
       this.dialog = false;
+      this.dialogFournisseur = false;
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;

@@ -61,6 +61,22 @@ class Client
      */
     private $ventes;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({
+     *     "client_read","ventes_read"
+     * })
+     */
+    private $telephone;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({
+     *     "client_read","ventes_read"
+     * })
+     */
+    private $adresse;
+
     public function __construct()
     {
         $this->ventes = new ArrayCollection();
@@ -112,6 +128,30 @@ class Client
                 $vente->setClient(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getTelephone(): ?string
+    {
+        return $this->telephone;
+    }
+
+    public function setTelephone(?string $telephone): self
+    {
+        $this->telephone = $telephone;
+
+        return $this;
+    }
+
+    public function getAdresse(): ?string
+    {
+        return $this->adresse;
+    }
+
+    public function setAdresse(?string $adresse): self
+    {
+        $this->adresse = $adresse;
 
         return $this;
     }

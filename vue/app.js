@@ -9,9 +9,10 @@ import Axios from 'axios';
 import axios from './interceptor';
 import DateMixin from './mixin/DateMixin';
 import Security from './mixin/Security';
-import '@fortawesome/fontawesome-free/css/all.css' // Ensure you are using css-loader
+import '@fortawesome/fontawesome-free/css/all.css'; // Ensure you are using css-loader
+import VueRouter from 'vue-router';
 
-
+Vue.use(VueRouter)
 Vue.mixin(DateMixin)
 Vue.mixin(Security)
 Vue.config.productionTip = false;

@@ -13,13 +13,19 @@
                 <v-container>
                   <v-form ref="form" v-model="valid" @submit.prevent="clientCreate()">
                     <v-row>
-                      <v-col cols="12" sm="6">
+                      <v-col cols="6" sm="4">
                         <v-text-field
                           label="Nom Complet*"
                           v-model="client.nomComplet"
                           :rules="rules.nameRules"
                           required
                         ></v-text-field>
+                      </v-col>
+                      <v-col cols="6" sm="4">
+                        <v-text-field label="Téléphone*" v-model="client.telephone" required></v-text-field>
+                      </v-col>
+                      <v-col cols="6" sm="4">
+                        <v-text-field label="Adresse*" v-model="client.adresse" required></v-text-field>
                       </v-col>
                     </v-row>
                     <v-card-actions>

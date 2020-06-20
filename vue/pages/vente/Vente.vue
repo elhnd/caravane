@@ -184,8 +184,11 @@ export default {
       valid: true,
       headers: [
         { text: "Client", value: "client.nomComplet" },
-        { text: "Montant de la vente", value: "totalVente" },
         { text: "Date de la vente", value: "dateVente" },
+        { text: "Montant de la vente", value: "totalVente" },
+        { text: "Montant versé", value: "montantVerse" },
+        { text: "Montant rendu", value: "montantRendu" },
+        { text: "Type de paiement", value: "typePaiement" },
         { text: "Actions", value: "actions" }
       ],
       rules: {

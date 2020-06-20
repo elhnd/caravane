@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <h1 class="my-5 display-1 subheading grey--text">Enregistrer une vente</h1>
+    <h1 class="my-5 display-1 subheading grey--text">Opération de Caisse</h1>
     <v-form ref="form" @submit.prevent="createVente()">
       <v-container fluid>
         <v-row>
@@ -52,10 +52,6 @@
                     hide-details
                   />
                 </v-col>
-
-                <v-col cols="6" sm="2">
-                  <v-text-field label="Prix net à payer " v-model="item.prixNetPayer" hide-details />
-                </v-col>
               </v-row>
             </InputDynamic>
           </v-col>
@@ -66,8 +62,26 @@
               <v-icon>mdi-plus</v-icon>Ajouter Produit
             </v-btn>
           </v-col>
-          <v-col cols="6" sm="4">
+        </v-row>
+        <v-row>
+          <v-col cols="4" sm="2">
             <v-text-field label="Total vente" v-model="vente.totalVente" hide-details />
+          </v-col>
+          <v-col cols="4" sm="2">
+            <v-select
+              :items="typePaiement"
+              item-value="type"
+              item-text="name"
+              option-store="name"
+              label="Type de paiement"
+              v-model="vente.typePaiement"
+            ></v-select>
+          </v-col>
+          <v-col cols="4" sm="2">
+            <v-text-field label="Montant versé" hide-details v-model="vente.montantVerse" />
+          </v-col>
+          <v-col cols="4" sm="2">
+            <v-text-field label="Montant rendu" hide-details v-model="vente.montantRendu" />
           </v-col>
         </v-row>
       </v-container>
@@ -118,7 +132,9 @@
                   >
                     <v-card-title>{{produit.produit.designation}}</v-card-title>
                     <v-card-subtitle>
-                      <span style="color: white">Fournisseur: {{produit.produit.fournisseur.structure}}</span>
+                      <span
+                        style="color: white"
+                      >Fournisseur: {{produit.produit.fournisseur.structure}}</span>
                     </v-card-subtitle>
                   </v-img>
                   <v-card-text class="text--primary">
@@ -146,7 +162,11 @@
                     </v-row>
                   </v-card-text>
                   <v-card-actions>
-                    <v-btn color="orange" @click="ajoutProduit(produit.produit,produit)" text>Ajouter</v-btn>
+                    <v-btn
+                      color="orange"
+                      @click="ajoutProduit(produit.produit,produit)"
+                      text
+                    >Ajouter</v-btn>
                   </v-card-actions>
                 </v-card>
               </v-col>
@@ -176,7 +196,10 @@ export default {
     vente: {
       totalVente: "0",
       dateVente: "",
-      client: ""
+      client: "",
+      typePaiement:"",
+      montantVerse:"",
+      montantRendu:""
     },
     items: [
       {
@@ -189,6 +212,12 @@ export default {
         prixVenteTotal: "",
         prixNetPayer: ""
       }
+    ],
+    typePaiement: [
+      { name: "Chèque", type: "cheque" },
+      { name: "Espèce", type: "espece" },
+      { name: "Via mobile", type: "mobile_money" },
+      { name: "Carte bancaire", type: "carte_bancaire" }
     ],
     counter: 10,
     dialogProd: false,
@@ -222,8 +251,8 @@ export default {
         prixNetPayer: ""
       });
     },
-    ajoutProduit(value,depot) {
-      console.log(depot)
+    ajoutProduit(value, depot) {
+      console.log(depot);
       console.log(value);
       var nbr = this.items.length;
       for (let i = 0; i < nbr; i++) {
@@ -231,7 +260,6 @@ export default {
           this.snackbar = true;
           this.text = "produit déjà ajouter";
           setTimeout(() => {
-            
             this.snackbar = false;
           }, 3000);
           console.log("true");

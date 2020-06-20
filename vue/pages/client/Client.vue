@@ -103,13 +103,27 @@
               <v-card-text>
                 <v-form ref="form" v-model="valid" valid>
                   <v-container>
-                    <v-row>
-                      <v-col cols="12" sm="6" md="4">
+                    <v-row >
+                      <v-col cols="6" sm="4" >
                         <v-text-field
                           v-model="editedItem.nomComplet"
                           :rules="ItemRules"
                           required
                           label="Nom complet"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="6" sm="4" >
+                        <v-text-field
+                          v-model="editedItem.telephone"
+                          required
+                          label="Téléphone"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="6" sm="4" >
+                        <v-text-field
+                          v-model="editedItem.adresse"
+                          required
+                          label="Adresse"
                         ></v-text-field>
                       </v-col>
                     </v-row>
@@ -211,20 +225,25 @@ export default {
         value: "ligne"
       },
       { text: "Nom Complet", value: "nomComplet", sortable: false },
+      { text: "Téléphone", value: "telephone", sortable: false },
+      { text: "adresse", value: "adresse", sortable: false },
       { text: "Crée le", value: "createdAt", sortable: false },
       { text: "Modifié le", value: "updatedAt", sortable: false },
-
       { text: "Actions", value: "actions", sortable: false }
     ],
     clients: [],
     editedIndex: -1,
     editedItem: {
       id: 0,
-      nomComplet: ""
+      nomComplet: "",
+      telephone: "",
+      adresse: ""
     },
     ItemRules: [v => !!v || "Champ requise"],
     defaultItem: {
-      nomComplet: ""
+      nomComplet: "",
+      telephone: "",
+      adresse: ""
     }
   }),
 
@@ -295,6 +314,8 @@ export default {
         axios
           .post("/api/client/" + this.editedItem.id + "/edit", {
             nomComplet: this.editedItem.nomComplet,
+            telephone: this.editedItem.telephone,
+            adresse: this.editedItem.adresse
           })
           .then(response => {
             vuetifyToast.success(response.data.message);
@@ -305,7 +326,9 @@ export default {
       } else {
         axios
           .post(`${API_HOST}/client/new`, {
-            nomComplet: this.editedItem.nomComplet
+            nomComplet: this.editedItem.nomComplet,
+            telephone: this.editedItem.telephone,
+            adresse: this.editedItem.adresse
           })
           .then(response => {
             //  console.log(response.data.message);

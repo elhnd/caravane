@@ -56,6 +56,24 @@ class Vente
      */
     private $venteProduits;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"ventes_read","ventes_write"})
+     */
+    private $typePaiement;
+
+    /**
+     * @ORM\Column(type="bigint", nullable=true)
+     * @Groups({"ventes_read","ventes_write"})
+     */
+    private $montantVerse;
+
+    /**
+     * @ORM\Column(type="bigint")
+     * @Groups({"ventes_read","ventes_write"})
+     */
+    private $montantRendu;
+
     public function __construct()
     {
         $this->venteProduits = new ArrayCollection();
@@ -141,6 +159,42 @@ class Vente
                 $venteProduit->setVente(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getTypePaiement(): ?string
+    {
+        return $this->typePaiement;
+    }
+
+    public function setTypePaiement(?string $typePaiement): self
+    {
+        $this->typePaiement = $typePaiement;
+
+        return $this;
+    }
+
+    public function getMontantVerse(): ?string
+    {
+        return $this->montantVerse;
+    }
+
+    public function setMontantVerse(?string $montantVerse): self
+    {
+        $this->montantVerse = $montantVerse;
+
+        return $this;
+    }
+
+    public function getMontantRendu(): ?string
+    {
+        return $this->montantRendu;
+    }
+
+    public function setMontantRendu(string $montantRendu): self
+    {
+        $this->montantRendu = $montantRendu;
 
         return $this;
     }

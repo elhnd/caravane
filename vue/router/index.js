@@ -11,6 +11,7 @@ import Produit from '../pages/produit/Produit';
 import Depot from '../pages/depot/Depot';
 import DetailVente from '../pages/vente/DetailVente';
 import AddVente from '../pages/vente/AddVente';
+import ProduitFournisseur from '../pages/produit/ProduitFournisseur'
 
 
 import store from '../store'
@@ -46,6 +47,14 @@ const router = new VueRouter({
                     requiresAuth: true
                 },
                 component: Test
+            },
+            {
+                path: "/fournisseur/add/produit/:token_access",
+                name: "ProduitFournisseur",
+                meta: {
+                    requiresAuth: true
+                },
+                component: ProduitFournisseur
             },
             {
                 path: "/user/list",

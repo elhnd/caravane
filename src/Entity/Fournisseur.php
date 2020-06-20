@@ -15,7 +15,17 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ApiResource(
  *  normalizationContext={
  *      "groups"={"fournisseur_produits_vendus_read"}
- *  }
+ *  },
+ * itemOperations={
+ *      "GET",
+ *      "PUT",
+ *      "DELETE",
+ *      "get_fournisseur"={
+ *          "method"="get",
+ *          "path"="/access/fournisseurs/{id}",
+ *          "controller"="App\Controller\AccessFournisseur"
+ *      }
+ * }
  * )
  * @ORM\HasLifecycleCallbacks()
  */
@@ -72,6 +82,16 @@ class Fournisseur
      * @ORM\Column(type="bigint", nullable=true)
      */
     private $fraisExposition;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $tokenAccess;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $tokenExpireAt;
 
     public function __construct()
     {
@@ -198,9 +218,6 @@ class Fournisseur
         return $this;
     }
 
-    /**
-     * @Groups({"fournisseur_produits_vendus_read"})
-     */
     public function getFournisseurProduitsVendus()
     {
 
@@ -209,13 +226,36 @@ class Fournisseur
         foreach ($produits as $produit) {
             $ventes = $produit->getVentes();
 
-            for($i=0; $i<count($ventes);$i++){
+            for ($i = 0; $i < count($ventes); $i++) {
 
                 array_push($produitVendus, $ventes[$i]);
             }
-            
         }
 
         return $produitVendus;
+    }
+
+    public function getTokenAccess(): ?string
+    {
+        return $this->tokenAccess;
+    }
+
+    public function setTokenAccess(?string $tokenAccess): self
+    {
+        $this->tokenAccess = $tokenAccess;
+
+        return $this;
+    }
+
+    public function getTokenExpireAt(): ?\DateTimeInterface
+    {
+        return $this->tokenExpireAt;
+    }
+
+    public function setTokenExpireAt(?\DateTimeInterface $tokenExpireAt): self
+    {
+        $this->tokenExpireAt = $tokenExpireAt;
+
+        return $this;
     }
 }

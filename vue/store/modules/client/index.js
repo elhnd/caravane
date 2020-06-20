@@ -14,7 +14,9 @@ function initialeState() {
     return {
         item: {
             id: null,
-            nomComplet: ''
+            nomComplet: '',
+            telephone:'',
+            adresse:''
         },
     }
 }
@@ -22,7 +24,9 @@ function initialeState() {
 const state = {
     item: {
         id: null,
-        nomComplet: ''
+        nomComplet: '',
+        telephone:'',
+        adresse:''
     },
     items: [],
     error: null,

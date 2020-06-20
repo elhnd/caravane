@@ -52,6 +52,9 @@ class VenteCollectionProduit extends AbstractController implements EventSubscrib
             $client = $this->clientRepository->find($data['vente']['client']);
             $vente->setClient($client);
             $vente->setTotalVente($data['vente']['totalVente']);
+            $vente->setTypePaiement($data['vente']['typePaiement']);
+            $vente->setMontantVerse($data['vente']['montantVerse']);
+            $vente->setMontantRendu($data['vente']['montantRendu']);
 
             $produits = $data['produits'];
             for ($i = 0; $i < count($produits); $i++) {
