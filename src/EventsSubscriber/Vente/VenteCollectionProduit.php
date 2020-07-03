@@ -62,11 +62,15 @@ class VenteCollectionProduit extends AbstractController implements EventSubscrib
                 $venteProduit->setVente($vente);
                 $produit = $this->produitRepository->find($produits[$i]['produit']['id']);
                 $venteProduit->setProduit($produit);
+                $produit->getDepots()[0]->setQuantiteVendue($produit->getDepots()[0]->getQuantiteVendue() + $produits[$i]['quantiteVendue']);
+                $produit->getDepots()[0]->setStockFinal($produit->getDepots()[0]->getTotalStockApresDepot() - $produits[$i]['quantiteVendue']);
                 $venteProduit->setQuantiteVendue($produits[$i]['quantiteVendue']);
                 $venteProduit->setPrixVenteTotal($produits[$i]['prixVenteTotal']);
                 $venteProduit->setPrixNetPayer($produits[$i]['prixNetPayer']);
+                $venteProduit->setDateVente($data['vente']['dateVente']);
                 $this->em->persist($venteProduit);
             }
+            //die;
             $this->em->flush();
         }
     }

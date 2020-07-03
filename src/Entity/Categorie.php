@@ -23,17 +23,19 @@ class Categorie
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"ventes_read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"ventes_read"})
      */
     private $image;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"produit_read"})
+     * @Groups({"produit_read","depots_read","ventes_read"})
      * 
      */
     private $libelle;

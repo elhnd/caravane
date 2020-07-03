@@ -8,7 +8,7 @@ import { API_HOST } from '../../../config/_entrypoint'
 const actions = {
     getVentesFournisseur: ({ dispatch, commit }, query) =>
         crud.getItems({ dispatch, commit }, namespace, query),
-    getVente:({dispatch,commit},id)=>crud.getItem({dispatch,commit},namespace,id)
+    getVente: ({ dispatch, commit }, id) => crud.getItem({ dispatch, commit }, namespace, id)
 }
 
 function initialeState() {
@@ -33,8 +33,9 @@ const getters = {
     fournisseurs: state => state.items,
     error: state => state.error,
     errors: state => state.errors,
-    fournisseurProduitsVendus:state => {
-        const allVente=[]
+    fournisseurProduitsVendus: state => {
+        const allVente = []
+        //console.log(state.items);
         state.items.map(ventes => {
             ventes.fournisseurProduitsVendus.forEach(vente => {
                 allVente.push(vente)

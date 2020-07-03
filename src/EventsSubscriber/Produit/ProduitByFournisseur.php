@@ -3,6 +3,7 @@
 namespace App\EventsSubscriber\Produit;
 
 use ApiPlatform\Core\EventListener\EventPriorities;
+use App\Entity\Depot;
 use App\Entity\Produit;
 use App\Repository\CategorieRepository;
 use App\Repository\FournisseurRepository;
@@ -60,6 +61,7 @@ class ProduitByFournisseur extends AbstractController implements EventSubscriber
 
                     for ($i = 0; $i < count($produits); $i++) {
                         $produit = new Produit();
+                        $depot = new Depot();
                         $produit->setDesignation($produits[$i]['designation']);
                         $categorie = $this->categorieReopsitory->findOneById($produits[$i]['categorie']);
                         $produit->setFournisseur($fournisseur);
@@ -70,7 +72,16 @@ class ProduitByFournisseur extends AbstractController implements EventSubscriber
                         $produit->setTaille($produits[$i]['taille']);
                         $produit->setAge($produits[$i]['age']);
                         $produit->setPointure($produits[$i]['pointure']);
+                        $depot->setProduit($produit);
+
+                        $depot->setQuantiteDeposee($produits[$i]['quantite']);
+                        $depot->setQuantiteVendue(0);
+                        $depot->setStockFinal($produits[$i]['quantite']);
+                        $depot->setStockInitial($produits[$i]['quantite']);
+                        $depot->setTotalStockApresDepot($produits[$i]['quantite']);
+
                         $this->em->persist($produit);
+                        $this->em->persist($depot);
                     }
                     $this->em->flush();
                 }

@@ -44,31 +44,31 @@ class Produit
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"produit_read"})
+     * @Groups({"produit_read","ventes_read"})
      */
     private $taille;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"produit_read"})
+     * @Groups({"produit_read","ventes_read"})
      */
     private $age;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"produit_read"})
+     * @Groups({"produit_read","ventes_read"})
      */
     private $pointure;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"produit_read"})
+     * @Groups({"produit_read","ventes_read"})
      */
     private $couleur;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"produit_read","depots_read","ventes_read","ventes_read","fournisseur_produits_vendus_read"})
+     * @Groups({"produit_read","depots_read","ventes_read","fournisseur_produits_vendus_read"})
      * 
      */
     private $prixVente;
@@ -83,7 +83,7 @@ class Produit
     /**
      * @ORM\ManyToOne(targetEntity=Categorie::class, inversedBy="produit")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"produit_read","depots_read"})
+     * @Groups({"produit_read","depots_read","ventes_read"})
      */
     private $categorie;
 
@@ -94,12 +94,13 @@ class Produit
 
     /**
      * @ORM\OneToMany(targetEntity=VenteProduit::class, mappedBy="produit")
+     * 
      */
     private $venteProduits;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
-     * @Groups({"produit_read","depots_read"})
+     * @Groups({"produit_read","depots_read","ventes_read"})
      */
     private $quantite;
 

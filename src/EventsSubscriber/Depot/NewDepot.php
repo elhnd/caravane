@@ -13,7 +13,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
-class NewDepot
+class NewDepot implements EventSubscriberInterface
 {
 
     private $params;
@@ -42,9 +42,12 @@ class NewDepot
 
         $depot = $event->getControllerResult();
         $method = $event->getRequest()->getMethod();
-        $data = json_decode($event->getRequest()->getContent(), true);
-        if ($depot instanceof Depot && $method === "POST") {
-            $depot->setStockInitial($depot->getQuantiteDeposee());
+
+        if ($depot instanceof Depot && $method === "PUT") {
+            $depot
+            ->setQuantiteDeposee($depot->getQuantiteDeposee())
+            ->setTotalStockApresDepot($depot->getTotalStockApresDepot() + $depot->getQuantiteDeposee())
+            ->setStockFinal($depot->getStockFinal() + $depot->getQuantiteDeposee());
         }
     }
 }

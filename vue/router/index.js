@@ -11,9 +11,9 @@ import Produit from '../pages/produit/Produit';
 import Depot from '../pages/depot/Depot';
 import DetailVente from '../pages/vente/DetailVente';
 import AddVente from '../pages/vente/AddVente';
-import ProduitFournisseur from '../pages/produit/ProduitFournisseur'
-
-
+import ProduitFournisseur from '../pages/produit/ProduitFournisseur';
+import ProduitsVente from '../pages/vente/ProduitsVente';
+import AllVente from '../pages/vente/AllVente'
 import store from '../store'
 import UserList from '../pages/user/List'
 Vue.use(VueRouter);
@@ -120,6 +120,22 @@ const router = new VueRouter({
                 },
                 component: AddVente
             },
+            {
+                path: "/vente/produit/detail",
+                name: "produitsVente",
+                meta: {
+                    requiresAuth: true
+                },
+                component: ProduitsVente
+            },
+            {
+                path: "/vente/allvente",
+                name: "allVente",
+                meta: {
+                    requiresAuth: true
+                },
+                component: AllVente
+            }
 
         ],
         redirect: { name: 'Home' },

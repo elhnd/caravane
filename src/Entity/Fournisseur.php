@@ -37,7 +37,7 @@ class Fournisseur
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"fournisseur_produits_vendus_read"})
+     * @Groups({"fournisseur_produits_vendus_read","ventes_read"})
      */
     private $id;
 

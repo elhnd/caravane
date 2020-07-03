@@ -117,7 +117,8 @@ const mutations = {
         Object.assign(state, initialeState())
     },
     [types.UPDATE_ITEM](state, item) {
-        state.item = Object.assign({}, state.item, item)
+        state.item = Object.assign({}, state.item, item);
+        state.item.quantiteDeposee = 0;
     },
     [types.SET_ITEMS](state, items) {
         Object.assign(state, { items })

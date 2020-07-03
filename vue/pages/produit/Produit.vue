@@ -82,6 +82,13 @@
                       </v-col>
                       <v-col cols="12" sm="6" md="6">
                         <v-text-field
+                          v-model.number="editedItem.quantite"
+                          required
+                          label="Quantite"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="6">
+                        <v-text-field
                           v-model="editedItem.prixVente"
                           :rules="produitRules"
                           required
@@ -100,7 +107,7 @@
                       <v-col cols="12" sm="6" md="12">
                         <v-select
                           :items="libelle"
-                          v-model="editedItem.structure"
+                          v-model="editedItem.libelle"
                           :rules="produitRules"
                           required
                           label="Catégorie"
@@ -231,7 +238,7 @@ export default {
     snackbar: false,
     textSnackbar: "",
     timeout: 5000,
-    colorSnackbar:'',
+    colorSnackbar: "",
     dialogFournisseur: false,
     idFournisseur: null,
     allFournisseurs: [],
@@ -290,6 +297,12 @@ export default {
         value: "couleur"
       },
       {
+        text: "quantite",
+        align: "start",
+        sortable: false,
+        value: "quantite"
+      },
+      {
         text: "Fournisseur",
         align: "start",
         sortable: false,
@@ -320,7 +333,8 @@ export default {
       stockInitial: 0,
       stock: 0,
       qteVendue: 0,
-      ligne: 0
+      ligne: 0,
+      quantite: 0
     },
     produitRules: [v => !!v || "Champ requise"],
     defaultItem: {
@@ -336,7 +350,8 @@ export default {
       stockInitial: 0,
       stock: 0,
       qteVendue: 0,
-      ligne: 0
+      ligne: 0,
+      quantite: 0
     }
   }),
 
@@ -366,17 +381,20 @@ export default {
       });
     },
     depotFournisseur() {
-      axios.get(`/api/access/fournisseurs/${this.idFournisseur}`).then(resp => {
-        this.colorSnackbar= 'green'
-        this.snackbar = true;
-        this.textSnackbar = "Demande de dépot envoyée";
-        this.close();
-      }).catch(err=>{
-        this.colorSnackbar= 'red'
-        this.snackbar = true;
-        this.textSnackbar = "Echec envoie";
-        this.close();
-      });
+      axios
+        .get(`/api/access/fournisseurs/${this.idFournisseur}`)
+        .then(resp => {
+          this.colorSnackbar = "green";
+          this.snackbar = true;
+          this.textSnackbar = "Demande de dépot envoyée";
+          this.close();
+        })
+        .catch(err => {
+          this.colorSnackbar = "red";
+          this.snackbar = true;
+          this.textSnackbar = "Echec envoie";
+          this.close();
+        });
     },
     getFournisseurs() {
       axios.get("/api/fournisseurs").then(response => {
@@ -450,7 +468,8 @@ export default {
             taille: this.editedItem.taille,
             age: this.editedItem.age,
             pointure: this.editedItem.pointure,
-            couleur: this.editedItem.couleur
+            couleur: this.editedItem.couleur,
+            quantite: this.editedItem.quantite
           })
           .then(response => {
             console.log(response);
@@ -468,7 +487,8 @@ export default {
             taille: this.editedItem.taille,
             age: this.editedItem.age,
             pointure: this.editedItem.pointure,
-            couleur: this.editedItem.couleur
+            couleur: this.editedItem.couleur,
+            quantite: this.editedItem.quantite
           })
           .then(response => {
             // this.produits = response.data;

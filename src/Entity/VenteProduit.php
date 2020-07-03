@@ -22,6 +22,7 @@ class VenteProduit
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"ventes_read"})
      */
     private $id;
 
@@ -32,23 +33,45 @@ class VenteProduit
 
     /**
      * @ORM\ManyToOne(targetEntity=Produit::class, inversedBy="venteProduits",cascade={"persist"})
+     * @Groups({"ventes_read"})
      */
     private $produit;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"ventes_read"})
      */
     private $quantiteVendue;
 
     /**
      * @ORM\Column(type="bigint")
+     * @Groups({"ventes_read"})
      */
     private $prixVenteTotal;
 
     /**
      * @ORM\Column(type="bigint")
+     * @Groups({"ventes_read"})
      */
     private $prixNetPayer;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"ventes_read"})
+     */
+    private $status;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"ventes_read"})
+     */
+    private $commentaire;
+
+    /**
+     * @ORM\Column(type="string",nullable=true)
+     * @Groups({"ventes_read"})
+     */
+    private $dateVente;
 
     public function getId(): ?int
     {
@@ -111,6 +134,42 @@ class VenteProduit
     public function setPrixNetPayer(string $prixNetPayer): self
     {
         $this->prixNetPayer = $prixNetPayer;
+
+        return $this;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?string $status): self
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    public function getCommentaire(): ?string
+    {
+        return $this->commentaire;
+    }
+
+    public function setCommentaire(?string $commentaire): self
+    {
+        $this->commentaire = $commentaire;
+
+        return $this;
+    }
+
+    public function getDateVente(): ?string
+    {
+        return $this->dateVente;
+    }
+
+    public function setDateVente(string $dateVente): self
+    {
+        $this->dateVente = $dateVente;
 
         return $this;
     }

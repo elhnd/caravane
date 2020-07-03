@@ -23,6 +23,8 @@
                           label="Produit"
                           @click="dialogProd = true"
                           v-model="depot.produit.designation"
+                          readonly
+                          
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6">
@@ -30,6 +32,8 @@
                           label="Stock initial *"
                           v-model.number="depot.stockInitial"
                           required
+                          readonly
+                          
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6">
@@ -43,6 +47,8 @@
                           label="Stock total après dépot"
                           v-model.number="depot.totalStockApresDepot"
                           required
+                          readonly
+                          
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6">
@@ -50,6 +56,8 @@
                           label="Quantité vendue *"
                           v-model.number="depot.quantiteVendue"
                           type="Quantité vendue"
+                          
+                          readonly
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6">
@@ -57,6 +65,8 @@
                           label="Stock Final *"
                           v-model.number="depot.stockFinal"
                           type="Quantité restante"
+                          readonly
+                          
                         ></v-text-field>
                       </v-col>
                     </v-row>
@@ -67,7 +77,7 @@
                         <v-btn
                           type="submit"
                           :loading="isLoading "
-                          :disabled="isLoading || !valid"
+                          :="isLoading || !valid"
                           color="success"
                         >
                           Valider

@@ -138,7 +138,7 @@
             <v-btn
               type="submit"
               :loading="isLoading "
-              :disabled="isLoading || !valid"
+              
               color="success"
             >
               Valider

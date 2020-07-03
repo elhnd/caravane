@@ -1,0 +1,73 @@
+Bundle pour la base de donnée
+
+    composer require symfony/orm-pack
+    composer require laminas/laminas-eventmanager
+    composer require laminas/laminas-code
+
+Symfony Maker vous aide à créer des commandes vides, 
+des contrôleurs, des classes de formulaire,
+des tests et bien plus encore pour que vous 
+puissiez oublier d'écrire du code passe-partout.
+
+    composer require --dev symfony/maker-bundle
+
+Pour les annotations
+
+    composer require annotations
+
+Pour la séréalisation
+
+    composer require symfony/serializer
+    ou composer require jms/serializer
+
+le composant fournit des moyens d'autoriser des utilisateurs authentifiés en fonction de leurs rôles.
+
+    composer require security
+
+Pour la validation des données
+
+    composer require validator
+
+Pour pouvoir utiliser les fixtures
+
+    composer require --dev orm-fixtures
+
+Pour les tests
+
+    composer require --dev symfony/phpunit-bridge
+    composer require --dev symfony/browser-kit symfony/css-selector
+    php bin/phpunit
+
+Installation de twig et ses assets
+
+    composer require "twig/twig:^3.0"
+    composer require symfony/asset
+
+    ou composer require symfony/twig-bundle
+
+Pour des commandes de tests de composants
+
+    composer require logger
+
+
+composer require logger
+composer update
+composer req api make
+composer require migrations
+composer require friendsofsymfony/rest-bundle
+composer require form annotations
+composer require --dev symfony/browser-kit symfony/css-selector
+composer require swiftmailer-bundle
+composer require --dev symfony/test-pack
+
+Pour l'authentification:
+    npm install --save actions/auth
+
+Annulé un pull
+    git reset --hard ORIG_HEAD
+
+supprimé une branche
+    En local:
+    git branch -d <branchname>
+    Distante
+    git push origin --delete <branchname>

@@ -102,9 +102,9 @@
                     label="Rechercher fournisseur"
                     :items="fournisseurs"
                     item-value="id"
-                    v-model="idVente"
+                    v-model="fournisseur"
                     item-text="structure"
-                    @input="venteGet(idVente)"
+                    @input=" filterByFour()"
                   ></v-autocomplete>
                 </v-col>
                 <v-col cols="12" sm="6" md="3">
@@ -122,12 +122,7 @@
               </v-row>
             </v-card-title>
           </v-col>
-          <v-data-table :headers="headers" :items="testVente" :search="search">
-            <template v-slot:item.dateVente="{item}">
-              <div>
-                <span>{{crmDateFormat(item.dateVente)}}</span>
-              </div>
-            </template>
+          <v-data-table :headers="headers" :items="ventes" :search="search">
             <template v-slot:item.actions="{item}">
               <v-row>
                 <div class="my-2">
@@ -162,10 +157,11 @@ export default {
   components: { ItemErrors },
   data() {
     return {
-      idVente:null,
+      idVente: null,
       update: false,
       items: [],
       clients: [],
+      fournisseur: null,
       entity: "fournisseur",
       produits: [],
       editedIndex: -1,
@@ -177,12 +173,13 @@ export default {
       dialog: false,
       valid: true,
       headers: [
-        { text: "Désignation", value: "produit.designation" },
-        { text: "Prix de vente", value: "produit.prixVente" },
-        { text: "Quantité vendue", value: "quantiteVendue" },
-        { text: "Prix de vente total", value: "prixVenteTotal" },
-        { text: "Prix net à payer", value: "prixNetPayer" },
+        { text: "Client", value: "client.nomComplet" },
+        { text: "Téléphone", value: "client.telephone" },
         { text: "Date de la vente", value: "dateVente" },
+        { text: "Montant de la vente", value: "totalVente" },
+        { text: "Montant versé", value: "montantVerse" },
+        { text: "Montant rendu", value: "montantRendu" },
+        { text: "Type de paiement", value: "typePaiement" },
         { text: "Actions", value: "actions" }
       ],
       rules: {
@@ -204,22 +201,20 @@ export default {
     isLoading() {
       if (this.$store.state.general.isLoading > 0) {
         return true;
-      } else {
-        return false;
       }
     },
     ...mapGetters({
       ventes: "vente/ventes",
       vente: "vente/vente",
-      ventesFournisseur: "fournisseur/fournisseurProduitsVendus",
+      ventesFournisseur: "vente/fournisseurProduitsVendus",
       fournisseurs: "fournisseur/fournisseurs"
     }),
-    testVente:{
-      get(){
-        return this.ventesFournisseur
+    testVente: {
+      get() {
+        return this.ventesFournisseur;
       },
-      set(newVente){
-        return newVente
+      set(newVente) {
+        return newVente;
       }
     }
   },
@@ -237,8 +232,24 @@ export default {
       updateVente: "vente/updateVente",
       removeVente: "vente/removeVente",
       getVentesFournisseur: "fournisseur/getVentesFournisseur",
-      getVente : "fournisseur/getVente",
+      getVente: "fournisseur/getVente"
     }),
+    filterByFour() {
+      this.getVentes().then(resp => {
+        var values = [];
+        resp.filter(data => {
+          data.venteProduits.forEach(vente => {
+            if (
+              vente.produit &&
+              vente.produit.fournisseur.id == this.fournisseur
+            ) {
+              values.push(data);
+            }
+          });
+        });
+        this.$store.commit("vente/VENTE_SET_ITEMS", values);
+      });
+    },
     fetchproduits() {
       axios.get("/api/produit").then(response => {
         this.produits = response.data;
@@ -256,11 +267,10 @@ export default {
       this.$store.commit("vente/VENTE_RESET_ITEM");
       this.getVentes();
     },
-    venteGet(id){
-      this.getVente(id)
-          .then(resp=>{
-            this.testVente=resp
-          })
+    venteGet(id) {
+      this.getVente(id).then(resp => {
+        this.testVente = resp;
+      });
     },
     editVente(vente) {
       this.update = true;

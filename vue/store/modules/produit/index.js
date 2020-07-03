@@ -80,6 +80,7 @@ function initialeState() {
             prixVente: 0,
             fournisseur: '',
             categorie: '',
+            quantite:''
         },
     }
 }
@@ -95,6 +96,7 @@ const state = {
         prixVente: 0,
         fournisseur: '',
         categorie: '',
+        quantite:''
     },
     items: [],
     error: null,

@@ -79,7 +79,7 @@ export default {
     };
   },
   created() {
-    console.log(this.getClients());
+    this.getClients();
   },
   computed: {
     isLoading() {

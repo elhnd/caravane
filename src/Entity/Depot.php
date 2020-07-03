@@ -37,7 +37,7 @@ class Depot
     private $stockInitial;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer",nullable=true)
      * @Groups({"depots_read"})
      */
     private $quantiteDeposee;

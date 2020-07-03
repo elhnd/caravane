@@ -1,20 +1,46 @@
 <template>
   <v-container fluid>
     <h1 class="my-5 display-1 subheading grey--text">Opération de Caisse</h1>
-    <v-form ref="form" @submit.prevent="createVente()">
+    <v-form ref="form" @submit.prevent="createVente()" v-model="valid">
       <v-container fluid>
         <v-row>
           <v-col cols="6" sm="2" center>
             <v-autocomplete
-              label="Cleint"
+              label="Client"
               :items="clients"
               item-value="id"
-              item-text="nomComplet"
+              item-text="telephone"
               v-model="vente.client"
+              @input="clientName(clients,vente.client)"
+              :rules="rules.champRequis"
             ></v-autocomplete>
           </v-col>
+
           <v-col cols="6" sm="2">
-            <v-text-field label="Date de vente" type="date" v-model="vente.dateVente" required></v-text-field>
+            <v-text-field
+              label="Nom Complet"
+              v-model="vente.nomComplet"
+              :rules="rules.champRequis"
+              readonly
+              required
+            ></v-text-field>
+          </v-col>
+          <!-- <v-col cols="6" sm="2">
+            <v-text-field
+              label="Téléphone"
+              v-model="vente.telephone"
+              :rules="rules.champRequis"
+              required
+            ></v-text-field>
+          </v-col>-->
+          <v-col cols="6" sm="2">
+            <v-text-field
+              label="Date de vente"
+              type="date"
+              v-model="vente.dateVente"
+              :rules="rules.champRequis"
+              required
+            ></v-text-field>
           </v-col>
           <v-col cols="12" sm="6" md="3">
             <v-btn class="ma-4 brunfonce" @click="dialogClient = !dialogClient" large tile dark>
@@ -32,24 +58,32 @@
                     label="Produit"
                     @click="dialogProd = true"
                     v-model="item.produit.designation"
+                    :rules="rules.champRequis"
                   ></v-text-field>
                 </v-col>
                 <v-col cols="6" sm="2">
-                  <v-text-field label="Prix vente " v-model="item.produit.prixVente" hide-details />
+                  <v-text-field
+                    label="Prix vente "
+                    v-model="item.produit.prixVente"
+                    :rules="rules.champRequis"
+                    type="number"
+                  />
                 </v-col>
                 <v-col cols="6" sm="2">
                   <v-text-field
                     label="Quantité vendue"
                     v-model="item.quantiteVendue"
                     v-on:keyup="prixVttl(item)"
-                    hide-details
+                    type="number"
+                    :rules="rules.champRequis"
                   />
                 </v-col>
                 <v-col cols="6" sm="2">
                   <v-text-field
                     label="Prix vente total"
                     v-model="item.prixVenteTotal"
-                    hide-details
+                    type="number"
+                    :rules="rules.champRequis"
                   />
                 </v-col>
               </v-row>
@@ -63,9 +97,14 @@
             </v-btn>
           </v-col>
         </v-row>
-        <v-row>
+        <v-row v-if="items[0]">
           <v-col cols="4" sm="2">
-            <v-text-field label="Total vente" v-model="vente.totalVente" hide-details />
+            <v-text-field
+              label="Total vente"
+              type="number"
+              v-model="vente.totalVente"
+              :rules="rules.champRequis"
+            />
           </v-col>
           <v-col cols="4" sm="2">
             <v-select
@@ -75,21 +114,50 @@
               option-store="name"
               label="Type de paiement"
               v-model="vente.typePaiement"
+              type="number"
+              :rules="rules.champRequis"
             ></v-select>
           </v-col>
           <v-col cols="4" sm="2">
-            <v-text-field label="Montant versé" hide-details v-model="vente.montantVerse" />
+            <v-text-field
+              label="Montant versé"
+              type="number"
+              v-model="vente.montantVerse"
+              :rules="rules.champRequis"
+            />
           </v-col>
           <v-col cols="4" sm="2">
-            <v-text-field label="Montant rendu" hide-details v-model="vente.montantRendu" />
+            <v-text-field
+              label="Montant rendu"
+              type="number"
+              v-model="vente.montantRendu"
+              :rules="rules.champRequis"
+            />
           </v-col>
         </v-row>
       </v-container>
-      <v-card-actions>
+      <!-- <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="blue darken-1" text @click="reset()">Fermer</v-btn>
         <div class="my-2">
           <v-btn type="submit" color="success">
+            Valider
+            <template v-slot:loader>
+              <span>En cours...</span>
+            </template>
+          </v-btn>
+        </div>
+      </v-card-actions>-->
+      <v-card-actions v-if="items[0]">
+        <v-spacer></v-spacer>
+        <v-btn color="blue darken-1" text @click="items=[]">Annuler</v-btn>
+        <div class="my-2">
+          <v-btn
+            type="submit"
+            :loading="isLoading "
+            :disabled="isLoading || !valid"
+            color="success"
+          >
             Valider
             <template v-slot:loader>
               <span>En cours...</span>
@@ -175,6 +243,15 @@
         </v-card>
       </v-dialog>
     </v-row>
+    <v-snackbar
+      v-model="snackbar"
+      :color="colorSnackbar"
+      multi-line
+      right
+      :timeout="timeout"
+      top
+      vertical
+    >{{ textSnackbar }}</v-snackbar>
   </v-container>
 </template>
 
@@ -188,47 +265,65 @@ export default {
     InputDynamic,
     Client
   },
-  data: () => ({
-    dialogClient: false,
-    multiLine: true,
-    snackbar: false,
-    text: "",
-    vente: {
-      totalVente: "0",
-      dateVente: "",
-      client: "",
-      typePaiement:"",
-      montantVerse:"",
-      montantRendu:""
-    },
-    items: [
-      {
-        id: 0,
-        produit: {
-          designation: "",
-          prixVente: ""
-        },
-        quantiteVendue: 0,
-        prixVenteTotal: "",
-        prixNetPayer: ""
+  data() {
+    return {
+      test: "",
+      snackbar: false,
+      textSnackbar: "",
+      timeout: 5000,
+      colorSnackbar: "",
+      valid: true,
+      dialogClient: false,
+      multiLine: true,
+      text: "",
+      vente: {
+        totalVente: "0",
+        dateVente: "",
+        client: "",
+        typePaiement: "",
+        montantVerse: "",
+        montantRendu: "",
+        nomComplet: ""
+      },
+      items: [
+        {
+          id: 0,
+          produit: {
+            designation: "",
+            prixVente: ""
+          },
+          quantiteVendue: 0,
+          prixVenteTotal: "",
+          prixNetPayer: ""
+        }
+      ],
+      typePaiement: [
+        { name: "Chèque", type: "cheque" },
+        { name: "Espèce", type: "espece" },
+        { name: "Via mobile", type: "mobile_money" },
+        { name: "Carte bancaire", type: "carte_bancaire" }
+      ],
+      counter: 10,
+      dialogProd: false,
+      notifications: false,
+      sound: true,
+      widgets: false,
+      rules: {
+        champRequis: [v => !!v || "champ requis"]
       }
-    ],
-    typePaiement: [
-      { name: "Chèque", type: "cheque" },
-      { name: "Espèce", type: "espece" },
-      { name: "Via mobile", type: "mobile_money" },
-      { name: "Carte bancaire", type: "carte_bancaire" }
-    ],
-    counter: 10,
-    dialogProd: false,
-    notifications: false,
-    sound: true,
-    widgets: false
-  }),
+    };
+  },
+  mounted() {},
   computed: {
+    isLoading() {
+      if (this.$store.state.general.isLoading > 0) {
+        return true;
+      }
+    },
     ...mapGetters({
       produits: "vente/produits",
-      clients: "client/clients"
+      clients: "client/clients",
+      client: "client/client"
     })
   },
   methods: {
@@ -236,9 +331,17 @@ export default {
       axios
         .post("api/ventes", { produits: this.items, vente: this.vente })
         .then(resp => {
-          return;
+          this.snackbar = true;
+          this.textSnackbar = "Opération enregistrée avec succès";
+          this.timeout = 5000;
+          this.colorSnackbar = "green";
+          this.items = [];
         })
         .catch(err => {
+          this.snackbar = false;
+          this.textSnackbar = "Opération échouée";
+          this.timeout = 5000;
+          this.colorSnackbar = "red";
           console.log(err);
         });
     },
@@ -270,6 +373,13 @@ export default {
       this.items[nbr - 1].produit.prixVente = value.prixVente;
       this.dialogProd = false;
     },
+    clientName(item, id) {
+      item.forEach(item => {
+        if (item.id == id) {
+          this.vente.nomComplet = item.nomComplet;
+        }
+      });
+    },
     prixVttl(value) {
       var nbr = this.items.length;
       this.items[nbr - 1].prixVenteTotal =
@@ -291,10 +401,6 @@ export default {
     //console.log(this.createVente());
     this.getProduits();
     this.getClients();
-  },
-
-  mounted() {
-    //console.log("test")
   }
 };
 </script>

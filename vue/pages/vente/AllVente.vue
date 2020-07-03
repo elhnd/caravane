@@ -6,7 +6,7 @@
           <v-dialog v-model="dialog" persistent max-width="600px">
             <v-card>
               <v-card-title>
-                <span class="headline">Vente de produits</span>
+                <span class="headline">Vente de produits test</span>
                 <item-errors v-if="entity" :entity="entity" />
               </v-card-title>
               <v-card-text>
@@ -97,24 +97,9 @@
       <v-col cols="12">
         <v-card class="mx-auto">
           <v-col cols="12">
-            <v-card-title class="p-n12 mt-n8 mb-n8">
-              <v-row justify="space-between">
-                <v-col cols="12" sm="6" md="3">
-                  <v-text-field
-                    v-model="search"
-                    append-icon="search"
-                    label="Search"
-                    single-line
-                    hide-details
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="12" sm="6" md="3">
-                  <v-text-field type="date" v-model="from" label="Date de début"></v-text-field>
-                </v-col>
-                <v-col cols="12" sm="6" md="3">
-                  <v-text-field type="date" v-model="to" label="Date de fin" @input="filterByDate()"></v-text-field>
-                </v-col>
-                <v-col cols="12" sm="6" md="3">
+            <v-form ref="form">
+              <v-card-title class="p-n12 mt-n8 mb-n8">
+                <v-col cols="6" sm="3" md="3">
                   <v-btn
                     class="ma-4 brunfonce"
                     @click="update = false,goto('addVente')"
@@ -126,10 +111,47 @@
                     <span style="color:#555;">Ajouter une vente</span>
                   </v-btn>
                 </v-col>
-              </v-row>
-            </v-card-title>
+                <v-row justify="space-between">
+                  <v-col cols="6" sm="3" md="2">
+                    <v-text-field
+                      v-model="search"
+                      append-icon="search"
+                      label="Search"
+                      single-line
+                      hide-details
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="6" sm="2" md="2">
+                    <v-text-field type="date" v-model="from" label="Date de début"></v-text-field>
+                  </v-col>
+                  <v-col cols="6" sm="2" md="2">
+                    <v-text-field
+                      type="date"
+                      v-model="to"
+                      label="Date de fin"
+                      @input="filterByDate()"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="6" sm="2" md="2">
+                    <v-autocomplete
+                      :items="fournisseurs"
+                      label="Fournisseur"
+                      item-value="id"
+                      v-model="fournisseur"
+                      item-text="structure"
+                      @input=" filterByFour()"
+                    ></v-autocomplete>
+                  </v-col>
+                  <v-col cols="6" sm="2" md="2">
+                    <v-btn class="ma-4 brunfonce" @click="replay()" tile dark small>
+                      <v-icon color="#555" large>replay</v-icon>
+                    </v-btn>
+                  </v-col>
+                </v-row>
+              </v-card-title>
+            </v-form>
           </v-col>
-          <v-data-table :headers="headers" :items="ventes" :search="search">
+          <v-data-table :headers="headers" :items="allVentesFours" :search="search">
             <template v-slot:item.dateVente="{item}">
               <div>
                 <span>{{item.dateVente}}</span>
@@ -159,11 +181,12 @@
               <v-btn color="primary">Reset</v-btn>
             </template>
           </v-data-table>
+          <div>Total Journée: {{ttlJour}}</div>
         </v-card>
       </v-col>
     </v-row>
 
-    <!-- <v-row justify="space-between">
+    <v-row justify="space-between">
       <v-col class="col-auto">
         <v-row justify="center">
           <v-dialog v-model="dialog" persistent max-width="600px">
@@ -173,16 +196,15 @@
               </v-card-title>
               <v-card-text>
                 <v-container>
-
-                    <v-card-actions>
-                      <v-btn
-                        color="blue darken-1"
-                        text
-                        @click="dialogClient = !dialogClient"
-                      >Ajouter client</v-btn>
-                      <v-spacer></v-spacer>
-                      <v-btn color="blue darken-1" text @click="reset()">Fermer</v-btn>
-                    </v-card-actions>
+                  <v-card-actions>
+                    <v-btn
+                      color="blue darken-1"
+                      text
+                      @click="dialogClient = !dialogClient"
+                    >Ajouter client</v-btn>
+                    <v-spacer></v-spacer>
+                    <v-btn color="blue darken-1" text @click="reset()">Fermer</v-btn>
+                  </v-card-actions>
                 </v-container>
               </v-card-text>
             </v-card>
@@ -194,7 +216,7 @@
           </template>
         </v-row>
       </v-col>
-    </v-row>-->
+    </v-row>
   </div>
 </template>
 
@@ -203,11 +225,14 @@ import ItemErrors from "../.././components/layout/errors/ItemErrors";
 import Client from "./Client";
 import { mapActions, mapGetters, mapState } from "vuex";
 import axios from "../../interceptor";
+import fecha from "fecha";
 export default {
-  name: "vente",
+  name: "allVente",
   components: { ItemErrors, Client },
   data() {
     return {
+      fournisseur: null,
+      ttlJour: null,
       from: "",
       to: "",
       dialogClient: false,
@@ -215,6 +240,7 @@ export default {
       items: [],
       entity: "vente",
       produits: [],
+      values: [],
       editedIndex: -1,
       pencil: "mdi-plus",
       color: "red",
@@ -224,14 +250,15 @@ export default {
       dialog: false,
       valid: true,
       headers: [
-        { text: "Client", value: "client.nomComplet" },
-        { text: "Téléphone", value: "client.telephone" },
         { text: "Date de la vente", value: "dateVente" },
-        { text: "Montant de la vente", value: "totalVente" },
-        { text: "Montant versé", value: "montantVerse" },
-        { text: "Montant rendu", value: "montantRendu" },
-        { text: "Type de paiement", value: "typePaiement" },
-        { text: "Actions", value: "actions" }
+        { text: "Fournisseur", value: "produit.fournisseur.structure" },
+        { text: "Produit", value: "produit.designation" },
+        { text: "Quantité", value: "quantiteVendue" },
+        { text: "Montant", value: "produit.prixVente" },
+        { text: "Total", value: "prixVenteTotal" },
+        { text: "Total Cumule", value: "totalCumule" }
+        // { text: "Montant rendu", value: "montantRendu" },
+        // { text: "Type de paiement", value: "typePaiement" },
       ],
       rules: {
         emailRules: [
@@ -257,13 +284,17 @@ export default {
     ...mapGetters({
       ventes: "vente/ventes",
       vente: "vente/vente",
-      clients: "client/clients"
+      clients: "client/clients",
+      allVentesFours: "vente/allVentesFours",
+      fournisseurs: "fournisseur/fournisseurs"
     })
   },
   created() {
     this.getVentes();
     this.fetchproduits();
     this.getClients();
+    this.infosVenteFourn();
+    this.getVentesFournisseur();
   },
   methods: {
     ...mapActions({
@@ -271,19 +302,64 @@ export default {
       createVente: "vente/createVente",
       updateVente: "vente/updateVente",
       removeVente: "vente/removeVente",
-      getClients: "client/getClients"
+      getClients: "client/getClients",
+      getVentesFournisseur: "fournisseur/getVentesFournisseur"
     }),
     filterByDate() {
+      var values = [];
+      var total = 0;
+      this.values.filter(data => {
+        if (data.dateVente >= this.from && data.dateVente <= this.to) {
+          values.push(data);
+          this.ttlJour = null;
+        }
+        if (data.dateVente == this.from && data.dateVente == this.to) {
+          total = total + parseInt(data.prixVenteTotal);
+          this.ttlJour = total;
+        }
+      });
+      this.$store.commit("vente/allVentesFours", values);
+    },
+    infosVenteFourn() {
       this.getVentes().then(resp => {
-        console.log(resp)
-        var values = [];
+        var total = 0;
         resp.filter(data => {
-          if (data.dateVente >= this.from && data.dateVente <= this.to) {
+          data.venteProduits.forEach(vente => {
+            this.values.push(vente);
+            if (vente.dateVente === fecha.format(new Date(), "YYYY-MM-DD")) {
+              total = total + parseInt(vente.prixVenteTotal);
+            }
+          });
+        });
+        this.$store.commit("vente/totalJournee", total);
+        this.$store.commit("vente/allVentesFours", this.values);
+      });
+    },
+    filterByFour() {
+      var values = [];
+      var total = 0;
+      if (this.from && this.to) {
+        this.values.filter(data => {
+          if (data.produit.fournisseur.id == this.fournisseur) {
+            if (data.dateVente >= this.from && data.dateVente <= this.to) {
+              total = total + parseInt(data.prixVenteTotal);
+              this.ttlJour = null;
+              data.totalCumule = total;
+              values.push(data);
+            }
+          }
+        });
+      } else {
+        this.values.filter(data => {
+          if (data.produit.fournisseur.id == this.fournisseur) {
+            total = total + parseInt(data.prixVenteTotal);
+            this.ttlJour = null;
+            data.totalCumule = total;
             values.push(data);
           }
         });
-        this.$store.commit("vente/VENTE_SET_ITEMS", values);
-      });
+      }
+      this.$store.commit("vente/allVentesFours", values);
     },
     fetchproduits() {
       axios.get("/api/depots").then(response => {
@@ -305,6 +381,13 @@ export default {
       this.update = false;
       this.$store.commit("vente/VENTE_RESET_ITEM");
       this.getVentes();
+    },
+    replay() {
+      this.values = [];
+      this.getVentes();
+      this.infosVenteFourn();
+      this.$refs.form.reset();
+      this.$refs.form.resetValidation();
     },
     editVente(vente) {
       this.update = true;

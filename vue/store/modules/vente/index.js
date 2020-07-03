@@ -79,7 +79,7 @@ const actions = {
             // });
             commit('VENTE_SET_PROD_ITEM', response.data["hydra:member"]);
         });
-    },
+    }
 }
 
 function initialeState() {
@@ -111,10 +111,12 @@ const state = {
         }
     },
     items: [],
+    ventesFours: [],
     error: null,
     errors: {},
     produits: [],
-    counter:10
+    totalJournee:null,
+    counter: 10
 }
 
 const getters = {
@@ -123,6 +125,18 @@ const getters = {
     error: state => state.error,
     errors: state => state.errors,
     produits: state => state.produits,
+    allVentesFours: state => state.ventesFours,
+    totalJournee: state => state.totalJournee,
+    fournisseurProduitsVendus: state => {
+        const allVente = []
+        //console.log(state.items);
+        state.items.map(ventes => {
+            ventes.venteProduits.forEach(vente => {
+                allVente.push(vente)
+            });
+        })
+        return allVente;
+    },
 
 }
 const mutations = {
@@ -159,7 +173,16 @@ const mutations = {
     },
     addProduit(state) {
         state.items.push({ id: state.counter++ });
-      }
+    },
+    addVente(state, item) {
+        state.items.push(item);
+    },
+    allVentesFours(state, ventesFours) {
+        Object.assign(state, { ventesFours })
+    },
+    totalJournee(state, totalJournee) {
+        state.totalJournee = totalJournee
+    }
 }
 
 export default {

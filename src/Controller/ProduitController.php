@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Categorie;
+use App\Entity\Depot;
 use App\Entity\Produit;
 use App\Repository\ProduitRepository;
 use App\Repository\CategorieRepository;
@@ -70,7 +71,8 @@ class ProduitController extends AbstractController
                 'prixVente' => $key->getPrixVente(),
                 'createAt' => $key->getCreatedAt(),
                 'updateAt' => $key->getUpdatedAt(),
-                'ligne' => $ligne
+                'ligne' => $ligne,
+                'quantite' => $key->getQuantite(),
             );
             array_push($dataProduits, $rem);
         }
@@ -101,8 +103,19 @@ class ProduitController extends AbstractController
                 ->setTaille($data->taille)
                 ->setAge($data->age)
                 ->setPointure($data->pointure)
-                ->setCouleur($data->couleur);
+                ->setCouleur($data->couleur)
+                ->setQuantite($data->quantite);
+
+            $depot = (new Depot())
+                ->setProduit($produit)
+                ->setStockInitial($produit->getQuantite())
+                ->setQuantiteDeposee($produit->getQuantite())
+                ->setQuantiteVendue(0)
+                ->setTotalStockApresDepot($produit->getQuantite())
+                ->setStockFinal($produit->getQuantite());
+
             $this->em->persist($produit);
+            $this->em->persist($depot);
         } else {
             # code...
             $data = [
