@@ -144,4 +144,48 @@ class FournisseurController extends AbstractController
         ];
         return $this->json($data);
     }
+       /**
+     * @Route("/mass", name="mass_fournisseur", methods={"POST"})
+     */
+    public function mass(Request $request, FournisseurRepository $repository)
+    {
+        $values = json_decode($request->getContent());
+
+        $tab = $values->fournisseur->results;
+
+        foreach ($tab as $key) {
+
+            $mail = $repository->findByEmail($key->email);
+            $tel = $repository->findByTel($key->Telephone);
+            if ($mail) {
+                $data = [
+                    $this->message => 'le fournisseur avec le mail suivant ' . $key->Email . ' existe déjà',
+                    $this->status => 401
+                ];
+                return  $this->json($data);
+            }
+            if ($tel) {
+                $data = [
+                    $this->message => 'le fournisseur avec le numéro suivant ' . $key->Telephone . ' existe déjà',
+                    $this->status => 401
+                ];
+                return  $this->json($data);
+            }
+            $fournisseur = new Fournisseur();
+            $fournisseur->setStructure($key->structure);
+            $fournisseur->setEmail($key->email);
+            $fournisseur->setNomGerant($key->nomGerant);
+            $fournisseur->setTel($key->Telephone);
+            $fournisseur->setAdresse($key->Adresse);
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($fournisseur);
+        }
+        $entityManager->flush();
+
+        $data = [
+            $this->message => 'Les fournisseurs sont créés',
+            $this->status => 201
+        ];
+        return  $this->json($data);
+    }
 }

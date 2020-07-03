@@ -10,8 +10,9 @@ import Axios from 'axios';
 import DateMixin from './mixin/DateMixin';
 import Security from './mixin/Security';
 import '@fortawesome/fontawesome-free/css/all.css' // Ensure you are using css-loader
+import VueExcelXlsx from "vue-excel-xlsx";
 
-
+Vue.use(VueExcelXlsx)
 Vue.mixin(DateMixin)
 Vue.mixin(Security)
 Vue.config.productionTip = false;
