@@ -11,7 +11,7 @@ const actions = {
 
         return axios.post(url, data)
             .catch(e => {
-                commit(types.AUTH_ERROR_CHANGE, 'Usernaùe or password are incorrect')
+                commit(types.AUTH_ERROR_CHANGE, 'Username or password are incorrect')
 
                 throw e
             })
