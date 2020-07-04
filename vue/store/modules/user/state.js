@@ -6,12 +6,17 @@ export default function() {
         name:'',
         phone:'',
         email:'',
-        client:'',
+        // client:'',
         roles:[]
       },
       items: [],
       error: null,
       errors: {},
+      countUserData:{
+        totalUser:0,
+        totalUserActifs:0,
+        totalUserInactifs:0
+      }
     }
   }
   

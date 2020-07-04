@@ -1,0 +1,58 @@
+Création de la base de donnée:
+    php bin/console doctrine:database:create
+
+Pour lancer le serveur de symfony
+    symfony server:start
+
+Pour l'ouvrir sur le navigateur
+     symfony open:local
+
+Pour vérifier la vulnérabilité des dépendance:
+    symfony check:security
+
+Pour lancer les fixtures
+     php bin/console doctrine:fixtures:load
+
+Pour vérifier la sécurité des tmplates
+    php bin/console lint:twig templates/
+
+Pour vider le cache symfony
+    php bin/console cache:clear
+
+Pour l'installation de vueJs
+    composer require symfony/webpack-encore-bundle
+    npm install
+    npm install vue
+    npm install vue-router
+    pour les migrations
+
+php bin/console make:entity
+
+Pour lancer les migrations
+    php bin/console doctrine:migration:migrate
+    php bin/console doctrine:migration:version --add --all
+    php bin/console doctrine:schema:update --force
+    php bin/console doctrine:fixtures:load
+pour utilisation de vee-validate
+    npm install vee-validate --save
+
+Pour lister les services:
+    php bin/console debug:autowiring
+
+Pour le jwt:
+
+    sh -c '
+    set -e
+    mkdir -p config/jwt
+    jwt_passphrase=$(grep ''^JWT_PASSPHRASE='' .env | cut -f 2 -d ''='')
+    echo "$jwt_passphrase" | openssl genpkey -out config/jwt/private.pem -pass stdin -aes256 -algorithm rsa -pkeyopt rsa_keygen_bits:4096
+    echo "$jwt_passphrase" | openssl pkey -in config/jwt/private.pem -passin stdin -out config/jwt/public.pem -pubout
+    setfacl -R -m u:www-data:rX -m u:"$(whoami)":rwX config/jwt
+    setfacl -dR -m u:www-data:rX -m u:"$(whoami)":rwX config/jwt
+    '
+
+git remote -v
+ 
+git remote set-url origin  https://github.com/elhnd/caravane.git
+
+git remote set-url origin  https://gitlab.com/elhnd/caravane_app.git

@@ -108,6 +108,17 @@
           </v-dialog>
           <!-- </v-toolbar> -->
         </template>
+
+        <template v-slot:item.createAt="{item}">
+          <div>
+            <span>{{crmDateFormat(item.createAt)}}</span>
+          </div>
+        </template>
+        <template v-slot:item.updateAt="{item}">
+          <div>
+            <span>{{crmDateFormat(item.updateAt)}}</span>
+          </div>
+        </template>
         <template v-slot:item.actions="{ item }">
           <v-row>
             <div class="my-2">
@@ -264,6 +275,7 @@ export default {
       if (this.editedIndex > -1) {
         axios.post("/api/modifierCategorie", fd).then(response => {
           console.log(response);
+          this.fetchCategories()
           //this.categories = response.data;
         });
         Object.assign(this.categories[this.editedIndex], this.editedItem);

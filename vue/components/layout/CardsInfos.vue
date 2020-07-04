@@ -1,14 +1,14 @@
 <template>
   <div>
     <v-col cols="auto">
-      <v-card :elevation="3" height="130" width="250" class="mx-auto brunfonce" >
+      <v-card :elevation="3" height="130" width="250" class="mx-auto brunfonce">
         <v-sheet
           class="v-sheet--offset mx-auto text-left"
           color="#EFEBE9"
           elevation="12"
           max-width="calc(100% - 32px)"
         >
-          <v-icon :color="color" size="80">{{icon}}</v-icon>
+          <v-icon :color="color" :size="size">{{icon}}</v-icon>
           <span class="headline font-weight-bold">{{libelle}}</span>
         </v-sheet>
         <v-card-text justify="end" right class="headline font-weight-bold text-end">{{number}}</v-card-text>
@@ -36,14 +36,21 @@ export default {
     color: {
       type: String,
       default: "blue"
+    },
+    size: {
+      type: Number,
+      default: 80
     }
   }
 };
 </script>
 
-<style lang="scss" >
+<style lang="scss" scoped>
 .v-sheet--offset {
   top: -20px;
   position: relative;
+}
+.brunfonce {
+  background: #d7ccc8 !important ;
 }
 </style>

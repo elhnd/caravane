@@ -5,14 +5,15 @@ import MainSlot from '../components/layout/MainSlot'
 import Test from '../pages/Test';
 import Client from '../pages/client/Client';
 import Fournisseur from '../pages/fournisseur/Fournisseur';
-import Depot from '../pages/stock/Depot';
+//import Depot from '../pages/stock/Depot';
 import Categorie from '../pages/categorie/Categorie';
 import Produit from '../pages/produit/Produit';
-
-
-
-
-
+import Depot from '../pages/depot/Depot';
+import DetailVente from '../pages/vente/DetailVente';
+import AddVente from '../pages/vente/AddVente';
+import ProduitFournisseur from '../pages/produit/ProduitFournisseur';
+import ProduitsVente from '../pages/vente/ProduitsVente';
+import AllVente from '../pages/vente/AllVente'
 import store from '../store'
 import UserList from '../pages/user/List'
 Vue.use(VueRouter);
@@ -46,6 +47,14 @@ const router = new VueRouter({
                     requiresAuth: true
                 },
                 component: Test
+            },
+            {
+                path: "/fournisseur/add/produit/:token_access",
+                name: "ProduitFournisseur",
+                meta: {
+                    requiresAuth: true
+                },
+                component: ProduitFournisseur
             },
             {
                 path: "/user/list",
@@ -95,6 +104,38 @@ const router = new VueRouter({
                 },
                 component: Produit
             },
+            {
+                path: "/vente",
+                name: "vente",
+                meta: {
+                    requiresAuth: true
+                },
+                component: DetailVente
+            },
+            {
+                path: "/vente/add",
+                name: "addVente",
+                meta: {
+                    requiresAuth: true
+                },
+                component: AddVente
+            },
+            {
+                path: "/vente/produit/detail",
+                name: "produitsVente",
+                meta: {
+                    requiresAuth: true
+                },
+                component: ProduitsVente
+            },
+            {
+                path: "/vente/allvente",
+                name: "allVente",
+                meta: {
+                    requiresAuth: true
+                },
+                component: AllVente
+            }
 
         ],
         redirect: { name: 'Home' },

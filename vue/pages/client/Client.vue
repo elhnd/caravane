@@ -42,6 +42,50 @@
                 </v-col>
               </v-row>
             </v-card-title>
+
+            <v-col cols="6">
+              <v-row justify="start">
+                <v-text-field
+                  label="Date de début"
+                  v-model="date.dateStart"
+                  append-icon="event"
+                  single-line
+                  type="date"
+                ></v-text-field>&nbsp;&nbsp;&nbsp;
+                <v-text-field
+                  label="Date de fin"
+                  v-model="date.dateEnd"
+                  append-icon="event"
+                  single-line
+                  type="date"
+                ></v-text-field>
+
+                <v-btn class="ma-4 brunfonce" @click="fetchClients()" large tile dark>
+                  <v-icon color="#555" left>mdi-book-account</v-icon>
+                  <span style="color:#555;">Rechercher</span>
+                </v-btn>
+              </v-row>
+
+              <!-- <v-menu
+                v-model="menu2"
+                :close-on-content-click="false"
+                :nudge-right="40"
+                transition="scale-transition"
+                offset-y
+                min-width="290px"
+              >
+                <template v-slot:activator="{ on }">
+                  <v-text-field
+                    v-model="date"
+                    label="Picker without buttons"
+                    prepend-icon="event"
+                    readonly
+                    v-on="on"
+                  ></v-text-field>
+                </template>
+                <v-date-picker v-model="date" @input="menu2 = false"></v-date-picker>
+              </v-menu>-->
+            </v-col>
           </v-col>
           <v-spacer></v-spacer>
           <v-dialog v-model="dialog" persistent max-width="600px">
@@ -59,30 +103,27 @@
               <v-card-text>
                 <v-form ref="form" v-model="valid" valid>
                   <v-container>
-                    <v-row>
-                      <v-col cols="12" sm="6" md="4">
+                    <v-row >
+                      <v-col cols="6" sm="4" >
                         <v-text-field
-                          v-model="editedItem.prenom"
+                          v-model="editedItem.nomComplet"
                           :rules="ItemRules"
                           required
-                          label="Prénom"
+                          label="Nom complet"
                         ></v-text-field>
                       </v-col>
-                      <v-col cols="12" sm="6" md="4">
+                      <v-col cols="6" sm="4" >
                         <v-text-field
-                          v-model="editedItem.nom"
-                          :rules="ItemRules"
+                          v-model="editedItem.telephone"
                           required
-                          label="Nom"
+                          label="Téléphone"
                         ></v-text-field>
                       </v-col>
-
-                      <v-col cols="12" sm="6" md="4">
+                      <v-col cols="6" sm="4" >
                         <v-text-field
-                          v-model="editedItem.prix"
-                          :rules="ItemRules"
+                          v-model="editedItem.adresse"
                           required
-                          label="Prix"
+                          label="Adresse"
                         ></v-text-field>
                       </v-col>
                     </v-row>
@@ -99,15 +140,24 @@
           </v-dialog>
           <!-- </v-toolbar> -->
         </template>
-
-        <template v-slot:item.updateAt="{item}">
+        <template v-slot:item.ligne="{item}">
           <div>
-            <span>{{crmDateFormat(item.updateAt)}}</span>
+            <span>{{item.index}}</span>
+          </div>
+        </template>
+        <template v-slot:item.createdAt="{item}">
+          <div>
+            <span>{{crmDateFormat(item.createdAt)}}</span>
+          </div>
+        </template>
+        <template v-slot:item.updatedAt="{item}">
+          <div>
+            <span>{{crmDateFormat(item.updatedAt)}}</span>
           </div>
         </template>
         <template v-slot:item.actions="{ item }">
           <!-- <v-icon md class="mr-2" @click="editItem(item)" color="primary" blue>mdi-pencil</v-icon>
-          <v-icon md2 @click="deleteItem(item)" color="red" dark>mdi-delete</v-icon> -->
+          <v-icon md2 @click="deleteItem(item)" color="red" dark>mdi-delete</v-icon>-->
 
           <v-row>
             <div class="my-2">
@@ -146,11 +196,21 @@ import axios from "../../interceptor";
 import { items } from "../../store/modules/user/getters";
 import { API_HOST } from "../../config/_entrypoint";
 import vuetifyToast from "vuetify-toast";
+import DateFieldPicker from "../../components/layout/fields/DatePicker";
 
 export default {
   name: "client",
+  components: { DateFieldPicker },
 
   data: () => ({
+    date: {
+      dateStart: "",
+      dateEnd: ""
+    },
+    // date: new Date().toISOString().substr(0, 10),
+    // menu: false,
+    // modal: false,
+    // menu2: false,
     dialog: false,
     valid: true,
     search: "",
@@ -164,32 +224,26 @@ export default {
         sortable: false,
         value: "ligne"
       },
-      { text: "Prenom", value: "prenom", sortable: false },
-      {
-        text: "Nom",
-        align: "start",
-        sortable: false,
-        value: "nom"
-      },
-      { text: "Prix", value: "prix", sortable: false },
-      { text: "Crée le", value: "createAt", sortable: false },
-      { text: "Modifié le", value:"updateAt", sortable: false },
-
+      { text: "Nom Complet", value: "nomComplet", sortable: false },
+      { text: "Téléphone", value: "telephone", sortable: false },
+      { text: "adresse", value: "adresse", sortable: false },
+      { text: "Crée le", value: "createdAt", sortable: false },
+      { text: "Modifié le", value: "updatedAt", sortable: false },
       { text: "Actions", value: "actions", sortable: false }
     ],
     clients: [],
     editedIndex: -1,
     editedItem: {
       id: 0,
-      nom: "",
-      prenom: "",
-      prix: 0
+      nomComplet: "",
+      telephone: "",
+      adresse: ""
     },
     ItemRules: [v => !!v || "Champ requise"],
     defaultItem: {
-      nom: "",
-      prenom: "",
-      prix: 0
+      nomComplet: "",
+      telephone: "",
+      adresse: ""
     }
   }),
 
@@ -213,10 +267,12 @@ export default {
 
   methods: {
     fetchClients() {
-      axios.get("/api/client/").then(response => {
-        // console.log(response.data);
-        this.clients = response.data;
-      });
+      axios
+        .get(`/api/clients/${this.date.dateStart}/${this.date.dateEnd}`)
+        .then(response => {
+          console.log(response.data["hydra:member"]);
+          this.clients = response.data["hydra:member"];
+        });
     },
 
     editItem(item) {
@@ -257,9 +313,9 @@ export default {
         // console.log(this.editedItem.id);
         axios
           .post("/api/client/" + this.editedItem.id + "/edit", {
-            nom: this.editedItem.nom,
-            prenom: this.editedItem.prenom,
-            prix: this.editedItem.prix
+            nomComplet: this.editedItem.nomComplet,
+            telephone: this.editedItem.telephone,
+            adresse: this.editedItem.adresse
           })
           .then(response => {
             vuetifyToast.success(response.data.message);
@@ -270,9 +326,9 @@ export default {
       } else {
         axios
           .post(`${API_HOST}/client/new`, {
-            nom: this.editedItem.nom,
-            prenom: this.editedItem.prenom,
-            prix: this.editedItem.prix
+            nomComplet: this.editedItem.nomComplet,
+            telephone: this.editedItem.telephone,
+            adresse: this.editedItem.adresse
           })
           .then(response => {
             //  console.log(response.data.message);

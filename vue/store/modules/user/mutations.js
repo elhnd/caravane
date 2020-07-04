@@ -20,5 +20,11 @@ export default {
   },
   [types.RESET](state) {
     Object.assign(state, defaultState())
-  }
+  },
+  [types.SET_COUNT_USER](state, countUserData){
+    Object.assign(state,{countUserData})
+  },
+  [types.UPDATE_ONE_ITEM](state) {
+    state.item = Object.assign({}, state.item)
+  },
 }

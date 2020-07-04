@@ -54,14 +54,7 @@ Encore
     })
 
     // enables Sass/SCSS support
-    .enableSassLoader((options) => {
-        options.sourceMap = true;
-        options.sassOptions = {
-            outputStyle: options.outputStyle,
-            sourceComments: !Encore.isProduction(),
-        };
-        delete options.outputStyle;
-    }, {})
+    .enableSassLoader()
     .enableVueLoader()
     // uncomment if you use TypeScript
     //.enableTypeScriptLoader()

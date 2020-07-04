@@ -10,12 +10,28 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
-
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
 
 /**
  * @ORM\Entity(repositoryClass=ClientRepository::class)
  * @ORM\HasLifecycleCallbacks()
- * @ApiResource()
+ * @ApiResource(
+ * collectionOperations={
+ *      "GET",
+ *      "POST",
+ *      "get_client"={
+ *          "method"="get",
+ *          "path"="/clients/{dateStart}/{dateEnd}",
+ *          "controller"="App\Controller\ClientDateInterval",
+ *          "swagger_context"={
+ *              "summary"="Total user",
+ *              "description"="Renvoie le nombre total de users actifs et inactifs"
+ *          }
+ *      }
+ * }
+ * 
+ * )
  */
 class Client
 {
@@ -26,7 +42,7 @@ class Client
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      * @Groups({
-     *     "client_read"
+     *     "client_read","ventes_read"
      * })
      */
     private $id;
@@ -35,38 +51,37 @@ class Client
      * @ORM\Column(type="string", length=20, nullable=false)
      * @Assert\NotBlank()
      * @Groups({
-     *     "client_read"
+     *     "client_read","ventes_read"
      * })
      */
-    private $nom;
+    private $nomComplet;
 
     /**
-     * @ORM\Column(type="string", length=50, nullable=false)
-     * @Assert\NotBlank()
+     * @ORM\OneToMany(targetEntity=Vente::class, mappedBy="client")
+     */
+    private $ventes;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
      * @Groups({
-     *     "client_read"
+     *     "client_read","ventes_read"
      * })
      */
-    private $prenom;
+    private $telephone;
 
     /**
-     * @ORM\Column(type="integer")
-     * @Assert\NotBlank()
+     * @ORM\Column(type="string", length=255, nullable=true)
      * @Groups({
-     *     "client_read"
+     *     "client_read","ventes_read"
      * })
      */
-    private $prix;
-
-    /**
-     * @ORM\OneToMany(targetEntity=User::class, mappedBy="client")
-     */
-    private $users;
+    private $adresse;
 
     public function __construct()
     {
-        $this->users = new ArrayCollection();
+        $this->ventes = new ArrayCollection();
     }
+
 
 
     public function getId(): ?int
@@ -74,69 +89,69 @@ class Client
         return $this->id;
     }
 
-    public function getNom(): ?string
+    public function getNomComplet(): ?string
     {
-        return $this->nom;
+        return $this->nomComplet;
     }
 
-    public function setNom(?string $nom): self
+    public function setNomComplet(?string $nomComplet): self
     {
-        $this->nom = $nom;
-
-        return $this;
-    }
-
-    public function getPrenom(): ?string
-    {
-        return $this->prenom;
-    }
-
-    public function setPrenom(?string $prenom): self
-    {
-        $this->prenom = $prenom;
-
-        return $this;
-    }
-
-    public function getPrix(): ?int
-    {
-        return $this->prix;
-    }
-
-    public function setPrix(int $prix): self
-    {
-        $this->prix = $prix;
+        $this->nomComplet = $nomComplet;
 
         return $this;
     }
 
     /**
-     * @return Collection|User[]
+     * @return Collection|Vente[]
      */
-    public function getUsers(): Collection
+    public function getVentes(): Collection
     {
-        return $this->users;
+        return $this->ventes;
     }
 
-    public function addUser(User $user): self
+    public function addVente(Vente $vente): self
     {
-        if (!$this->users->contains($user)) {
-            $this->users[] = $user;
-            $user->setClient($this);
+        if (!$this->ventes->contains($vente)) {
+            $this->ventes[] = $vente;
+            $vente->setClient($this);
         }
 
         return $this;
     }
 
-    public function removeUser(User $user): self
+    public function removeVente(Vente $vente): self
     {
-        if ($this->users->contains($user)) {
-            $this->users->removeElement($user);
+        if ($this->ventes->contains($vente)) {
+            $this->ventes->removeElement($vente);
             // set the owning side to null (unless already changed)
-            if ($user->getClient() === $this) {
-                $user->setClient(null);
+            if ($vente->getClient() === $this) {
+                $vente->setClient(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getTelephone(): ?string
+    {
+        return $this->telephone;
+    }
+
+    public function setTelephone(?string $telephone): self
+    {
+        $this->telephone = $telephone;
+
+        return $this;
+    }
+
+    public function getAdresse(): ?string
+    {
+        return $this->adresse;
+    }
+
+    public function setAdresse(?string $adresse): self
+    {
+        $this->adresse = $adresse;
 
         return $this;
     }

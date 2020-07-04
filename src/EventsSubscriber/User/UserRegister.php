@@ -44,7 +44,7 @@ class UserRegister extends AbstractController implements EventSubscriberInterfac
 
         $method = $event->getRequest()->getMethod();
         $data = json_decode($event->getRequest()->getContent(), true);
-
+        //dd($data);
         if ($user instanceof User && $method === "POST") {
             $message = (new \Swift_Message('test'))
                 ->setSubject('Inscription sur CARAVANE')

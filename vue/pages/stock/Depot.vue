@@ -11,7 +11,7 @@
       </v-dialog>
     </v-row>
     <v-divider class="m-4" inset vertical></v-divider>
-    <v-data-table :headers="headers" :items="desserts" sort-by="calories" class="elevation-1">
+    <!-- <v-data-table :headers="headers" :items="desserts" sort-by="calories" class="elevation-1">
       <template v-slot:top>
         <v-toolbar flat color="white">
           <v-spacer></v-spacer>
@@ -62,7 +62,7 @@
       <template v-slot:no-data>
         <v-btn color="primary" @click="initialize">Reset</v-btn>
       </template>
-    </v-data-table>
+    </v-data-table> -->
   </v-card>
 </template>
 

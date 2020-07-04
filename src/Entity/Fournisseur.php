@@ -12,7 +12,21 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=FournisseurRepository::class)
- * @ApiResource()
+ * @ApiResource(
+ *  normalizationContext={
+ *      "groups"={"fournisseur_produits_vendus_read"}
+ *  },
+ * itemOperations={
+ *      "GET",
+ *      "PUT",
+ *      "DELETE",
+ *      "get_fournisseur"={
+ *          "method"="get",
+ *          "path"="/access/fournisseurs/{id}",
+ *          "controller"="App\Controller\AccessFournisseur"
+ *      }
+ * }
+ * )
  * @ORM\HasLifecycleCallbacks()
  */
 class Fournisseur
@@ -23,12 +37,13 @@ class Fournisseur
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"fournisseur_produits_vendus_read","ventes_read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=30)
-     * @Groups({"produit_read"})
+     * @Groups({"produit_read","depots_read","ventes_read","fournisseur_produits_vendus_read","produit_read"})
      * 
      */
     private $structure;
@@ -67,6 +82,16 @@ class Fournisseur
      * @ORM\Column(type="bigint", nullable=true)
      */
     private $fraisExposition;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $tokenAccess;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $tokenExpireAt;
 
     public function __construct()
     {
@@ -189,6 +214,47 @@ class Fournisseur
     public function setFraisExposition(?string $fraisExposition): self
     {
         $this->fraisExposition = $fraisExposition;
+
+        return $this;
+    }
+
+    public function getFournisseurProduitsVendus()
+    {
+
+        $produits = $this->getProduits();
+        $produitVendus = [];
+        foreach ($produits as $produit) {
+            $ventes = $produit->getVentes();
+
+            for ($i = 0; $i < count($ventes); $i++) {
+
+                array_push($produitVendus, $ventes[$i]);
+            }
+        }
+
+        return $produitVendus;
+    }
+
+    public function getTokenAccess(): ?string
+    {
+        return $this->tokenAccess;
+    }
+
+    public function setTokenAccess(?string $tokenAccess): self
+    {
+        $this->tokenAccess = $tokenAccess;
+
+        return $this;
+    }
+
+    public function getTokenExpireAt(): ?\DateTimeInterface
+    {
+        return $this->tokenExpireAt;
+    }
+
+    public function setTokenExpireAt(?\DateTimeInterface $tokenExpireAt): self
+    {
+        $this->tokenExpireAt = $tokenExpireAt;
 
         return $this;
     }

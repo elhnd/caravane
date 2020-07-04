@@ -7,13 +7,13 @@ trait Timestamps
 {
     /**
      * @ORM\Column(type="datetime")
-     * @Groups({"users_read"})
+     * @Groups({"users_read","depots_read"})
      */
     private $createdAt;
 
     /**
      * @ORM\Column(type="datetime")
-     * @Groups({"users_read"})
+     * @Groups({"users_read","depots_read"})
      */
     private $updatedAt;
 
