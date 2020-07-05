@@ -1,3 +1,0 @@
-<?php //route_name_108b2835ccfe55dc026367968418473b
-
-return [PHP_INT_MAX, 'api_fournisseurs_get_collection'];
