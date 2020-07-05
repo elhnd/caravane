@@ -156,7 +156,6 @@
     <parameter key="form.type_extension.csrf.field_name">_token</parameter>
     <parameter key="asset.request_context.base_path"></parameter>
     <parameter key="asset.request_context.secure">false</parameter>
-    <parameter key="validator.mapping.cache.prefix"></parameter>
     <parameter key="validator.mapping.cache.file">/home/eldji/caravane/var/cache/dev/validation.php</parameter>
     <parameter key="validator.translation_domain">validators</parameter>
     <parameter key="translator.logging">false</parameter>
@@ -173,7 +172,6 @@
     <parameter key="request_listener.http_port">80</parameter>
     <parameter key="request_listener.https_port">443</parameter>
     <parameter key="serializer.mapping.cache.file">/home/eldji/caravane/var/cache/dev/serialization.php</parameter>
-    <parameter key="serializer.mapping.cache.prefix"></parameter>
     <parameter key="twig.form.resources" type="collection">
       <parameter>form_div_layout.html.twig</parameter>
     </parameter>
@@ -245,16 +243,8 @@
     <parameter key="doctrine.orm.auto_generate_proxy_classes">true</parameter>
     <parameter key="doctrine.orm.proxy_dir">/home/eldji/caravane/var/cache/dev/doctrine/orm/Proxies</parameter>
     <parameter key="doctrine.orm.proxy_namespace">Proxies</parameter>
-    <parameter key="doctrine_migrations.dir_name">/home/eldji/caravane/src/Migrations</parameter>
-    <parameter key="doctrine_migrations.namespace">DoctrineMigrations</parameter>
-    <parameter key="doctrine_migrations.table_name">migration_versions</parameter>
-    <parameter key="doctrine_migrations.column_name">version</parameter>
-    <parameter key="doctrine_migrations.column_length">14</parameter>
-    <parameter key="doctrine_migrations.executed_at_column_name">executed_at</parameter>
-    <parameter key="doctrine_migrations.all_or_nothing">false</parameter>
-    <parameter key="doctrine_migrations.name">Application Migrations</parameter>
-    <parameter key="doctrine_migrations.custom_template">null</parameter>
-    <parameter key="doctrine_migrations.organize_migrations">false</parameter>
+    <parameter key="doctrine.migrations.preferred_em">null</parameter>
+    <parameter key="doctrine.migrations.preferred_connection">null</parameter>
     <parameter key="security.role_hierarchy.roles" type="collection"/>
     <parameter key="security.access.denied_url">null</parameter>
     <parameter key="security.authentication.manager.erase_credentials">true</parameter>
@@ -3566,7 +3556,6 @@
     </service>
     <service id="serializer.mapping.class_metadata_factory" class="Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory" public="false">
       <argument type="service" id="serializer.mapping.chain_loader"/>
-      <argument>null</argument>
     </service>
     <service id="serializer.mapping.cache_warmer" class="Symfony\Bundle\FrameworkBundle\CacheWarmer\SerializerCacheWarmer" public="false">
       <tag name="kernel.cache_warmer"/>
@@ -4431,66 +4420,139 @@
       <argument type="service" id="doctrine.orm.default_entity_manager"/>
       <argument>null</argument>
     </service>
-    <service id="doctrine_migrations.diff_command" class="Doctrine\Bundle\MigrationsBundle\Command\MigrationsDiffDoctrineCommand">
-      <tag name="console.command"/>
+    <service id="doctrine.migrations.dependency_factory" class="Doctrine\Migrations\DependencyFactory" public="false">
+      <argument type="service" id="doctrine.migrations.configuration_loader"/>
+      <argument type="service" id="doctrine.migrations.em_loader"/>
+      <argument type="service" id="monolog.logger" on-invalid="null"/>
+      <factory class="Doctrine\Migrations\DependencyFactory" method="fromEntityManager"/>
+    </service>
+    <service id="doctrine.migrations.configuration_loader" class="Doctrine\Migrations\Configuration\Migration\ExistingConfiguration" public="false">
+      <argument type="service" id="doctrine.migrations.configuration"/>
+    </service>
+    <service id="doctrine.migrations.connection_loader" class="Doctrine\Migrations\Configuration\Connection\ExistingConnection" public="false"/>
+    <service id="doctrine.migrations.em_loader" class="Doctrine\Migrations\Configuration\EntityManager\ExistingEntityManager" public="false">
+      <argument type="service" id="doctrine.orm.default_entity_manager"/>
+    </service>
+    <service id="doctrine.migrations.configuration" class="Doctrine\Migrations\Configuration\Configuration" public="false">
+      <call method="addMigrationsDirectory">
+        <argument>DoctrineMigrations</argument>
+        <argument>/home/eldji/caravane/src/Migrations</argument>
+      </call>
+      <call method="setAllOrNothing">
+        <argument>false</argument>
+      </call>
+      <call method="setCheckDatabasePlatform">
+        <argument>true</argument>
+      </call>
+      <call method="setMetadataStorageConfiguration">
+        <argument type="service" id="doctrine.migrations.storage.table_storage"/>
+      </call>
+    </service>
+    <service id="doctrine_migrations.diff_command" class="Doctrine\Migrations\Tools\Console\Command\DiffCommand">
+      <tag name="console.command" command="doctrine:migrations:diff"/>
+      <argument type="service" id="doctrine.migrations.dependency_factory"/>
+      <argument>doctrine:migrations:diff</argument>
       <call method="setName">
         <argument>doctrine:migrations:diff</argument>
       </call>
     </service>
-    <service id="doctrine_migrations.dump_schema_command" class="Doctrine\Bundle\MigrationsBundle\Command\MigrationsDumpSchemaDoctrineCommand">
-      <tag name="console.command"/>
+    <service id="doctrine_migrations.sync_metadata_command" class="Doctrine\Migrations\Tools\Console\Command\SyncMetadataCommand">
+      <tag name="console.command" command="doctrine:migrations:sync-metadata-storage"/>
+      <argument type="service" id="doctrine.migrations.dependency_factory"/>
+      <argument>doctrine:migrations:sync-metadata-storage</argument>
+      <call method="setName">
+        <argument>doctrine:migrations:sync-metadata-storage</argument>
+      </call>
+    </service>
+    <service id="doctrine_migrations.versions_command" class="Doctrine\Migrations\Tools\Console\Command\ListCommand">
+      <tag name="console.command" command="doctrine:migrations:list"/>
+      <argument type="service" id="doctrine.migrations.dependency_factory"/>
+      <argument>doctrine:migrations:versions</argument>
+      <call method="setName">
+        <argument>doctrine:migrations:list</argument>
+      </call>
+    </service>
+    <service id="doctrine_migrations.current_command" class="Doctrine\Migrations\Tools\Console\Command\CurrentCommand">
+      <tag name="console.command" command="doctrine:migrations:current"/>
+      <argument type="service" id="doctrine.migrations.dependency_factory"/>
+      <argument>doctrine:migrations:current</argument>
+      <call method="setName">
+        <argument>doctrine:migrations:current</argument>
+      </call>
+    </service>
+    <service id="doctrine_migrations.dump_schema_command" class="Doctrine\Migrations\Tools\Console\Command\DumpSchemaCommand">
+      <tag name="console.command" command="doctrine:migrations:dump-schema"/>
+      <argument type="service" id="doctrine.migrations.dependency_factory"/>
+      <argument>doctrine:migrations:dump-schema</argument>
       <call method="setName">
         <argument>doctrine:migrations:dump-schema</argument>
       </call>
     </service>
-    <service id="doctrine_migrations.execute_command" class="Doctrine\Bundle\MigrationsBundle\Command\MigrationsExecuteDoctrineCommand">
-      <tag name="console.command"/>
+    <service id="doctrine_migrations.execute_command" class="Doctrine\Migrations\Tools\Console\Command\ExecuteCommand">
+      <tag name="console.command" command="doctrine:migrations:execute"/>
+      <argument type="service" id="doctrine.migrations.dependency_factory"/>
+      <argument>doctrine:migrations:execute</argument>
       <call method="setName">
         <argument>doctrine:migrations:execute</argument>
       </call>
     </service>
-    <service id="doctrine_migrations.generate_command" class="Doctrine\Bundle\MigrationsBundle\Command\MigrationsGenerateDoctrineCommand">
-      <tag name="console.command"/>
+    <service id="doctrine_migrations.generate_command" class="Doctrine\Migrations\Tools\Console\Command\GenerateCommand">
+      <tag name="console.command" command="doctrine:migrations:generate"/>
+      <argument type="service" id="doctrine.migrations.dependency_factory"/>
+      <argument>doctrine:migrations:generate</argument>
       <call method="setName">
         <argument>doctrine:migrations:generate</argument>
       </call>
     </service>
-    <service id="doctrine_migrations.latest_command" class="Doctrine\Bundle\MigrationsBundle\Command\MigrationsLatestDoctrineCommand">
-      <tag name="console.command"/>
+    <service id="doctrine_migrations.latest_command" class="Doctrine\Migrations\Tools\Console\Command\LatestCommand">
+      <tag name="console.command" command="doctrine:migrations:latest"/>
+      <argument type="service" id="doctrine.migrations.dependency_factory"/>
+      <argument>doctrine:migrations:latest</argument>
       <call method="setName">
         <argument>doctrine:migrations:latest</argument>
       </call>
     </service>
-    <service id="doctrine_migrations.migrate_command" class="Doctrine\Bundle\MigrationsBundle\Command\MigrationsMigrateDoctrineCommand">
-      <tag name="console.command"/>
+    <service id="doctrine_migrations.migrate_command" class="Doctrine\Migrations\Tools\Console\Command\MigrateCommand">
+      <tag name="console.command" command="doctrine:migrations:migrate"/>
+      <argument type="service" id="doctrine.migrations.dependency_factory"/>
+      <argument>doctrine:migrations:migrate</argument>
       <call method="setName">
         <argument>doctrine:migrations:migrate</argument>
       </call>
     </service>
-    <service id="doctrine_migrations.rollup_command" class="Doctrine\Bundle\MigrationsBundle\Command\MigrationsRollupDoctrineCommand">
-      <tag name="console.command"/>
+    <service id="doctrine_migrations.rollup_command" class="Doctrine\Migrations\Tools\Console\Command\RollupCommand">
+      <tag name="console.command" command="doctrine:migrations:rollup"/>
+      <argument type="service" id="doctrine.migrations.dependency_factory"/>
+      <argument>doctrine:migrations:rollup</argument>
       <call method="setName">
         <argument>doctrine:migrations:rollup</argument>
       </call>
     </service>
-    <service id="doctrine_migrations.status_command" class="Doctrine\Bundle\MigrationsBundle\Command\MigrationsStatusDoctrineCommand">
-      <tag name="console.command"/>
+    <service id="doctrine_migrations.status_command" class="Doctrine\Migrations\Tools\Console\Command\StatusCommand">
+      <tag name="console.command" command="doctrine:migrations:status"/>
+      <argument type="service" id="doctrine.migrations.dependency_factory"/>
+      <argument>doctrine:migrations:status</argument>
       <call method="setName">
         <argument>doctrine:migrations:status</argument>
       </call>
     </service>
-    <service id="doctrine_migrations.up_to_date_command" class="Doctrine\Bundle\MigrationsBundle\Command\MigrationsUpToDateDoctrineCommand">
-      <tag name="console.command"/>
+    <service id="doctrine_migrations.up_to_date_command" class="Doctrine\Migrations\Tools\Console\Command\UpToDateCommand">
+      <tag name="console.command" command="doctrine:migrations:up-to-date"/>
+      <argument type="service" id="doctrine.migrations.dependency_factory"/>
+      <argument>doctrine:migrations:up-to-date</argument>
       <call method="setName">
         <argument>doctrine:migrations:up-to-date</argument>
       </call>
     </service>
-    <service id="doctrine_migrations.version_command" class="Doctrine\Bundle\MigrationsBundle\Command\MigrationsVersionDoctrineCommand">
-      <tag name="console.command"/>
+    <service id="doctrine_migrations.version_command" class="Doctrine\Migrations\Tools\Console\Command\VersionCommand">
+      <tag name="console.command" command="doctrine:migrations:version"/>
+      <argument type="service" id="doctrine.migrations.dependency_factory"/>
+      <argument>doctrine:migrations:version</argument>
       <call method="setName">
         <argument>doctrine:migrations:version</argument>
       </call>
     </service>
+    <service id="doctrine.migrations.storage.table_storage" class="Doctrine\Migrations\Metadata\Storage\TableMetadataStorageConfiguration"/>
     <service id="security.authorization_checker" class="Symfony\Component\Security\Core\Authorization\AuthorizationChecker" public="true">
       <argument type="service" id="security.token_storage"/>
       <argument type="service" id="security.authentication.manager"/>
@@ -6420,6 +6482,20 @@
     <service id="lexik_jwt_authentication.security.authentication.entry_point" class="Lexik\Bundle\JWTAuthenticationBundle\Security\Http\EntryPoint\JWTEntryPoint" public="false">
       <deprecated>The "%service_id%" service is deprecated since LexikJWTAuthenticationBundle version 2.0 and will be removed in 3.0</deprecated>
     </service>
+    <service id="lexik_jwt_authentication.key_loader.openssl" class="Lexik\Bundle\JWTAuthenticationBundle\Services\KeyLoader\OpenSSLKeyLoader" public="false">
+      <argument></argument>
+      <argument></argument>
+      <argument>%env(JWT_PASSPHRASE)%</argument>
+      <deprecated>The "%service_id%" service is deprecated since version 2.5 and will be removed in 3.0. Use lexik_jwt_authentication.key_loader.raw instead.</deprecated>
+    </service>
+    <service id="lexik_jwt_authentication.jws_provider.default" class="Lexik\Bundle\JWTAuthenticationBundle\Services\JWSProvider\DefaultJWSProvider" public="false">
+      <argument type="service" id="lexik_jwt_authentication.key_loader.raw"/>
+      <argument>openssl</argument>
+      <argument>RS256</argument>
+      <argument>3600</argument>
+      <argument>0</argument>
+      <deprecated>The "%service_id%" is deprecated since version 2.5 and will be removed in 5.0, use "lexik_jwt_authentication.jws_provider.lcobucci" instead.</deprecated>
+    </service>
     <service id="lexik_jwt_authentication.jwt_manager" class="Lexik\Bundle\JWTAuthenticationBundle\Services\JWTManager" public="true">
       <argument type="service" id="lexik_jwt_authentication.encoder.lcobucci"/>
       <argument type="service" id="debug.event_dispatcher"/>
@@ -6433,12 +6509,6 @@
       <argument></argument>
       <argument>%env(JWT_PASSPHRASE)%</argument>
     </service>
-    <service id="lexik_jwt_authentication.key_loader.openssl" class="Lexik\Bundle\JWTAuthenticationBundle\Services\KeyLoader\OpenSSLKeyLoader" public="false">
-      <argument></argument>
-      <argument></argument>
-      <argument>%env(JWT_PASSPHRASE)%</argument>
-      <deprecated>The "%service_id%" service is deprecated since version 2.5 and will be removed in 3.0. Use lexik_jwt_authentication.key_loader.raw instead.</deprecated>
-    </service>
     <service id="lexik_jwt_authentication.key_loader.raw" class="Lexik\Bundle\JWTAuthenticationBundle\Services\KeyLoader\RawKeyLoader" public="false">
       <argument>%env(resolve:JWT_SECRET_KEY)%</argument>
       <argument>%env(resolve:JWT_PUBLIC_KEY)%</argument>
@@ -6446,14 +6516,6 @@
     </service>
     <service id="lexik_jwt_authentication.encoder.default" class="Lexik\Bundle\JWTAuthenticationBundle\Encoder\DefaultEncoder">
       <argument type="service" id="lexik_jwt_authentication.jws_provider.default"/>
-    </service>
-    <service id="lexik_jwt_authentication.jws_provider.default" class="Lexik\Bundle\JWTAuthenticationBundle\Services\JWSProvider\DefaultJWSProvider" public="false">
-      <argument type="service" id="lexik_jwt_authentication.key_loader.raw"/>
-      <argument>openssl</argument>
-      <argument>RS256</argument>
-      <argument>3600</argument>
-      <argument>0</argument>
-      <deprecated>The "%service_id%" is deprecated since version 2.5 and will be removed in 5.0, use "lexik_jwt_authentication.jws_provider.lcobucci" instead.</deprecated>
     </service>
     <service id="lexik_jwt_authentication.encoder.lcobucci" class="Lexik\Bundle\JWTAuthenticationBundle\Encoder\LcobucciJWTEncoder">
       <argument type="service" id="lexik_jwt_authentication.jws_provider.lcobucci"/>
@@ -7621,7 +7683,7 @@
     <service id=".errored..service_locator.HtzxqlQ.App\Entity\Produit" class="App\Entity\Produit"/>
     <service id=".errored..service_locator.ghXgB6C.Symfony\Component\HttpKernel\Event\ViewEvent" class="Symfony\Component\HttpKernel\Event\ViewEvent"/>
     <service id="console.command_loader" class="Symfony\Component\Console\CommandLoader\ContainerCommandLoader" public="true">
-      <argument type="service" id=".service_locator.aXylPCL"/>
+      <argument type="service" id=".service_locator._swek1i"/>
       <argument type="collection">
         <argument key="about">console.command.about</argument>
         <argument key="assets:install">console.command.assets_install</argument>
@@ -7672,6 +7734,9 @@
         <argument key="doctrine:schema:validate">doctrine.schema_validate_command</argument>
         <argument key="doctrine:mapping:import">doctrine.mapping_import_command</argument>
         <argument key="doctrine:migrations:diff">doctrine_migrations.diff_command</argument>
+        <argument key="doctrine:migrations:sync-metadata-storage">doctrine_migrations.sync_metadata_command</argument>
+        <argument key="doctrine:migrations:list">doctrine_migrations.versions_command</argument>
+        <argument key="doctrine:migrations:current">doctrine_migrations.current_command</argument>
         <argument key="doctrine:migrations:dump-schema">doctrine_migrations.dump_schema_command</argument>
         <argument key="doctrine:migrations:execute">doctrine_migrations.execute_command</argument>
         <argument key="doctrine:migrations:generate">doctrine_migrations.generate_command</argument>
@@ -7715,7 +7780,7 @@
         <argument key="make:migration">maker.auto_command.make_migration</argument>
       </argument>
     </service>
-    <service id=".service_locator.aXylPCL" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
+    <service id=".service_locator._swek1i" class="Symfony\Component\DependencyInjection\ServiceLocator" public="false">
       <tag name="container.service_locator"/>
       <argument type="collection">
         <argument key="Gesdinet\JWTRefreshTokenBundle\Command\ClearInvalidRefreshTokensCommand" type="service" id="Gesdinet\JWTRefreshTokenBundle\Command\ClearInvalidRefreshTokensCommand"/>
@@ -7767,6 +7832,7 @@
         <argument key="doctrine.schema_drop_command" type="service" id="doctrine.schema_drop_command"/>
         <argument key="doctrine.schema_update_command" type="service" id="doctrine.schema_update_command"/>
         <argument key="doctrine.schema_validate_command" type="service" id="doctrine.schema_validate_command"/>
+        <argument key="doctrine_migrations.current_command" type="service" id="doctrine_migrations.current_command"/>
         <argument key="doctrine_migrations.diff_command" type="service" id="doctrine_migrations.diff_command"/>
         <argument key="doctrine_migrations.dump_schema_command" type="service" id="doctrine_migrations.dump_schema_command"/>
         <argument key="doctrine_migrations.execute_command" type="service" id="doctrine_migrations.execute_command"/>
@@ -7775,8 +7841,10 @@
         <argument key="doctrine_migrations.migrate_command" type="service" id="doctrine_migrations.migrate_command"/>
         <argument key="doctrine_migrations.rollup_command" type="service" id="doctrine_migrations.rollup_command"/>
         <argument key="doctrine_migrations.status_command" type="service" id="doctrine_migrations.status_command"/>
+        <argument key="doctrine_migrations.sync_metadata_command" type="service" id="doctrine_migrations.sync_metadata_command"/>
         <argument key="doctrine_migrations.up_to_date_command" type="service" id="doctrine_migrations.up_to_date_command"/>
         <argument key="doctrine_migrations.version_command" type="service" id="doctrine_migrations.version_command"/>
+        <argument key="doctrine_migrations.versions_command" type="service" id="doctrine_migrations.versions_command"/>
         <argument key="lexik_jwt_authentication.check_config_command" type="service" id="lexik_jwt_authentication.check_config_command"/>
         <argument key="lexik_jwt_authentication.generate_token_command" type="service" id="lexik_jwt_authentication.generate_token_command"/>
         <argument key="maker.auto_command.make_auth" type="service" id="maker.auto_command.make_auth"/>
@@ -8026,6 +8094,7 @@
     <service id="doctrine.orm.default_result_cache" alias="doctrine.orm.cache.provider.cache.doctrine.orm.default.result" public="false"/>
     <service id="doctrine.orm.default_query_cache" alias="doctrine.orm.cache.provider.cache.doctrine.orm.default.query" public="false"/>
     <service id="doctrine.orm.default_entity_manager.event_manager" alias="doctrine.dbal.default_connection.event_manager" public="false"/>
+    <service id="doctrine.migrations.metadata_storage" alias="doctrine.migrations.storage.table_storage"/>
     <service id="Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface" alias="security.authorization_checker" public="false"/>
     <service id="Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface" alias="security.token_storage" public="false"/>
     <service id="Symfony\Component\Security\Core\Security" alias="security.helper" public="false"/>
