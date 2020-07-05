@@ -1,0 +1,69 @@
+<?php //%255B158bc0e3bb3382e2b999591209591bd7%255D%255B1%255D
+
+return [PHP_INT_MAX, static function () { return \Symfony\Component\VarExporter\Internal\Hydrator::hydrate(
+    $o = [
+        clone (($p = &\Symfony\Component\VarExporter\Internal\Registry::$prototypes)['Doctrine\\ORM\\Query\\ParserResult'] ?? \Symfony\Component\VarExporter\Internal\Registry::p('Doctrine\\ORM\\Query\\ParserResult')),
+        clone ($p['Doctrine\\ORM\\Query\\Exec\\SingleSelectExecutor'] ?? \Symfony\Component\VarExporter\Internal\Registry::p('Doctrine\\ORM\\Query\\Exec\\SingleSelectExecutor')),
+        clone ($p['Doctrine\\ORM\\Query\\ResultSetMapping'] ?? \Symfony\Component\VarExporter\Internal\Registry::p('Doctrine\\ORM\\Query\\ResultSetMapping')),
+    ],
+    null,
+    [
+        'Doctrine\\ORM\\Query\\ParserResult' => [
+            '_sqlExecutor' => [
+                $o[1],
+            ],
+            '_resultSetMapping' => [
+                $o[2],
+            ],
+        ],
+        'Doctrine\\ORM\\Query\\Exec\\AbstractSqlExecutor' => [
+            '_sqlStatements' => [
+                1 => 'SELECT c0_.id AS id_0, c0_.nom AS nom_1, c0_.prenom AS prenom_2, c0_.prix AS prix_3, c0_.created_at AS created_at_4, c0_.updated_at AS updated_at_5 FROM client c0_ ORDER BY c0_.id ASC LIMIT 30',
+            ],
+        ],
+        'stdClass' => [
+            'aliasMap' => [
+                2 => [
+                    'o' => 'App\\Entity\\Client',
+                ],
+            ],
+            'fieldMappings' => [
+                2 => [
+                    'id_0' => 'id',
+                    'nom_1' => 'nom',
+                    'prenom_2' => 'prenom',
+                    'prix_3' => 'prix',
+                    'created_at_4' => 'createdAt',
+                    'updated_at_5' => 'updatedAt',
+                ],
+            ],
+            'entityMappings' => [
+                2 => [
+                    'o' => null,
+                ],
+            ],
+            'columnOwnerMap' => [
+                2 => [
+                    'id_0' => 'o',
+                    'nom_1' => 'o',
+                    'prenom_2' => 'o',
+                    'prix_3' => 'o',
+                    'created_at_4' => 'o',
+                    'updated_at_5' => 'o',
+                ],
+            ],
+            'declaringClasses' => [
+                2 => [
+                    'id_0' => 'App\\Entity\\Client',
+                    'nom_1' => 'App\\Entity\\Client',
+                    'prenom_2' => 'App\\Entity\\Client',
+                    'prix_3' => 'App\\Entity\\Client',
+                    'created_at_4' => 'App\\Entity\\Client',
+                    'updated_at_5' => 'App\\Entity\\Client',
+                ],
+            ],
+        ],
+    ],
+    $o[0],
+    []
+); }];

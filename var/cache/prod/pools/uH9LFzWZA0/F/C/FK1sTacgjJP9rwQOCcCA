@@ -1,0 +1,85 @@
+<?php //App_Entity_Vente
+
+return [PHP_INT_MAX, static function () { return \Symfony\Component\VarExporter\Internal\Hydrator::hydrate(
+    $o = [
+        clone (($p = &\Symfony\Component\VarExporter\Internal\Registry::$prototypes)['Symfony\\Component\\Serializer\\Mapping\\ClassMetadata'] ?? \Symfony\Component\VarExporter\Internal\Registry::p('Symfony\\Component\\Serializer\\Mapping\\ClassMetadata')),
+        clone ($p['Symfony\\Component\\Serializer\\Mapping\\AttributeMetadata'] ?? \Symfony\Component\VarExporter\Internal\Registry::p('Symfony\\Component\\Serializer\\Mapping\\AttributeMetadata')),
+        clone $p['Symfony\\Component\\Serializer\\Mapping\\AttributeMetadata'],
+        clone $p['Symfony\\Component\\Serializer\\Mapping\\AttributeMetadata'],
+        clone $p['Symfony\\Component\\Serializer\\Mapping\\AttributeMetadata'],
+        clone $p['Symfony\\Component\\Serializer\\Mapping\\AttributeMetadata'],
+        clone $p['Symfony\\Component\\Serializer\\Mapping\\AttributeMetadata'],
+        clone $p['Symfony\\Component\\Serializer\\Mapping\\AttributeMetadata'],
+        clone $p['Symfony\\Component\\Serializer\\Mapping\\AttributeMetadata'],
+        clone $p['Symfony\\Component\\Serializer\\Mapping\\AttributeMetadata'],
+    ],
+    null,
+    [
+        'stdClass' => [
+            'name' => [
+                'App\\Entity\\Vente',
+                'id',
+                'produit',
+                'quantiteVendue',
+                'prixVenteTotal',
+                'prixNetPayer',
+                'dateVente',
+                'client',
+                'createdAt',
+                'updatedAt',
+            ],
+            'attributesMetadata' => [
+                [
+                    'id' => $o[1],
+                    'produit' => $o[2],
+                    'quantiteVendue' => $o[3],
+                    'prixVenteTotal' => $o[4],
+                    'prixNetPayer' => $o[5],
+                    'dateVente' => $o[6],
+                    'client' => $o[7],
+                    'createdAt' => $o[8],
+                    'updatedAt' => $o[9],
+                ],
+            ],
+            'groups' => [
+                1 => [
+                    'ventes_read',
+                    'fournisseur_produits_vendus_read',
+                ],
+                [
+                    'ventes_read',
+                    'fournisseur_produits_vendus_read',
+                ],
+                [
+                    'ventes_read',
+                    'fournisseur_produits_vendus_read',
+                ],
+                [
+                    'ventes_read',
+                    'fournisseur_produits_vendus_read',
+                ],
+                [
+                    'ventes_read',
+                    'fournisseur_produits_vendus_read',
+                ],
+                [
+                    'ventes_read',
+                    'fournisseur_produits_vendus_read',
+                ],
+                [
+                    'ventes_read',
+                ],
+                [
+                    'users_read',
+                    'depots_read',
+                ],
+                [
+                    'users_read',
+                    'depots_read',
+                ],
+            ],
+        ],
+    ],
+    $o[0],
+    []
+); }];

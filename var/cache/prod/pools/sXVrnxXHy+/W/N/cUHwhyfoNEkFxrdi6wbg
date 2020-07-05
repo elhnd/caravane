@@ -1,0 +1,110 @@
+<?php //App.Entity.Client
+
+return [PHP_INT_MAX, static function () { return \Symfony\Component\VarExporter\Internal\Hydrator::hydrate(
+    $o = [
+        (($f = &\Symfony\Component\VarExporter\Internal\Registry::$factories)['Symfony\\Component\\Validator\\Mapping\\ClassMetadata'] ?? \Symfony\Component\VarExporter\Internal\Registry::f('Symfony\\Component\\Validator\\Mapping\\ClassMetadata'))(),
+        ($f['Symfony\\Component\\Validator\\Mapping\\PropertyMetadata'] ?? \Symfony\Component\VarExporter\Internal\Registry::f('Symfony\\Component\\Validator\\Mapping\\PropertyMetadata'))(),
+        clone (($p = &\Symfony\Component\VarExporter\Internal\Registry::$prototypes)['Symfony\\Component\\Validator\\Constraints\\NotBlank'] ?? \Symfony\Component\VarExporter\Internal\Registry::p('Symfony\\Component\\Validator\\Constraints\\NotBlank')),
+        $f['Symfony\\Component\\Validator\\Mapping\\PropertyMetadata'](),
+        clone $p['Symfony\\Component\\Validator\\Constraints\\NotBlank'],
+        $f['Symfony\\Component\\Validator\\Mapping\\PropertyMetadata'](),
+        clone $p['Symfony\\Component\\Validator\\Constraints\\NotBlank'],
+    ],
+    null,
+    [
+        'stdClass' => [
+            'name' => [
+                'App\\Entity\\Client',
+                'nom',
+                3 => 'prenom',
+                5 => 'prix',
+            ],
+            'defaultGroup' => [
+                'Client',
+            ],
+            'members' => [
+                [
+                    'nom' => [
+                        $o[1],
+                    ],
+                    'prenom' => [
+                        $o[3],
+                    ],
+                    'prix' => [
+                        $o[5],
+                    ],
+                ],
+            ],
+            'properties' => [
+                [
+                    'nom' => $o[1],
+                    'prenom' => $o[3],
+                    'prix' => $o[5],
+                ],
+            ],
+            'class' => [
+                1 => 'App\\Entity\\Client',
+                3 => 'App\\Entity\\Client',
+                5 => 'App\\Entity\\Client',
+            ],
+            'property' => [
+                1 => 'nom',
+                3 => 'prenom',
+                5 => 'prix',
+            ],
+            'constraints' => [
+                1 => [
+                    $o[2],
+                ],
+                3 => [
+                    $o[4],
+                ],
+                5 => [
+                    $o[6],
+                ],
+            ],
+            'constraintsByGroup' => [
+                1 => [
+                    'Default' => [
+                        $o[2],
+                    ],
+                    'Client' => [
+                        $o[2],
+                    ],
+                ],
+                3 => [
+                    'Default' => [
+                        $o[4],
+                    ],
+                    'Client' => [
+                        $o[4],
+                    ],
+                ],
+                5 => [
+                    'Default' => [
+                        $o[6],
+                    ],
+                    'Client' => [
+                        $o[6],
+                    ],
+                ],
+            ],
+            'groups' => [
+                2 => [
+                    'Default',
+                    'Client',
+                ],
+                4 => [
+                    'Default',
+                    'Client',
+                ],
+                6 => [
+                    'Default',
+                    'Client',
+                ],
+            ],
+        ],
+    ],
+    $o[0],
+    []
+); }];

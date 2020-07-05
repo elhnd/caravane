@@ -1,0 +1,79 @@
+<?php //App_Entity_Fournisseur
+
+return [PHP_INT_MAX, static function () { return \Symfony\Component\VarExporter\Internal\Hydrator::hydrate(
+    $o = [
+        clone (($p = &\Symfony\Component\VarExporter\Internal\Registry::$prototypes)['Symfony\\Component\\Serializer\\Mapping\\ClassMetadata'] ?? \Symfony\Component\VarExporter\Internal\Registry::p('Symfony\\Component\\Serializer\\Mapping\\ClassMetadata')),
+        clone ($p['Symfony\\Component\\Serializer\\Mapping\\AttributeMetadata'] ?? \Symfony\Component\VarExporter\Internal\Registry::p('Symfony\\Component\\Serializer\\Mapping\\AttributeMetadata')),
+        clone $p['Symfony\\Component\\Serializer\\Mapping\\AttributeMetadata'],
+        clone $p['Symfony\\Component\\Serializer\\Mapping\\AttributeMetadata'],
+        clone $p['Symfony\\Component\\Serializer\\Mapping\\AttributeMetadata'],
+        clone $p['Symfony\\Component\\Serializer\\Mapping\\AttributeMetadata'],
+        clone $p['Symfony\\Component\\Serializer\\Mapping\\AttributeMetadata'],
+        clone $p['Symfony\\Component\\Serializer\\Mapping\\AttributeMetadata'],
+        clone $p['Symfony\\Component\\Serializer\\Mapping\\AttributeMetadata'],
+        clone $p['Symfony\\Component\\Serializer\\Mapping\\AttributeMetadata'],
+        clone $p['Symfony\\Component\\Serializer\\Mapping\\AttributeMetadata'],
+        clone $p['Symfony\\Component\\Serializer\\Mapping\\AttributeMetadata'],
+        clone $p['Symfony\\Component\\Serializer\\Mapping\\AttributeMetadata'],
+    ],
+    null,
+    [
+        'stdClass' => [
+            'name' => [
+                'App\\Entity\\Fournisseur',
+                'id',
+                'structure',
+                'nomGerant',
+                'tel',
+                'email',
+                'adresse',
+                'produits',
+                'commission',
+                'fraisExposition',
+                'createdAt',
+                'updatedAt',
+                'fournisseurProduitsVendus',
+            ],
+            'attributesMetadata' => [
+                [
+                    'id' => $o[1],
+                    'structure' => $o[2],
+                    'nomGerant' => $o[3],
+                    'tel' => $o[4],
+                    'email' => $o[5],
+                    'adresse' => $o[6],
+                    'produits' => $o[7],
+                    'commission' => $o[8],
+                    'fraisExposition' => $o[9],
+                    'createdAt' => $o[10],
+                    'updatedAt' => $o[11],
+                    'fournisseurProduitsVendus' => $o[12],
+                ],
+            ],
+            'groups' => [
+                1 => [
+                    'fournisseur_produits_vendus_read',
+                ],
+                [
+                    'produit_read',
+                    'depots_read',
+                    'ventes_read',
+                    'fournisseur_produits_vendus_read',
+                ],
+                10 => [
+                    'users_read',
+                    'depots_read',
+                ],
+                [
+                    'users_read',
+                    'depots_read',
+                ],
+                [
+                    'fournisseur_produits_vendus_read',
+                ],
+            ],
+        ],
+    ],
+    $o[0],
+    []
+); }];

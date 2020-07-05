@@ -1,0 +1,86 @@
+<?php //App.Entity.Produit
+
+return [PHP_INT_MAX, static function () { return \Symfony\Component\VarExporter\Internal\Hydrator::hydrate(
+    $o = [
+        (($f = &\Symfony\Component\VarExporter\Internal\Registry::$factories)['Symfony\\Component\\Validator\\Mapping\\ClassMetadata'] ?? \Symfony\Component\VarExporter\Internal\Registry::f('Symfony\\Component\\Validator\\Mapping\\ClassMetadata'))(),
+        ($f['Symfony\\Component\\Validator\\Mapping\\PropertyMetadata'] ?? \Symfony\Component\VarExporter\Internal\Registry::f('Symfony\\Component\\Validator\\Mapping\\PropertyMetadata'))(),
+        clone (($p = &\Symfony\Component\VarExporter\Internal\Registry::$prototypes)['Symfony\\Component\\Validator\\Constraints\\NotBlank'] ?? \Symfony\Component\VarExporter\Internal\Registry::p('Symfony\\Component\\Validator\\Constraints\\NotBlank')),
+        $f['Symfony\\Component\\Validator\\Mapping\\PropertyMetadata'](),
+        clone $p['Symfony\\Component\\Validator\\Constraints\\NotBlank'],
+    ],
+    null,
+    [
+        'stdClass' => [
+            'name' => [
+                'App\\Entity\\Produit',
+                'designation',
+                3 => 'fournisseur',
+            ],
+            'defaultGroup' => [
+                'Produit',
+            ],
+            'members' => [
+                [
+                    'designation' => [
+                        $o[1],
+                    ],
+                    'fournisseur' => [
+                        $o[3],
+                    ],
+                ],
+            ],
+            'properties' => [
+                [
+                    'designation' => $o[1],
+                    'fournisseur' => $o[3],
+                ],
+            ],
+            'class' => [
+                1 => 'App\\Entity\\Produit',
+                3 => 'App\\Entity\\Produit',
+            ],
+            'property' => [
+                1 => 'designation',
+                3 => 'fournisseur',
+            ],
+            'constraints' => [
+                1 => [
+                    $o[2],
+                ],
+                3 => [
+                    $o[4],
+                ],
+            ],
+            'constraintsByGroup' => [
+                1 => [
+                    'Default' => [
+                        $o[2],
+                    ],
+                    'Produit' => [
+                        $o[2],
+                    ],
+                ],
+                3 => [
+                    'Default' => [
+                        $o[4],
+                    ],
+                    'Produit' => [
+                        $o[4],
+                    ],
+                ],
+            ],
+            'groups' => [
+                2 => [
+                    'Default',
+                    'Produit',
+                ],
+                4 => [
+                    'Default',
+                    'Produit',
+                ],
+            ],
+        ],
+    ],
+    $o[0],
+    []
+); }];

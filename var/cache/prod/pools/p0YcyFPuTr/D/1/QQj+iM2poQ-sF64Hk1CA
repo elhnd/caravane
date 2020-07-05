@@ -1,0 +1,218 @@
+<?php //%255BApp%255CEntity%255CVente%2524CLASSMETADATA%255D%255B1%255D
+
+return [PHP_INT_MAX, static function () { return \Symfony\Component\VarExporter\Internal\Hydrator::hydrate(
+    $o = [
+        clone (($p = &\Symfony\Component\VarExporter\Internal\Registry::$prototypes)['Doctrine\\ORM\\Mapping\\ClassMetadata'] ?? \Symfony\Component\VarExporter\Internal\Registry::p('Doctrine\\ORM\\Mapping\\ClassMetadata')),
+        clone ($p['Doctrine\\ORM\\Id\\IdentityGenerator'] ?? \Symfony\Component\VarExporter\Internal\Registry::p('Doctrine\\ORM\\Id\\IdentityGenerator')),
+    ],
+    null,
+    [
+        'stdClass' => [
+            'name' => [
+                'App\\Entity\\Vente',
+            ],
+            'namespace' => [
+                'App\\Entity',
+            ],
+            'rootEntityName' => [
+                'App\\Entity\\Vente',
+            ],
+            'customRepositoryClassName' => [
+                'App\\Repository\\VenteRepository',
+            ],
+            'identifier' => [
+                [
+                    'id',
+                ],
+            ],
+            'generatorType' => [
+                4,
+            ],
+            'fieldMappings' => [
+                [
+                    'id' => [
+                        'fieldName' => 'id',
+                        'type' => 'integer',
+                        'scale' => 0,
+                        'length' => null,
+                        'unique' => false,
+                        'nullable' => false,
+                        'precision' => 0,
+                        'id' => true,
+                        'columnName' => 'id',
+                    ],
+                    'quantiteVendue' => [
+                        'fieldName' => 'quantiteVendue',
+                        'type' => 'integer',
+                        'scale' => 0,
+                        'length' => null,
+                        'unique' => false,
+                        'nullable' => false,
+                        'precision' => 0,
+                        'columnName' => 'quantite_vendue',
+                    ],
+                    'prixVenteTotal' => [
+                        'fieldName' => 'prixVenteTotal',
+                        'type' => 'bigint',
+                        'scale' => 0,
+                        'length' => null,
+                        'unique' => false,
+                        'nullable' => false,
+                        'precision' => 0,
+                        'columnName' => 'prix_vente_total',
+                    ],
+                    'prixNetPayer' => [
+                        'fieldName' => 'prixNetPayer',
+                        'type' => 'bigint',
+                        'scale' => 0,
+                        'length' => null,
+                        'unique' => false,
+                        'nullable' => false,
+                        'precision' => 0,
+                        'columnName' => 'prix_net_payer',
+                    ],
+                    'dateVente' => [
+                        'fieldName' => 'dateVente',
+                        'type' => 'date',
+                        'scale' => 0,
+                        'length' => null,
+                        'unique' => false,
+                        'nullable' => false,
+                        'precision' => 0,
+                        'columnName' => 'date_vente',
+                    ],
+                    'createdAt' => [
+                        'fieldName' => 'createdAt',
+                        'type' => 'datetime',
+                        'scale' => 0,
+                        'length' => null,
+                        'unique' => false,
+                        'nullable' => false,
+                        'precision' => 0,
+                        'columnName' => 'created_at',
+                    ],
+                    'updatedAt' => [
+                        'fieldName' => 'updatedAt',
+                        'type' => 'datetime',
+                        'scale' => 0,
+                        'length' => null,
+                        'unique' => false,
+                        'nullable' => false,
+                        'precision' => 0,
+                        'columnName' => 'updated_at',
+                    ],
+                ],
+            ],
+            'fieldNames' => [
+                [
+                    'id' => 'id',
+                    'quantite_vendue' => 'quantiteVendue',
+                    'prix_vente_total' => 'prixVenteTotal',
+                    'prix_net_payer' => 'prixNetPayer',
+                    'date_vente' => 'dateVente',
+                    'created_at' => 'createdAt',
+                    'updated_at' => 'updatedAt',
+                ],
+            ],
+            'columnNames' => [
+                [
+                    'id' => 'id',
+                    'quantiteVendue' => 'quantite_vendue',
+                    'prixVenteTotal' => 'prix_vente_total',
+                    'prixNetPayer' => 'prix_net_payer',
+                    'dateVente' => 'date_vente',
+                    'createdAt' => 'created_at',
+                    'updatedAt' => 'updated_at',
+                ],
+            ],
+            'table' => [
+                [
+                    'name' => 'vente',
+                ],
+            ],
+            'lifecycleCallbacks' => [
+                [
+                    'prePersist' => [
+                        'createdAt',
+                    ],
+                    'preUpdate' => [
+                        'updateAt',
+                    ],
+                ],
+            ],
+            'associationMappings' => [
+                [
+                    'produit' => [
+                        'fieldName' => 'produit',
+                        'joinColumns' => [
+                            [
+                                'name' => 'produit_id',
+                                'referencedColumnName' => 'id',
+                            ],
+                        ],
+                        'cascade' => [],
+                        'inversedBy' => 'ventes',
+                        'targetEntity' => 'App\\Entity\\Produit',
+                        'fetch' => 2,
+                        'type' => 2,
+                        'mappedBy' => null,
+                        'isOwningSide' => true,
+                        'sourceEntity' => 'App\\Entity\\Vente',
+                        'isCascadeRemove' => false,
+                        'isCascadePersist' => false,
+                        'isCascadeRefresh' => false,
+                        'isCascadeMerge' => false,
+                        'isCascadeDetach' => false,
+                        'sourceToTargetKeyColumns' => [
+                            'produit_id' => 'id',
+                        ],
+                        'joinColumnFieldNames' => [
+                            'produit_id' => 'produit_id',
+                        ],
+                        'targetToSourceKeyColumns' => [
+                            'id' => 'produit_id',
+                        ],
+                        'orphanRemoval' => false,
+                    ],
+                    'client' => [
+                        'fieldName' => 'client',
+                        'joinColumns' => [
+                            [
+                                'name' => 'client_id',
+                                'referencedColumnName' => 'id',
+                            ],
+                        ],
+                        'cascade' => [],
+                        'inversedBy' => 'ventes',
+                        'targetEntity' => 'App\\Entity\\Client',
+                        'fetch' => 2,
+                        'type' => 2,
+                        'mappedBy' => null,
+                        'isOwningSide' => true,
+                        'sourceEntity' => 'App\\Entity\\Vente',
+                        'isCascadeRemove' => false,
+                        'isCascadePersist' => false,
+                        'isCascadeRefresh' => false,
+                        'isCascadeMerge' => false,
+                        'isCascadeDetach' => false,
+                        'sourceToTargetKeyColumns' => [
+                            'client_id' => 'id',
+                        ],
+                        'joinColumnFieldNames' => [
+                            'client_id' => 'client_id',
+                        ],
+                        'targetToSourceKeyColumns' => [
+                            'id' => 'client_id',
+                        ],
+                        'orphanRemoval' => false,
+                    ],
+                ],
+            ],
+            'idGenerator' => [
+                $o[1],
+            ],
+        ],
+    ],
+    $o[0],
+    []
+); }];

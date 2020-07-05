@@ -1,0 +1,90 @@
+<?php //%255BGesdinet%255CJWTRefreshTokenBundle%255CEntity%255CRefreshToken%2524CLASSMETADATA%255D%255B1%255D
+
+return [PHP_INT_MAX, static function () { return \Symfony\Component\VarExporter\Internal\Hydrator::hydrate(
+    $o = [
+        clone (($p = &\Symfony\Component\VarExporter\Internal\Registry::$prototypes)['Doctrine\\ORM\\Mapping\\ClassMetadata'] ?? \Symfony\Component\VarExporter\Internal\Registry::p('Doctrine\\ORM\\Mapping\\ClassMetadata')),
+        clone ($p['Doctrine\\ORM\\Id\\IdentityGenerator'] ?? \Symfony\Component\VarExporter\Internal\Registry::p('Doctrine\\ORM\\Id\\IdentityGenerator')),
+    ],
+    null,
+    [
+        'stdClass' => [
+            'name' => [
+                'Gesdinet\\JWTRefreshTokenBundle\\Entity\\RefreshToken',
+            ],
+            'namespace' => [
+                'Gesdinet\\JWTRefreshTokenBundle\\Entity',
+            ],
+            'rootEntityName' => [
+                'Gesdinet\\JWTRefreshTokenBundle\\Entity\\RefreshToken',
+            ],
+            'customRepositoryClassName' => [
+                'Gesdinet\\JWTRefreshTokenBundle\\Entity\\RefreshTokenRepository',
+            ],
+            'identifier' => [
+                [
+                    'id',
+                ],
+            ],
+            'generatorType' => [
+                4,
+            ],
+            'fieldMappings' => [
+                [
+                    'refreshToken' => [
+                        'fieldName' => 'refreshToken',
+                        'type' => 'string',
+                        'columnName' => 'refresh_token',
+                        'length' => 128,
+                        'unique' => true,
+                        'declared' => 'Gesdinet\\JWTRefreshTokenBundle\\Entity\\AbstractRefreshToken',
+                    ],
+                    'username' => [
+                        'fieldName' => 'username',
+                        'type' => 'string',
+                        'columnName' => 'username',
+                        'length' => 255,
+                        'declared' => 'Gesdinet\\JWTRefreshTokenBundle\\Entity\\AbstractRefreshToken',
+                    ],
+                    'valid' => [
+                        'fieldName' => 'valid',
+                        'type' => 'datetime',
+                        'columnName' => 'valid',
+                        'declared' => 'Gesdinet\\JWTRefreshTokenBundle\\Entity\\AbstractRefreshToken',
+                    ],
+                    'id' => [
+                        'id' => true,
+                        'fieldName' => 'id',
+                        'type' => 'integer',
+                        'columnName' => 'id',
+                    ],
+                ],
+            ],
+            'fieldNames' => [
+                [
+                    'refresh_token' => 'refreshToken',
+                    'username' => 'username',
+                    'valid' => 'valid',
+                    'id' => 'id',
+                ],
+            ],
+            'columnNames' => [
+                [
+                    'refreshToken' => 'refresh_token',
+                    'username' => 'username',
+                    'valid' => 'valid',
+                    'id' => 'id',
+                ],
+            ],
+            'table' => [
+                [
+                    'name' => 'refresh_tokens',
+                ],
+            ],
+            'idGenerator' => [
+                $o[1],
+            ],
+        ],
+    ],
+    $o[0],
+    []
+); }];

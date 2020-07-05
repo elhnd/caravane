@@ -1,0 +1,82 @@
+<?php //App_Entity_Depot
+
+return [PHP_INT_MAX, static function () { return \Symfony\Component\VarExporter\Internal\Hydrator::hydrate(
+    $o = [
+        clone (($p = &\Symfony\Component\VarExporter\Internal\Registry::$prototypes)['Symfony\\Component\\Serializer\\Mapping\\ClassMetadata'] ?? \Symfony\Component\VarExporter\Internal\Registry::p('Symfony\\Component\\Serializer\\Mapping\\ClassMetadata')),
+        clone ($p['Symfony\\Component\\Serializer\\Mapping\\AttributeMetadata'] ?? \Symfony\Component\VarExporter\Internal\Registry::p('Symfony\\Component\\Serializer\\Mapping\\AttributeMetadata')),
+        clone $p['Symfony\\Component\\Serializer\\Mapping\\AttributeMetadata'],
+        clone $p['Symfony\\Component\\Serializer\\Mapping\\AttributeMetadata'],
+        clone $p['Symfony\\Component\\Serializer\\Mapping\\AttributeMetadata'],
+        clone $p['Symfony\\Component\\Serializer\\Mapping\\AttributeMetadata'],
+        clone $p['Symfony\\Component\\Serializer\\Mapping\\AttributeMetadata'],
+        clone $p['Symfony\\Component\\Serializer\\Mapping\\AttributeMetadata'],
+        clone $p['Symfony\\Component\\Serializer\\Mapping\\AttributeMetadata'],
+        clone $p['Symfony\\Component\\Serializer\\Mapping\\AttributeMetadata'],
+        clone $p['Symfony\\Component\\Serializer\\Mapping\\AttributeMetadata'],
+    ],
+    null,
+    [
+        'stdClass' => [
+            'name' => [
+                'App\\Entity\\Depot',
+                'id',
+                'stockInitial',
+                'quantiteDeposee',
+                'EnStock',
+                'quantiteVendue',
+                'quantiteRestantee',
+                'produit',
+                'createdAt',
+                'updatedAt',
+                'enStock',
+            ],
+            'attributesMetadata' => [
+                [
+                    'id' => $o[1],
+                    'stockInitial' => $o[2],
+                    'quantiteDeposee' => $o[3],
+                    'EnStock' => $o[4],
+                    'quantiteVendue' => $o[5],
+                    'quantiteRestantee' => $o[6],
+                    'produit' => $o[7],
+                    'createdAt' => $o[8],
+                    'updatedAt' => $o[9],
+                    'enStock' => $o[10],
+                ],
+            ],
+            'groups' => [
+                1 => [
+                    'depots_read',
+                ],
+                [
+                    'depots_read',
+                ],
+                [
+                    'depots_read',
+                ],
+                [
+                    'depots_read',
+                ],
+                [
+                    'depots_read',
+                ],
+                [
+                    'depots_read',
+                ],
+                [
+                    'depots_read',
+                ],
+                [
+                    'users_read',
+                    'depots_read',
+                ],
+                [
+                    'users_read',
+                    'depots_read',
+                ],
+            ],
+        ],
+    ],
+    $o[0],
+    []
+); }];
