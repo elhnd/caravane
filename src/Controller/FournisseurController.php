@@ -20,14 +20,15 @@ class FournisseurController extends AbstractController
     private $status;
     private $groups;
     private $serializer;
+    private $fournisseurRepository;
 
-    public function __construct(SerializerInterface $serializer)
+    public function __construct(SerializerInterface $serializer, FournisseurRepository $fournisseurRepository)
     {
         $this->serializer = $serializer;
-        $this->message = 'message'; 
+        $this->message = 'message';
         $this->status = 'status';
         $this->groups = 'groups';
-
+        $this->fournisseurRepository = $fournisseurRepository;
     }
 
 
@@ -39,28 +40,28 @@ class FournisseurController extends AbstractController
         $ligne = 0;
         $dataFournisseurs = [];
         $rem = [];
-        
+
         $fournisseur = $fournisseurRepository->findBy(array(), array('structure' => 'ASC'));
         foreach ($fournisseur as  $key) {
-            
+
             $ligne++;
             $rem = array(
-            'id'=>$key->getId(),
-            'nomGerant'=>$key->getNomGerant(),
-            'structure'=>$key->getStructure(),
-            'tel'=>$key->getTel(),
-            'email'=>$key->getEmail(),
-            'adresse'=>$key->getAdresse(),
-            'commission'=>$key->getCommission(),
-            'fraisExposition'=>$key->getFraisExposition(),
-            'createAt'=>$key->getCreatedAt(),
-            'updateAt'=>$key->getUpdatedAt(),
-            'ligne'=>$ligne
-           );
-           array_push($dataFournisseurs, $rem);
+                'id' => $key->getId(),
+                'nomGerant' => $key->getNomGerant(),
+                'structure' => $key->getStructure(),
+                'tel' => $key->getTel(),
+                'email' => $key->getEmail(),
+                'adresse' => $key->getAdresse(),
+                'commission' => $key->getCommission(),
+                'fraisExposition' => $key->getFraisExposition(),
+                'createAt' => $key->getCreatedAt(),
+                'updateAt' => $key->getUpdatedAt(),
+                'ligne' => $ligne
+            );
+            array_push($dataFournisseurs, $rem);
         }
 
-        return $this->json($dataFournisseurs,200);
+        return $this->json($dataFournisseurs, 200);
     }
 
     /**
@@ -72,7 +73,7 @@ class FournisseurController extends AbstractController
         $values = json_decode($request->getContent());
         //dd($values);
         $fournisseur = new Fournisseur();
-        
+
         $repo = $repository->findByStructure($values->structure);
 
         $fournisseur->setStructure($values->structure);
@@ -96,7 +97,7 @@ class FournisseurController extends AbstractController
             return  $this->json($data);
         }
         $existe = [
-            $this->message => 'Le fournisseur '.$values->structure.' est deja enregistré',
+            $this->message => 'Le fournisseur ' . $values->structure . ' est deja enregistré',
             $this->status => 401
         ];
 
@@ -108,9 +109,9 @@ class FournisseurController extends AbstractController
      */
     public function show(Fournisseur $fournisseur)
     {
-        
-      
-        return $this->json($fournisseur,200);
+
+
+        return $this->json($fournisseur, 200);
     }
 
     /**
@@ -120,12 +121,11 @@ class FournisseurController extends AbstractController
     {
         $data = json_decode($request->getContent());
         $fournisseur
-                ->setStructure($data->structure)
-                ->setNomGerant($data->nomGerant)
-                ->setTel($data->tel)
-                ->setEmail($data->email)
-                ->setAdresse($data->adresse)
-                ;
+            ->setStructure($data->structure)
+            ->setNomGerant($data->nomGerant)
+            ->setTel($data->tel)
+            ->setEmail($data->email)
+            ->setAdresse($data->adresse);
         $this->getDoctrine()->getManager()->flush();
         $data = [
             'message' => 'fournisseur modifié',
@@ -148,7 +148,7 @@ class FournisseurController extends AbstractController
         ];
         return $this->json($data);
     }
-       /**
+    /**
      * @Route("/mass", name="mass_fournisseur", methods={"POST"})
      */
     public function mass(Request $request, FournisseurRepository $repository)
@@ -191,5 +191,25 @@ class FournisseurController extends AbstractController
             $this->status => 201
         ];
         return  $this->json($data);
+    }
+
+
+    /**
+     * @Route("/caisse/fournisseur", name="caisse_fournisseur", methods={"GET"})
+     */
+    public function caisse()
+    {
+        $vente = $this->fournisseurRepository->findAll();
+        $test = [];
+        foreach ($vente as $prdt) {
+            for ($i = 0; $i < count($prdt->getProduits()); $i++) {
+                // dump($prdt->getProduits()[$i]);
+
+                array_push($test, $prdt->getProduits()[$i]);
+            }
+        }
+        return $this->json($test);
+        // dump($test[0]);
+        // die;
     }
 }

@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-row justify="space-between">
-      <v-col class="col-auto">
+      <!-- <v-col class="col-auto">
         <v-row justify="center">
           <v-dialog v-model="dialog" persistent max-width="600px">
             <v-card>
@@ -91,7 +91,7 @@
             </div>
           </template>
         </v-row>
-      </v-col>
+      </v-col>-->
     </v-row>
     <v-row>
       <v-col cols="12">
@@ -99,7 +99,7 @@
           <v-col cols="12">
             <v-form ref="form">
               <v-card-title class="p-n12 mt-n8 mb-n8">
-                <v-col cols="6" sm="3" md="3">
+                <!-- <v-col cols="6" sm="3" md="3">
                   <v-btn
                     class="ma-4 brunfonce"
                     @click="update = false,goto('addVente')"
@@ -110,7 +110,7 @@
                     <v-icon color="#555" left>mdi-account-plus</v-icon>
                     <span style="color:#555;">Ajouter une vente</span>
                   </v-btn>
-                </v-col>
+                </v-col>-->
                 <v-row justify="space-between">
                   <v-col cols="6" sm="3" md="2">
                     <v-text-field
@@ -157,7 +157,7 @@
                 <span>{{item.dateVente}}</span>
               </div>
             </template>
-            <template v-slot:item.actions="{item}">
+            <!-- <template v-slot:item.actions="{item}">
               <v-row>
                 <div class="my-2">
                   <v-btn @click="gotoEdit(item)" tile fab small dark>
@@ -175,7 +175,7 @@
                   </v-btn>
                 </div>
               </v-row>
-            </template>
+            </template>-->
 
             <template v-slot:no-data>
               <v-btn color="primary">Reset</v-btn>
@@ -253,10 +253,11 @@ export default {
         { text: "Date de la vente", value: "dateVente" },
         { text: "Fournisseur", value: "produit.fournisseur.structure" },
         { text: "Produit", value: "produit.designation" },
-        { text: "Quantité", value: "quantiteVendue" },
-        { text: "Montant", value: "produit.prixVente" },
-        { text: "Total", value: "prixVenteTotal" },
-        { text: "Total Cumule", value: "totalCumule" }
+        { text: "Versement", value: "prixVenteTotal" },
+        { text: "Type de paiement", value: "typePaiement" },
+        { text: "Frais d'expo", value: "produit.fournisseur.fraisExposition" },
+        { text: "Commission", value: "produit.fournisseur.commission" }
+        // { text: "Total Cumule", value: "totalCumule" }
         // { text: "Montant rendu", value: "montantRendu" },
         // { text: "Type de paiement", value: "typePaiement" },
       ],
@@ -292,10 +293,10 @@ export default {
   created() {
     this.getVentes();
     this.fetchproduits();
-    console.log(this.getVentes());
     this.getClients();
     this.infosVenteFourn();
     this.getVentesFournisseur();
+    //this.getCaisse();
   },
   methods: {
     ...mapActions({
@@ -324,14 +325,42 @@ export default {
     infosVenteFourn() {
       this.getVentes().then(resp => {
         var total = 0;
+        var fournisseur = {};
+        var dateVente = "";
+        var caisse = [];
+     
         resp.filter(data => {
+          var typePaiement = data.typePaiement;
           data.venteProduits.forEach(vente => {
+            fournisseur = vente.produit.fournisseur;
+            dateVente = vente.dateVente;
+
+            vente.typePaiement = typePaiement;
             this.values.push(vente);
-            if (vente.dateVente === fecha.format(new Date(), "YYYY-MM-DD")) {
-              total = total + parseInt(vente.prixVenteTotal);
-            }
+            // if (Object.values(vente.produit.fournisseur).indexOf(fournisseur)) {
+            //   console.log("true");
+            // }
           });
+          //console.log(fournisseur);
         });
+
+        for (let i = 0; i < this.values.length; i++) {
+          // if (Object.values(vente.produit.fournisseur).indexOf(fournisseur)) {
+          //   console.log("true");
+          // }
+          //caisse.push(this.values[i]);
+          if(this.values.some(test => this.values[i].produit.fournisseur.structure)){
+            console.log('true');
+          }
+          // if (!this.values.includes(this.values[i])) {
+          //   caisse.push(this.values[i]);
+          //   //console.log('true')
+          // } else {
+          //   // console.log('false')
+          // }
+        }
+        console.log(caisse);
+        console.log(this.values);
         this.$store.commit("vente/totalJournee", total);
         this.$store.commit("vente/allVentesFours", this.values);
       });
@@ -371,7 +400,11 @@ export default {
         this.produits = produits;
       });
     },
-
+    // getCaisse() {
+    //   this.getVentes().then(response => {
+    //     console.log(response);
+    //   });
+    // },
     validate() {
       this.$refs.form.validate();
     },

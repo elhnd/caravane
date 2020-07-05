@@ -75,11 +75,13 @@ class Fournisseur
 
     /**
      * @ORM\Column(type="float", nullable=true)
+     * @Groups({"produit_read","depots_read","ventes_read","fournisseur_produits_vendus_read","produit_read"})
      */
     private $commission;
 
     /**
      * @ORM\Column(type="bigint", nullable=true)
+     * @Groups({"produit_read","depots_read","ventes_read","fournisseur_produits_vendus_read","produit_read"})
      */
     private $fraisExposition;
 
