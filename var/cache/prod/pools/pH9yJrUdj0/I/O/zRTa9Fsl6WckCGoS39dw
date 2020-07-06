@@ -1,5 +1,0 @@
-<?php //iri_identifiersa7a36782acd75b206422bfd0c36dabc5
-
-return [PHP_INT_MAX, [
-    'id',
-]];

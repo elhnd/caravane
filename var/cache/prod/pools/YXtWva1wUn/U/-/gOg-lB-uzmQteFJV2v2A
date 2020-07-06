@@ -1,3 +1,0 @@
-<?php //route_name_a3b8ca9c04fd527f5d292f3c868970b3
-
-return [PHP_INT_MAX, 'api_depots_get_item'];
