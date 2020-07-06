@@ -104,6 +104,7 @@ export default {
       { text: "Depot", icon: "assignment", route: "/depot" },
       { text: "Vente", icon: "storefront", route: "/vente" },
       { text: "Caisse", icon: "monetization_on", route: "/caisse" },
+      { text: "Opération de caisse", icon: "monetization_on", route: "/operation/caisse"},
       //mdiClipboardList
       // { icon: "mdi-history", text: "Frequently contacted" },
       // { icon: "mdi-content-copy", text: "Duplicates" },

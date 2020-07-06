@@ -9,6 +9,7 @@ import fournisseur from './modules/fournisseur'
 import client from './modules/client'
 import produit from './modules/produit'
 import produits_vente from './modules/produits_vente'
+import autres_operations from './modules/autres_operations'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -22,6 +23,7 @@ export default new Vuex.Store({
         fournisseur,
         client,
         produit,
-        produits_vente
+        produits_vente,
+        autres_operations
     }
 })

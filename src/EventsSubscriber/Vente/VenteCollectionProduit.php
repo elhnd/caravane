@@ -3,6 +3,7 @@
 namespace App\EventsSubscriber\Vente;
 
 use ApiPlatform\Core\EventListener\EventPriorities;
+use App\Entity\AutresOperation;
 use App\Entity\Vente;
 use App\Entity\VenteProduit;
 use App\Repository\ClientRepository;
@@ -69,6 +70,23 @@ class VenteCollectionProduit extends AbstractController implements EventSubscrib
                 $venteProduit->setPrixNetPayer($produits[$i]['prixNetPayer']);
                 $venteProduit->setDateVente($data['vente']['dateVente']);
                 $this->em->persist($venteProduit);
+            }
+            //die;
+            $this->em->flush();
+        }
+
+
+        if ($vente instanceof AutresOperation && $method === "POST") {
+
+            $operations = $data['operations'];
+            //dd($operations);
+            for ($i = 0; $i < count($operations); $i++) {
+                $operation = new AutresOperation();
+                $operation->setLibelle($operations[$i]['libelle']);
+                $operation->setMontant($operations[$i]['montant']);
+                $operation->setCommentaire($operations[$i]['commentaire']);
+                $operation->setDateOperation($operations[$i]['dateOperation']);
+                $this->em->persist($operation);
             }
             //die;
             $this->em->flush();

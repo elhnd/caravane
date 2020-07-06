@@ -148,6 +148,23 @@
                     </v-btn>
                   </v-col>
                 </v-row>
+                <v-row>
+                  <v-col cols="6" sm="4" md="2">
+                    <v-text-field v-model="fraisExpo" label="Frais d'expo"></v-text-field>
+                  </v-col>
+                  <v-col cols="6" sm="4" md="2">
+                    <v-text-field v-model="totalCommision" label="Total commission"></v-text-field>
+                  </v-col>
+                  <v-col cols="6" sm="4" md="2">
+                    <v-text-field v-model="mntCBE" label="Montant entrée CB et chéque"></v-text-field>
+                  </v-col>
+                  <v-col cols="6" sm="4" md="2">
+                    <v-text-field v-model="mntEsp" label="Montant entrée espèce"></v-text-field>
+                  </v-col>
+                  <v-col cols="6" sm="4" md="2">
+                    <v-text-field v-model="mntMM" label="Montant entrée mobile money"></v-text-field>
+                  </v-col>
+                </v-row>
               </v-card-title>
             </v-form>
           </v-col>
@@ -231,6 +248,12 @@ export default {
   components: { ItemErrors },
   data() {
     return {
+      mntCBE: null,
+      mntEsp: null,
+      mntMM: null,
+      totalCommisionMens: null,
+      totalCommision: null,
+      fraisExpo: null,
       fournisseur: null,
       ttlJour: null,
       from: "",
@@ -253,11 +276,10 @@ export default {
         { text: "Date de la vente", value: "dateVente" },
         { text: "Fournisseur", value: "produit.fournisseur.structure" },
         { text: "Produit", value: "produit.designation" },
-        { text: "Versement", value: "prixVenteTotal" },
-        { text: "Type de paiement", value: "typePaiement" },
-        { text: "Frais d'expo", value: "produit.fournisseur.fraisExposition" },
-        { text: "Commission", value: "produit.fournisseur.commission" }
-        // { text: "Total Cumule", value: "totalCumule" }
+        { text: "Quantité", value: "quantiteVendue" },
+        { text: "Montant", value: "produit.prixVente" },
+        { text: "Total", value: "prixVenteTotal" },
+        { text: "Type de paiement", value: "typePaiement" }
         // { text: "Montant rendu", value: "montantRendu" },
         // { text: "Type de paiement", value: "typePaiement" },
       ],
@@ -319,55 +341,80 @@ export default {
           total = total + parseInt(data.prixVenteTotal);
           this.ttlJour = total;
         }
+        if (data.dateVente == this.from && data.dateVente == this.to) {
+          total = total + parseInt(data.prixVenteTotal);
+          this.ttlJour = total;
+        }
       });
       this.$store.commit("vente/allVentesFours", values);
     },
     infosVenteFourn() {
       this.getVentes().then(resp => {
+        console.log(resp);
         var total = 0;
-        var fournisseur = {};
-        var dateVente = "";
-        var caisse = [];
-     
         resp.filter(data => {
           var typePaiement = data.typePaiement;
           data.venteProduits.forEach(vente => {
-            fournisseur = vente.produit.fournisseur;
-            dateVente = vente.dateVente;
-
             vente.typePaiement = typePaiement;
             this.values.push(vente);
-            // if (Object.values(vente.produit.fournisseur).indexOf(fournisseur)) {
-            //   console.log("true");
-            // }
+            if (vente.dateVente === fecha.format(new Date(), "YYYY-MM-DD")) {
+              total = total + parseInt(vente.prixVenteTotal);
+            }
           });
-          //console.log(fournisseur);
         });
-
-        for (let i = 0; i < this.values.length; i++) {
-          // if (Object.values(vente.produit.fournisseur).indexOf(fournisseur)) {
-          //   console.log("true");
-          // }
-          //caisse.push(this.values[i]);
-          if(this.values.some(test => this.values[i].produit.fournisseur.structure)){
-            console.log('true');
-          }
-          // if (!this.values.includes(this.values[i])) {
-          //   caisse.push(this.values[i]);
-          //   //console.log('true')
-          // } else {
-          //   // console.log('false')
-          // }
-        }
-        console.log(caisse);
-        console.log(this.values);
         this.$store.commit("vente/totalJournee", total);
         this.$store.commit("vente/allVentesFours", this.values);
       });
     },
+    // getCaisse() {
+    //   this.getVentes().then(resp => {
+    //     var tab = [];
+    //     var structure = "";
+    //     var caisse = {};
+    //     var caisso = [];
+    //     var enCaisseJr = 0;
+    //     //console.log(resp);
+    //     resp.forEach(vente => {
+    //       var typePaiement = vente.typePaiement;
+    //       var dateVente = vente.dateVente;
+    //       //console.log(vente.dateVente);
+    //       for (let i = 0; i < vente.venteProduits.length; i++) {
+    //         structure = vente.venteProduits[i].produit.fournisseur.structure;
+    //       }
+    //       for (let i = 0; i < vente.venteProduits.length; i++) {
+    //         vente.venteProduits[i].typePaiement = typePaiement;
+    //         tab.push(vente.venteProduits[i]);
+    //         if (structure == vente.venteProduits[i].produit.fournisseur.structure) {
+    //           if (vente.venteProduits[i].dateVente == dateVente) {
+
+    //             enCaisseJr = enCaisseJr + parseInt(vente.venteProduits[i].prixVenteTotal);
+    //             console.log(caisse.enCaisseJr = enCaisseJr);
+    //             caisse.dateVente = dateVente;
+    //             caisse.typePaiement = typePaiement;
+    //             caisso.push(caisse);
+    //             console.log("out");
+    //             console.log(vente.venteProduits[i]);
+    //           }
+
+    //         }
+    //       }
+    //     });
+    //     console.log(tab);
+    //      console.log(caisso);
+    //   });
+    // },
     filterByFour() {
       var values = [];
       var total = 0;
+      var com = 0;
+      var comFour = 0;
+      var nbrProdVendu = 0;
+      this.fraisExpo = 0;
+      this.totalCommision = 0;
+      this.mntEsp = 0;
+      this.mntCBE = 0;
+      this.mntMM = 0;
+
       if (this.from && this.to) {
         this.values.filter(data => {
           if (data.produit.fournisseur.id == this.fournisseur) {
@@ -375,20 +422,59 @@ export default {
               total = total + parseInt(data.prixVenteTotal);
               this.ttlJour = null;
               data.totalCumule = total;
+              nbrProdVendu = nbrProdVendu + data.quantiteVendue;
+              console.log(data.typePaiement);
+              if (data.typePaiement && data.typePaiement == "espece") {
+                this.mntEsp = this.mntEsp + parseInt(data.prixVenteTotal);
+              }
+              if (data.typePaiement && data.typePaiement == "mobile_money") {
+                this.mntMM = this.mntMM + parseInt(data.prixVenteTotal);
+              }
+              if (
+                data.typePaiement == "carte_bancaire" ||
+                data.typePaiement == "cheque"
+              ) {
+                this.mntCBE = this.mntCBE + parseInt( data.prixVenteTotal);
+              }
+              this.fraisExpo = data.produit.fournisseur.fraisExposition;
+              comFour = data.produit.fournisseur.commission;
               values.push(data);
             }
           }
         });
       } else {
         this.values.filter(data => {
-          if (data.produit.fournisseur.id == this.fournisseur) {
+          if (
+            data.produit.fournisseur.id == this.fournisseur ||
+            (data.dateVente == this.from &&
+              data.dateVente == this.to &&
+              data.produit.fournisseur.id == this.fournisseur)
+          ) {
             total = total + parseInt(data.prixVenteTotal);
             this.ttlJour = null;
+            this.fraisExpo = data.produit.fournisseur.fraisExposition;
+            comFour = data.produit.fournisseur.commission;
+            nbrProdVendu = nbrProdVendu + data.quantiteVendue;
             data.totalCumule = total;
+            if (data.typePaiement && data.typePaiement == "espece") {
+              this.mntEsp = this.mntEsp + parseInt(data.prixVenteTotal);
+            }
+            if (data.typePaiement && data.typePaiement == "mobile_money") {
+              this.mntMM = this.mntMM + parseInt(data.prixVenteTotal);
+            }
+            if (
+              data.typePaiement == "carte_bancaire" ||
+              data.typePaiement == "cheque"
+            ) {
+              this.mntCBE = this.mntCBE +  parseInt(data.prixVenteTotal);
+            }
             values.push(data);
           }
         });
       }
+      //var nbr = values.length;
+      com = comFour * nbrProdVendu;
+      this.totalCommision = com;
       this.$store.commit("vente/allVentesFours", values);
     },
     fetchproduits() {
@@ -400,11 +486,6 @@ export default {
         this.produits = produits;
       });
     },
-    // getCaisse() {
-    //   this.getVentes().then(response => {
-    //     console.log(response);
-    //   });
-    // },
     validate() {
       this.$refs.form.validate();
     },

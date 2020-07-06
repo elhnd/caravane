@@ -48,9 +48,6 @@
         "symfony/test-pack": "*"
     },
     "config": {
-        "platform": {
-            "php": "7.4.7"
-        },
         "preferred-install": {
             "*": "dist"
         },

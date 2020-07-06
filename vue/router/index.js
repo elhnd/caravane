@@ -17,6 +17,7 @@ import AllVente from '../pages/vente/AllVente'
 import store from '../store'
 import UserList from '../pages/user/List'
 import Caisse from '../pages/caisse/Caisse'
+import OperationCaisse from '../pages/caisse/OperationCaisse'
 Vue.use(VueRouter);
 
 const router = new VueRouter({
@@ -144,6 +145,14 @@ const router = new VueRouter({
                     requiresAuth: true
                 },
                 component: Caisse
+            },
+            {
+                path: "/operation/caisse",
+                name: "operation_caisse",
+                meta: {
+                    requiresAuth: true
+                },
+                component: OperationCaisse
             }
 
         ],
