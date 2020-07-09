@@ -21,8 +21,8 @@ Vue.mixin(DateMixin)
 Vue.mixin(Security)
 Vue.config.productionTip = false;
 Vue.component('is-main-template', IsMainTemplate);
-Axios.defaults.baseURL = 'http://test.jolofpay.com';
-//Axios.defaults.baseURL =  'https://www.caravanebyerc.com';
+//Axios.defaults.baseURL = 'https://127.0.0.1:8000';
+Axios.defaults.baseURL =  'https://www.caravanebyerc.com';
 Vue.config.productionTip = false
 
 // var interval = 3000;  // 1000 = 1 second, 3000 = 3 seconds
