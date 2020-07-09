@@ -6,21 +6,21 @@
 /.env.local.php
 /.env.*.local
 #/config/secrets/prod/prod.decrypt.private.php
-/public/bundles/
-/var/
-/vendor/
+#/public/bundles/
+#/var/
+#/vendor/
 ###< symfony/framework-bundle ###
-public/documents/
+#public/documents/
 ###> symfony/phpunit-bridge ###
 .phpunit
 .phpunit.result.cache
 /phpunit.xml
-fileProjet/
+#fileProjet/
 ###< symfony/phpunit-bridge ###
 
 ###> symfony/webpack-encore-bundle ###
-/node_modules/
-/public/build/
+#/node_modules/
+#/public/build/
 npm-debug.log
 yarn-error.log
 ###< symfony/webpack-encore-bundle ###

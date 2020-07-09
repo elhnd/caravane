@@ -24,7 +24,7 @@
                           @click="dialogProd = true"
                           v-model="depot.produit.designation"
                           readonly
-                          
+                      
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6">
@@ -127,7 +127,6 @@
             </v-card-title>
           </v-col>
           <v-data-table :headers="headers" :items="depots" :search="search">
-            crmDateFormat()
             <template v-slot:item.createdAt="{item}">
               <div>
                 <span>{{crmDateFormat(item.createdAt)}}</span>
@@ -300,7 +299,7 @@ export default {
       this.$refs.form.validate();
     },
     reset() {
-      this.$refs.form.reset();
+      //this.$refs.form.reset();
       this.$refs.form.resetValidation();
       this.dialog = false;
       this.update = false;
