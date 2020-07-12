@@ -101,7 +101,7 @@ export default {
       { icon: "mdi-contacts", text: "Fournisseur", route: "/fournisseur" },
       { text: "Categorie", icon: "storage", route: "/categorie" },
       { text: "Produit", icon: "shopping_cart", route: "/produit" },
-      { text: "Depot", icon: "assignment", route: "/depot" },
+      { text: "Stock", icon: "assignment", route: "/depot" },
       { text: "Vente", icon: "storefront", route: "/vente" },
       { text: "Caisse", icon: "monetization_on", route: "/caisse" },
       { text: "Opération de caisse", icon: "monetization_on", route: "/operation/caisse"},

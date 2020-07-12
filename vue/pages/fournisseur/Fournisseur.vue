@@ -134,6 +134,12 @@
             <span>{{crmDateFormat(item.updateAt)}}</span>
           </div>
         </template>
+
+        <template v-slot:item.commission="{item}">
+          <div>
+            <span>{{item.commission}} %</span>
+          </div>
+        </template>
         <template v-slot:item.actions="{ item }">
           <!-- <v-icon md class="mr-2" @click="editItem(item)" color="primary" blue>mdi-pencil</v-icon>
           <v-icon md2 @click="deleteItem(item)" color="red" dark>mdi-delete</v-icon>-->

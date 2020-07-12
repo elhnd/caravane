@@ -24,7 +24,6 @@
                           @click="dialogProd = true"
                           v-model="depot.produit.designation"
                           readonly
-                      
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6">
@@ -33,7 +32,6 @@
                           v-model.number="depot.stockInitial"
                           required
                           readonly
-                          
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6">
@@ -48,7 +46,6 @@
                           v-model.number="depot.totalStockApresDepot"
                           required
                           readonly
-                          
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6">
@@ -56,7 +53,6 @@
                           label="Quantité vendue *"
                           v-model.number="depot.quantiteVendue"
                           type="Quantité vendue"
-                          
                           readonly
                         ></v-text-field>
                       </v-col>
@@ -66,7 +62,6 @@
                           v-model.number="depot.stockFinal"
                           type="Quantité restante"
                           readonly
-                          
                         ></v-text-field>
                       </v-col>
                     </v-row>
@@ -77,7 +72,7 @@
                         <v-btn
                           type="submit"
                           :loading="isLoading "
-                          :="isLoading || !valid"
+                          :disabled="isLoading || !valid"
                           color="success"
                         >
                           Valider
@@ -280,8 +275,8 @@ export default {
     })
   },
   created() {
-    this.getDepots();
-    this.getProduits();
+    this.getDepots().then(resp=>{console.log(resp)});
+    this.getProduits().then(resp=>{console.log(resp)});
   },
   methods: {
     ...mapActions({
@@ -299,7 +294,7 @@ export default {
       this.$refs.form.validate();
     },
     reset() {
-      //this.$refs.form.reset();
+      this.$refs.form.reset();
       this.$refs.form.resetValidation();
       this.dialog = false;
       this.update = false;
