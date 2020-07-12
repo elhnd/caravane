@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
     <h1 class="my-5 display-1 subheading grey--text">Produits</h1>
-       <v-container>
+    <v-container>
       <v-row>
         <v-col cols="12" sm="6" md="6">
           <input
@@ -86,7 +86,7 @@
                 <v-form ref="form" v-model="valid" valid>
                   <v-container>
                     <v-row>
-                      <v-col cols="12" sm="6" md="6">
+                      <v-col cols="6" sm="4">
                         <v-text-field
                           v-model="editedItem.designation"
                           :rules="produitRules"
@@ -94,26 +94,14 @@
                           label="Désignation"
                         ></v-text-field>
                       </v-col>
-                      <v-col cols="12" sm="6" md="6">
-                        <v-text-field v-model="editedItem.taille" required label="Taille"></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="6">
-                        <v-text-field v-model="editedItem.age" required label="Age"></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="6">
-                        <v-text-field v-model="editedItem.pointure" required label="Pointure"></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="6">
-                        <v-text-field v-model="editedItem.couleur" required label="Couleur"></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="6">
+                      <v-col cols="6" sm="4">
                         <v-text-field
                           v-model.number="editedItem.quantite"
                           required
                           label="Quantite"
                         ></v-text-field>
                       </v-col>
-                      <v-col cols="12" sm="6" md="6">
+                      <v-col cols="6" sm="4">
                         <v-text-field
                           v-model="editedItem.prixVente"
                           :rules="produitRules"
@@ -121,16 +109,7 @@
                           label="Prix Vente"
                         ></v-text-field>
                       </v-col>
-                      <v-col cols="12" sm="6" md="12">
-                        <v-select
-                          :items="structure"
-                          v-model="editedItem.structure"
-                          :rules="produitRules"
-                          required
-                          label="Fournisseur"
-                        ></v-select>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="12">
+                      <v-col cols="6" sm="6">
                         <v-select
                           :items="libelle"
                           v-model="editedItem.libelle"
@@ -139,6 +118,66 @@
                           label="Catégorie"
                         ></v-select>
                       </v-col>
+                      <v-col cols="6" sm="6">
+                        <v-select
+                          :items="structure"
+                          v-model="editedItem.structure"
+                          :rules="produitRules"
+                          required
+                          label="Fournisseur"
+                        ></v-select>
+                      </v-col>
+                      <v-checkbox v-model="declinaison" class="mx-2" label="Déclinaisons"></v-checkbox>
+                      <v-card outlined v-if="declinaison">
+                        <v-col cols="12">
+                          <v-row>
+                            <v-checkbox class="mx-2" v-model="taille" label="Taille: "></v-checkbox>
+                            <v-col cols="8" v-if="taille">
+                              <v-autocomplete
+                                v-model="editedItem.taille"
+                                :items="declinaisonsTypes"
+                                dense
+                              ></v-autocomplete>
+                            </v-col>
+                          </v-row>
+                        </v-col>
+                        <v-col cols="12">
+                          <v-row>
+                            <v-checkbox class="mx-2" v-model="age" label="Age: "></v-checkbox>
+                            <v-col cols="8" v-if="age">
+                              <v-autocomplete
+                                v-model="editedItem.age"
+                                :items="declinaisonsTypes"
+                                dense
+                              ></v-autocomplete>
+                            </v-col>
+                          </v-row>
+                        </v-col>
+                        <v-col cols="12">
+                          <v-row>
+                            <v-checkbox class="mx-2" v-model="pointure" label="Pointure: "></v-checkbox>
+                            <v-col cols="8" v-if="pointure">
+                              <v-autocomplete
+                                v-model="editedItem.pointure"
+                                :items="declinaisonsTypes"
+                                dense
+                              ></v-autocomplete>
+                            </v-col>
+                          </v-row>
+                        </v-col>
+                        <v-col cols="12">
+                          <v-row>
+                            <v-checkbox class="mx-2" v-model="couleur" label="Couleur: "></v-checkbox>
+                            <v-col cols="8" v-if="couleur">
+                              <v-autocomplete
+                                v-model="editedItem.couleur"
+                                :items="couleursTypes"
+                                dense
+                              ></v-autocomplete>
+                            </v-col>
+                          </v-row>
+                        </v-col>
+                      </v-card>
                     </v-row>
                   </v-container>
                 </v-form>
@@ -265,10 +304,30 @@ export default {
     onSuccess: Function // eslint-disable-line
   },
   data: () => ({
-       excelData: {
+    excelData: {
       header: null,
       results: null
     },
+    declinaison: false,
+    taille: false,
+    age: false,
+    pointure: false,
+    couleur: false,
+    agesTypes:["1","2","3","4","5","6"],
+    declinaisonsTypes: ["", "PM", "GM", "MM", "S", "M", "L", "XL", "XXL"],
+    couleursTypes: [
+      "Bleu",
+      "Gris",
+      "Maron",
+      "Orange",
+      "Rouge",
+      "Violet",
+      "Blanc",
+      "Jaune",
+      "Noir",
+      "Rose",
+      "Vert"
+    ],
     snackbar: false,
     textSnackbar: "",
     timeout: 5000,
@@ -287,7 +346,7 @@ export default {
     page: 1,
     pageCount: 0,
     itemsPerPage: 12,
-     produitTab: [
+    produitTab: [
       {
         label: "designation",
         field: "designation"
@@ -307,8 +366,7 @@ export default {
       {
         label: "couleur",
         field: "couleur"
-      }
-      ,
+      },
       {
         label: "quantite",
         field: "quantite"
@@ -316,8 +374,7 @@ export default {
       {
         label: "prixVente",
         field: "prixVente"
-      }
-      ,
+      },
       {
         label: "categorie",
         field: "categorie"
@@ -496,7 +553,22 @@ export default {
     },
 
     editItem(item) {
-      console.log(item.id);
+      //console.log(item);
+      if (item.age || item.couleur || item.taille || item.pointure) {
+        this.declinaison = true;
+        if (item.age) {
+          this.age = true;
+        }
+        if (item.couleur) {
+          this.couleur = true;
+        }
+        if (item.taille) {
+          this.taille = true;
+        }
+        if (item.pointure) {
+          this.pointure = true;
+        }
+      }
       axios.get("/modifierproduit/" + item.id).then(response => {
         console.log(response);
         //this.ID = response.data;
@@ -522,6 +594,11 @@ export default {
       this.$refs.form.resetValidation();
       this.dialog = false;
       this.dialogFournisseur = false;
+      this.declinaison = false;
+      this.age = false;
+      this.couleur = false;
+      this.taille = false;
+      this.pointure = false;
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
@@ -576,7 +653,7 @@ export default {
       this.fetchCategorie();
       this.$refs.form.reset();
     },
-     insertion() {
+    insertion() {
       axios
         .post("/api/produit/mass", {
           produit: this.excelData
@@ -701,7 +778,6 @@ export default {
     isExcel(file) {
       return /\.(xlsx|xls|csv)$/.test(file.name);
     }
-  
   }
 };
 </script>

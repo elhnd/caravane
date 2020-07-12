@@ -73,12 +73,11 @@ class ProduitByFournisseur extends AbstractController implements EventSubscriber
                         $produit->setAge($produits[$i]['age']);
                         $produit->setPointure($produits[$i]['pointure']);
                         $depot->setProduit($produit);
-
-                        $depot->setQuantiteDeposee($produits[$i]['quantite']);
+                        $depot->setQuantiteDeposee(0);
                         $depot->setQuantiteVendue(0);
                         $depot->setStockFinal($produits[$i]['quantite']);
-                        $depot->setStockInitial($produits[$i]['quantite']);
-                        $depot->setTotalStockApresDepot($produits[$i]['quantite']);
+                        $depot->setStockInitial(0);
+                        $depot->setTotalStockApresDepot(0);
 
                         $this->em->persist($produit);
                         $this->em->persist($depot);

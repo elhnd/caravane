@@ -118,6 +118,12 @@
                     <span style="color:#555;">Ajouter un depot</span>
                   </v-btn>
                 </v-col>
+                <v-col cols="12" sm="6" md="3">
+                  <v-btn class="ma-4 brunfonce" @click="dialogFournisseur = true" large tile dark>
+                    <v-icon color="#555" left>mdi-account-plus</v-icon>
+                    <span style="color:#555;">Dépot par un fournisseur</span>
+                  </v-btn>
+                </v-col>
               </v-row>
             </v-card-title>
           </v-col>
@@ -210,6 +216,39 @@
           </v-container>
         </v-card>
       </v-dialog>
+      <v-dialog v-model="dialogFournisseur" persistent max-width="1000px">
+        <v-card>
+          <v-card-title>
+            <span class="headline">Sélectionner un fournisseur</span>
+          </v-card-title>
+
+          <v-card-text>
+            <v-form ref="form" v-model="valid" valid>
+              <v-container>
+                <v-row>
+                  <v-col cols="12" sm="6" md="12">
+                    <v-autocomplete
+                      :items="allFournisseurs"
+                      v-model="idFournisseur"
+                      item-text="structure"
+                      item-value="id"
+                      :rules="produitRules"
+                      required
+                      label="Fournisseur"
+                    ></v-autocomplete>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-form>
+          </v-card-text>
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="blue darken-1" text @click="reset()">Annuler</v-btn>
+            <v-btn color="blue darken-1" text :disabled="!valid" @click="depotFournisseur">Envoyer</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </v-row>
   </v-container>
 </template>
@@ -222,6 +261,11 @@ export default {
   components: { ItemErrors },
   data() {
     return {
+      dialogFournisseur: false,
+      idFournisseur: null,
+      allFournisseurs: [],
+      fournisseurs: [],
+      structure: [],
       dialogProd: false,
       update: false,
       items: [],
@@ -259,7 +303,8 @@ export default {
             (v && v.length >= 6) ||
             "Le mot de passe doit être suppérieur ou égal à 6 caractéres"
         ]
-      }
+      },
+      produitRules: [v => !!v || "Champ requise"]
     };
   },
   computed: {
@@ -275,10 +320,48 @@ export default {
     })
   },
   created() {
-    this.getDepots().then(resp=>{console.log(resp)});
-    this.getProduits().then(resp=>{console.log(resp)});
+    this.getDepots();
+    this.getProduits();
+    // this.fetchproduits();
+    //this.fetchfournisseurs();
+    this.getFournisseurs();
   },
   methods: {
+    getFournisseurs() {
+      axios.get("/api/fournisseurs").then(response => {
+        this.allFournisseurs = response.data["hydra:member"];
+      });
+    },
+    // fetchfournisseurs() {
+    //   var structu = [];
+
+    //   axios.get("/api/fournisseur/").then(response => {
+    //     this.fournisseurs = response.data;
+    //     this.fournisseurs.forEach(element => structu.push(element.structure));
+    //     this.structure = structu;
+    //   });
+    // },
+    depotFournisseur() {
+      axios
+        .get(`/api/access/fournisseurs/${this.idFournisseur}`)
+        .then(resp => {
+          this.colorSnackbar = "green";
+          this.snackbar = true;
+          this.textSnackbar = "Demande de dépot envoyée";
+          this.reset();
+        })
+        .catch(err => {
+          this.colorSnackbar = "red";
+          this.snackbar = true;
+          this.textSnackbar = "Echec envoie";
+          this.reset();
+        });
+    },
+    // fetchproduits() {
+    //   axios.get("/api/produit").then(response => {
+    //     this.produits = response.data;
+    //   });
+    // },
     ...mapActions({
       getDepots: "depot/getDepots",
       createDepot: "depot/createDepot",
@@ -296,6 +379,7 @@ export default {
     reset() {
       this.$refs.form.reset();
       this.$refs.form.resetValidation();
+      this.dialogFournisseur = false;
       this.dialog = false;
       this.update = false;
       this.$store.commit("depot/DEPOT_RESET_ITEM");

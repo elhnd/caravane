@@ -68,14 +68,57 @@
       <v-btn icon>
         <v-icon>mdi-apps</v-icon>
       </v-btn>
-      <v-btn icon>
-        <v-icon>mdi-bell</v-icon>
-      </v-btn>
-      <v-btn icon large>
-        <v-avatar size="32px" item>
-          <v-img src="https://cdn.vuetifyjs.com/images/logos/logo.svg" alt="Vuetify"></v-img>
-        </v-avatar>
-      </v-btn>
+      <div class="text-center">
+        <v-menu transition="fade-transition">
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn dark color="primary" v-bind="attrs" v-on="on">
+              Notifications
+              <v-badge :content="notification" :value="notification" color="green" overlap>
+                <v-icon>mdi-bell</v-icon>
+              </v-badge>
+            </v-btn>
+          </template>
+          <v-card max-width="450" class="mx-auto">
+            <v-toolbar color="cyan" dark>
+              <v-toolbar-title>NOTIFICATIONS</v-toolbar-title>
+
+              <v-spacer></v-spacer>
+            </v-toolbar>
+
+            <v-list three-line>
+              <template v-for="(item, index) in produits">
+                <v-subheader v-if="item.header" :key="item.header" v-text="item.header"></v-subheader>
+
+                <v-divider v-else-if="item.divider" :key="index" :inset="item.inset"></v-divider>
+
+                <v-list-item v-else :key="item.title" @click>
+                  <!-- <v-list-item-avatar>
+                    <v-img :src="item.avatar"></v-img>
+                  </v-list-item-avatar>-->
+
+                  <v-list-item-content>
+                    <v-list-item-title>{{item.produit.designation}}</v-list-item-title>
+                    <v-list-item-subtitle>
+                      <span class="text--primary">
+                        Il ne reste que
+                        <v-chip color="red" small dark>
+                          <span style="font-Weight:bold">{{item.stockFinal}}</span>
+                        </v-chip>
+                        {{item.produit.designation}} de la catégorie {{item.produit.categorie.libelle}} du fournisseur {{item.produit.fournisseur.structure}}
+                      </span>
+                    </v-list-item-subtitle>
+                  </v-list-item-content>
+                </v-list-item>
+              </template>
+            </v-list>
+          </v-card>
+          <!-- <v-list>
+            <v-list-item v-for="n in 5" :key="n" @click>
+              <v-list-item-title v-text="'Item ' + n"></v-list-item-title>
+            </v-list-item>
+          </v-list>-->
+        </v-menu>
+      </div>
       <v-btn icon @click="signOut">
         <v-icon>mdi-power</v-icon>
       </v-btn>
@@ -87,11 +130,16 @@
 </template>
 
 <script>
+//import ItemErrors from "../.././components/layout/errors/ItemErrors";
+import { mapActions } from "vuex";
+//import axios from "../../interceptor";
 export default {
   props: {
     source: String
   },
   data: () => ({
+    notification: 0,
+    produits: [],
     dialog: false,
     drawer: true,
     color: "brown darken-4",
@@ -104,7 +152,11 @@ export default {
       { text: "Stock", icon: "assignment", route: "/depot" },
       { text: "Vente", icon: "storefront", route: "/vente" },
       { text: "Caisse", icon: "monetization_on", route: "/caisse" },
-      { text: "Opération de caisse", icon: "monetization_on", route: "/operation/caisse"},
+      {
+        text: "Opération de caisse",
+        icon: "monetization_on",
+        route: "/operation/caisse"
+      }
       //mdiClipboardList
       // { icon: "mdi-history", text: "Frequently contacted" },
       // { icon: "mdi-content-copy", text: "Duplicates" },
@@ -128,18 +180,68 @@ export default {
       //     { text: "Other contacts" }
       //   ]
       // },
-      // { icon: "mdi-settings", text: "Settings" },
-      // { icon: "mdi-message", text: "Send feedback" },
-      // { icon: "mdi-help-circle", text: "Help" },
-      // { icon: "mdi-cellphone-link", text: "App downloads" },
-      // { icon: "mdi-keyboard", text: "Go to the old version" }
+    ],
+    itemse: [
+      // { header: "Today" },
+      {
+        avatar: "https://cdn.vuetifyjs.com/images/lists/1.jpg",
+        title: "Brunch this weekend?",
+        subtitle:
+          "<span class='text--primary'>Ali Connors</span> &mdash; I'll be in your neighborhood doing errands this weekend. Do you want to hang out?"
+      },
+      { divider: true, inset: true },
+      {
+        avatar: "https://cdn.vuetifyjs.com/images/lists/2.jpg",
+        title: 'Summer BBQ <span class="grey--text text--lighten-1">4</span>',
+        subtitle:
+          "<span class='text--primary'>to Alex, Scott, Jennifer</span> &mdash; Wish I could come, but I'm out of town this weekend."
+      },
+      { divider: true, inset: true },
+      {
+        avatar: "https://cdn.vuetifyjs.com/images/lists/3.jpg",
+        title: "Oui oui",
+        subtitle:
+          "<span class='text--primary'>Sandra Adams</span> &mdash; Do you have Paris recommendations? Have you ever been?"
+      },
+      { divider: true, inset: true },
+      {
+        avatar: "https://cdn.vuetifyjs.com/images/lists/4.jpg",
+        title: "Birthday gift",
+        subtitle:
+          "<span class='text--primary'>Trevor Hansen</span> &mdash; Have any ideas about what we should get Heidi for her birthday?"
+      },
+      { divider: true, inset: true },
+      {
+        avatar: "https://cdn.vuetifyjs.com/images/lists/5.jpg",
+        title: "Recipe to try",
+        subtitle:
+          "<span class='text--primary'>Britta Holt</span> &mdash; We should eat this: Grate, Squash, Corn, and tomatillo Tacos."
+      }
     ]
   }),
 
   methods: {
+    ...mapActions({
+      getDepots: "depot/getDepots"
+    }),
     signOut() {
       this.$store.dispatch("auth/logout");
+    },
+    notifi() {
+      this.getDepots().then(resp => {
+        resp.forEach(prod => {
+          if (prod.stockFinal <= 3) {
+            this.produits.push(prod);
+            this.produits.push({ divider: true, inset: true });
+            this.notification++;
+          }
+        });
+        console.log(this.produits);
+      });
     }
+  },
+  created() {
+    this.notifi();
   }
 };
 </script>

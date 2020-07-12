@@ -111,10 +111,10 @@ class ProduitController extends AbstractController
 
             $depot = (new Depot())
                 ->setProduit($produit)
-                ->setStockInitial($produit->getQuantite())
-                ->setQuantiteDeposee($produit->getQuantite())
+                ->setStockInitial(0)
+                ->setQuantiteDeposee(0)
                 ->setQuantiteVendue(0)
-                ->setTotalStockApresDepot($produit->getQuantite())
+                ->setTotalStockApresDepot(0)
                 ->setStockFinal($produit->getQuantite());
 
             $this->em->persist($produit);
