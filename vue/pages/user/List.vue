@@ -229,8 +229,6 @@ export default {
     isLoading() {
       if (this.$store.state.general.isLoading > 0) {
         return true;
-      } else {
-        return false;
       }
     },
     ...mapGetters({

@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <h1 class="my-5 display-1 subheading grey--text">Dépots</h1>
+    <h1 class="my-5 display-1 subheading grey--text">Stock</h1>
     <v-row justify="space-between">
       <v-col class="col-auto">
         <v-row justify="center">
@@ -76,6 +76,88 @@
                           color="success"
                         >
                           Valider
+                          <template v-slot:loader>
+                            <span>En cours...</span>
+                          </template>
+                        </v-btn>
+                      </div>
+                    </v-card-actions>
+                  </v-form>
+                </v-container>
+                <small style="color:red">* Champs requis</small>
+              </v-card-text>
+            </v-card>
+          </v-dialog>
+          <v-dialog v-model="dialogFournisseur2" persistent max-width="600px">
+            <v-card>
+              <v-card-title>
+                <span class="headline">Ajout fournisseur</span>
+                <item-errors v-if="entity" entity="fournisseur" />
+              </v-card-title>
+              <v-card-text>
+                <v-container>
+                  <v-form ref="form" v-model="valid" @submit.prevent="addFournisseur()">
+                    <v-row>
+                      <v-col cols="12" sm="6">
+                        <v-text-field
+                          label="Structure"
+                          :rules="champRequis"
+                          v-model="fournisseur.structure"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6">
+                        <v-text-field
+                          label="Nom gérant"
+                          :rules="champRequis"
+                          v-model="fournisseur.nomGerant"
+                          required
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6">
+                        <v-text-field v-model="fournisseur.tel" label="Téléphone"></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6">
+                        <v-text-field
+                          label="Email"
+                          :rules="rules.emailRules"
+                          v-model="fournisseur.email"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6">
+                        <v-text-field
+                          label="Adresse"
+                          :rules="champRequis"
+                          v-model.number="fournisseur.adresse"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6">
+                        <v-text-field
+                          label="Commision"
+                          v-model.number="fournisseur.commission"
+                          :rules="commission"
+                          type="text"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6">
+                        <v-text-field
+                          label="Frais Exposition"
+                          v-model.number="fournisseur.fraisExposition"
+                          :rules="champRequis"
+                          type="number"
+                        ></v-text-field>
+                      </v-col>
+                    </v-row>
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+                      <v-btn color="blue darken-1" text @click="resetFournisseur()">Fermer</v-btn>
+                      <div class="my-2">
+                        <v-btn
+                          type="submit"
+                          :loading="isLoading "
+                          :disabled="isLoading || !valid"
+                          color="success"
+                        >
+                          Enregistrer
                           <template v-slot:loader>
                             <span>En cours...</span>
                           </template>
@@ -226,16 +308,22 @@
             <v-form ref="form" v-model="valid" valid>
               <v-container>
                 <v-row>
-                  <v-col cols="12" sm="6" md="12">
+                  <v-col cols="6">
                     <v-autocomplete
                       :items="allFournisseurs"
                       v-model="idFournisseur"
                       item-text="structure"
                       item-value="id"
-                      :rules="produitRules"
+                      :rules="champRequis"
                       required
                       label="Fournisseur"
                     ></v-autocomplete>
+                  </v-col>
+                  <v-col cols="6">
+                    <v-btn class="ma-4 brunfonce" @click="dialogFournisseur2=true" large tile dark>
+                      <v-icon color="#555" left>mdi-account-plus</v-icon>
+                      <span style="color:#555;">Ajouter un fournisseur</span>
+                    </v-btn>
                   </v-col>
                 </v-row>
               </v-container>
@@ -262,6 +350,7 @@ export default {
   data() {
     return {
       dialogFournisseur: false,
+      dialogFournisseur2: false,
       idFournisseur: null,
       allFournisseurs: [],
       fournisseurs: [],
@@ -279,6 +368,15 @@ export default {
       show: false,
       dialog: false,
       valid: true,
+      fournisseur: {
+        structure: "",
+        nomGerant: "",
+        adresse: "",
+        tel: "",
+        email: "",
+        commission: "",
+        fraisExposition: ""
+      },
       headers: [
         { text: "Date de dépôt", value: "createdAt" },
         { text: "Désignation", value: "produit.designation" },
@@ -304,7 +402,13 @@ export default {
             "Le mot de passe doit être suppérieur ou égal à 6 caractéres"
         ]
       },
-      produitRules: [v => !!v || "Champ requise"]
+      champRequis: [v => !!v || "Champ requise"],
+      commission: [
+        v => !!v || "la commission est requise",
+        v =>
+          (v >= 0 && v <= 100) ||
+          "La commission doit être comprise entre 0 and 100"
+      ]
     };
   },
   computed: {
@@ -362,6 +466,13 @@ export default {
     //     this.produits = response.data;
     //   });
     // },
+    addFournisseur() {
+      axios.post("/api/fournisseur/new", this.fournisseur).then(resp => {
+        console.log(resp);
+        this.getFournisseurs();
+        this.resetFournisseur();
+      });
+    },
     ...mapActions({
       getDepots: "depot/getDepots",
       createDepot: "depot/createDepot",
@@ -375,6 +486,11 @@ export default {
     },
     validate() {
       this.$refs.form.validate();
+    },
+    resetFournisseur() {
+      this.dialogFournisseur2 = false;
+      this.$refs.form.reset();
+      this.$refs.form.resetValidation();
     },
     reset() {
       this.$refs.form.reset();

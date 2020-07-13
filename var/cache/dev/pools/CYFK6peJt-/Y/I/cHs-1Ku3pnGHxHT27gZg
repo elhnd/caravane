@@ -21,6 +21,7 @@ return [PHP_INT_MAX, static function () { return \Symfony\Component\VarExporter\
                     'depots',
                     'venteProduits',
                     'quantite',
+                    'depot',
                     'createdAt',
                     'updatedAt',
                 ],

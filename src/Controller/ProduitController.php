@@ -76,6 +76,7 @@ class ProduitController extends AbstractController
                 'updateAt' => $key->getUpdatedAt(),
                 'ligne' => $ligne,
                 'quantite' => $key->getQuantite(),
+                'depot'=>$key->getDepot(),
             );
             array_push($dataProduits, $rem);
         }
@@ -107,7 +108,8 @@ class ProduitController extends AbstractController
                 ->setAge($data->age)
                 ->setPointure($data->pointure)
                 ->setCouleur($data->couleur)
-                ->setQuantite($data->quantite);
+                ->setQuantite($data->quantite)
+                ->setDepot('valider');
 
             $depot = (new Depot())
                 ->setProduit($produit)

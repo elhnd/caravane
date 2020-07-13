@@ -30,7 +30,7 @@
                 <v-list-item-title router :to="item.route" class="test">{{ item.text }}</v-list-item-title>
               </v-list-item-content>
             </template>
-            <v-list-item v-for="(child, i) in item.children" :key="i" link>
+            <v-list-item v-for="(child, i) in item.children" :key="i" link router :to="child.route">
               <v-list-item-action v-if="child.icon">
                 <v-icon>{{ child.icon }}</v-icon>
               </v-list-item-action>
@@ -148,8 +148,23 @@ export default {
       { text: "Clients", icon: "contact_phone", route: "/client" },
       { icon: "mdi-contacts", text: "Fournisseur", route: "/fournisseur" },
       { text: "Categorie", icon: "storage", route: "/categorie" },
-      { text: "Produit", icon: "shopping_cart", route: "/produit" },
-      { text: "Stock", icon: "assignment", route: "/depot" },
+      // { text: "Produit", icon: "shopping_cart", route: "/produit" },
+      {
+        icon: "mdi-chevron-up",
+        "icon-alt": "mdi-chevron-down",
+        text: "Poduit",
+        model: false,
+        children: [
+          { text: "En cours", icon: "shopping_cart", route: "/produit" },
+          { text: "En stock", icon: "assignment", route: "/depot" },
+          {
+            text: "En attente",
+            icon: "hourglass_empty",
+            route: "/en-attente"
+          }
+        ]
+      },
+      // { text: "Stock", icon: "assignment", route: "/depot" },
       { text: "Vente", icon: "storefront", route: "/vente" },
       { text: "Caisse", icon: "monetization_on", route: "/caisse" },
       {
@@ -179,7 +194,7 @@ export default {
       //     { text: "Undo changes" },
       //     { text: "Other contacts" }
       //   ]
-      // },
+      // }
     ],
     itemse: [
       // { header: "Today" },

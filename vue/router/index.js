@@ -13,11 +13,12 @@ import DetailVente from '../pages/vente/DetailVente';
 import AddVente from '../pages/vente/AddVente';
 import ProduitFournisseur from '../pages/produit/ProduitFournisseur';
 import ProduitsVente from '../pages/vente/ProduitsVente';
-import AllVente from '../pages/vente/AllVente'
-import store from '../store'
-import UserList from '../pages/user/List'
-import Caisse from '../pages/caisse/Caisse'
-import OperationCaisse from '../pages/caisse/OperationCaisse'
+import AllVente from '../pages/vente/AllVente';
+import store from '../store';
+import UserList from '../pages/user/List';
+import Caisse from '../pages/caisse/Caisse';
+import OperationCaisse from '../pages/caisse/OperationCaisse';
+import EnAttente from '../pages/depot/EnAttente';
 Vue.use(VueRouter);
 
 const router = new VueRouter({
@@ -153,6 +154,14 @@ const router = new VueRouter({
                     requiresAuth: true
                 },
                 component: OperationCaisse
+            },
+            {
+                path: "/en-attente",
+                name: "en_attente",
+                meta: {
+                    requiresAuth: true
+                },
+                component: EnAttente
             }
 
         ],

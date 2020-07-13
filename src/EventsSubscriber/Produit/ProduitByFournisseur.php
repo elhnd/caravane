@@ -61,7 +61,7 @@ class ProduitByFournisseur extends AbstractController implements EventSubscriber
 
                     for ($i = 0; $i < count($produits); $i++) {
                         $produit = new Produit();
-                        $depot = new Depot();
+                       // $depot = new Depot();
                         $produit->setDesignation($produits[$i]['designation']);
                         $categorie = $this->categorieReopsitory->findOneById($produits[$i]['categorie']);
                         $produit->setFournisseur($fournisseur);
@@ -72,15 +72,15 @@ class ProduitByFournisseur extends AbstractController implements EventSubscriber
                         $produit->setTaille($produits[$i]['taille']);
                         $produit->setAge($produits[$i]['age']);
                         $produit->setPointure($produits[$i]['pointure']);
-                        $depot->setProduit($produit);
-                        $depot->setQuantiteDeposee(0);
-                        $depot->setQuantiteVendue(0);
-                        $depot->setStockFinal($produits[$i]['quantite']);
-                        $depot->setStockInitial(0);
-                        $depot->setTotalStockApresDepot(0);
-
+                        $produit->setDepot('en_attente');
+                        // $depot->setProduit($produit);
+                        // $depot->setQuantiteDeposee(0);
+                        // $depot->setQuantiteVendue(0);
+                        // $depot->setStockFinal($produits[$i]['quantite']);
+                        // $depot->setStockInitial(0);
+                        // $depot->setTotalStockApresDepot(0);
                         $this->em->persist($produit);
-                        $this->em->persist($depot);
+                        //$this->em->persist($depot);
                     }
                     $this->em->flush();
                 }

@@ -313,7 +313,7 @@ export default {
     age: false,
     pointure: false,
     couleur: false,
-    agesTypes:["1","2","3","4","5","6"],
+    agesTypes: ["1", "2", "3", "4", "5", "6"],
     declinaisonsTypes: ["", "PM", "GM", "MM", "S", "M", "L", "XL", "XXL"],
     couleursTypes: [
       "Bleu",
@@ -508,7 +508,13 @@ export default {
   methods: {
     fetchproduits() {
       axios.get("/api/produit").then(response => {
-        this.produits = response.data;
+        var tri = [];
+        response.data.forEach(data => {
+          if (data.depot == "valider") {
+            tri.push(data);
+          }
+        });
+        this.produits = tri;
       });
     },
     depotFournisseur() {
