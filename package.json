@@ -32,7 +32,7 @@
         "jwt-decode": "^2.2.0",
         "less": "^3.11.1",
         "less-loader": "^6.1.0",
-        "lodash": "^4.17.15",
+        "lodash": "^4.17.19",
         "net": "^1.0.2",
         "pluralize": "^8.0.0",
         "popper.js": "^1.16.1",
